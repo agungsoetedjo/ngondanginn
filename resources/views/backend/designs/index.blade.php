@@ -1,4 +1,4 @@
-@extends('layouts.backend')
+@extends('backend.layouts.app')
 
 @section('content')
 <div class="container mt-5">
@@ -7,6 +7,13 @@
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
+
+    <!-- Tombol Create Template -->
+    <div class="mb-4">
+        <a href="{{ route('designs.create') }}" class="btn btn-success">
+            <i class="bi bi-plus-circle me-2"></i> Buat Template Baru
+        </a>
+    </div>
 
     <div class="row">
         {{-- Kiri: Daftar Template --}}
@@ -24,21 +31,28 @@
         </div>
 
         {{-- Kanan: Preview Template --}}
-        <div class="col-md-8">
-            <div class="card">
-                <img id="templatePreview" src="{{ $wedding->template?->preview_image ? asset('images/templates/' . $wedding->template->preview_image) : 'https://via.placeholder.com/800x400?text=Preview+Template' }}" class="card-img-top" alt="Preview Template">
-                <div class="card-body">
-                    <h5 class="card-title" id="templateName">{{ $wedding->template?->name ?? 'Belum ada template dipilih' }}</h5>
+        @if($template)
+            <div class="col-md-8">
+                <div class="card">
+                    <img id="templatePreview"
+                        src="{{ asset('images/templates/' . $template->preview_image) }}"
+                        class="card-img-top"
+                        alt="Preview Template">
+                    <div class="card-body">
+                        <h5 class="card-title" id="templateName">{{ $template->name }}</h5>
 
-                    <form id="formChooseTemplate" action="{{ route('designs.update', $wedding->id) }}" method="POST">
-                        @csrf
-                        @method('PUT')
-                        <input type="hidden" name="template_id" id="selectedTemplateId" value="{{ $wedding->template_id }}">
-                        <button type="submit" class="btn btn-primary mt-2">Gunakan Template Ini</button>
-                    </form>
+                        <form id="formChooseTemplate"
+                            action="{{ route('designs.update', $wedding->id) }}"
+                            method="POST">
+                            @csrf
+                            @method('PUT')
+                            <input type="hidden" name="template_id" id="selectedTemplateId" value="{{ $wedding->template_id }}">
+                            <button type="submit" class="btn btn-primary mt-2">Gunakan Template Ini</button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
+        @endif
     </div>
 </div>
 

@@ -4,17 +4,18 @@
     <a href="index.html" class="logo d-flex align-items-center me-auto">
       <!-- Uncomment the line below if you also wish to use an image logo -->
       <!-- <img src="assets/img/logo.png" alt=""> -->
-      <h1 class="sitename">eNno</h1>
+      <h1 class="sitename">Ngondang<span class="fw-medium bg-primary text-white px-2 rounded-2">in</span></h1>
     </a>
 
     <nav id="navmenu" class="navmenu">
       <ul>
         <li><a href="#hero" class="active">Home</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#services">Services</a></li>
-        <li><a href="#portfolio">Portfolio</a></li>
-        <li><a href="#team">Team</a></li>
-        <li class="dropdown"><a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <li><a href="#fitur">Fitur</a></li>
+            <li><a href="#pilihantema">Pilihan Tema</a></li>
+            <li><a href="#faq">FAQ</a></li>
+            <li><a href="#testimoni">Testimoni</a></li>
+            <li><a href="#hubungikami">Hubungi Kami</a></li>
+        {{-- <li class="dropdown"><a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
           <ul>
             <li><a href="#">Dropdown 1</a></li>
             <li class="dropdown"><a href="#"><span>Deep Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
@@ -30,13 +31,12 @@
             <li><a href="#">Dropdown 3</a></li>
             <li><a href="#">Dropdown 4</a></li>
           </ul>
-        </li>
-        <li><a href="#contact">Contact</a></li>
+        </li> --}}
       </ul>
       <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
     </nav>
 
-    <a class="btn-getstarted" href="index.html#about">Get Started</a>
+    <a class="btn ms-3 btn-primary" href="index.html#about">Pesan Sekarang</a>
 
   </div>
 </header>

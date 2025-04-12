@@ -2,24 +2,29 @@
 
 use App\Http\Controllers\Auth\UserAuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DesignController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\GuestBookController;
+use App\Http\Controllers\LandingController;
 use App\Http\Controllers\MusicController;
 use App\Http\Controllers\RsvpController;
 use App\Http\Controllers\WeddingController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('index');
-});
+Route::get('/', [LandingController::class, 'index']);
+
+// Testing started section page
+// Route::get('/', function () {
+//     return view('index');
+// });
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('weddings', WeddingController::class);
+    Route::resource('designs', DesignController::class);
     Route::get('/weddings/{id}/rsvps', [RsvpController::class, 'index'])->name('rsvps.index');
     Route::get('/weddings/{id}/guest-books', [GuestBookController::class, 'index'])->name('guestbooks.index');
     Route::get('/weddings/{id}/galleries', [GalleryController::class, 'index'])->name('galleries.index');
-
     Route::get('/musics', [MusicController::class, 'index'])->name('musics.index');
     Route::delete('/dashboard/rsvps/{id}', [RsvpController::class, 'destroy'])->name('rsvps.destroy');
     Route::delete('/guest-books/{id}', [GuestBookController::class, 'destroy'])->name('guestbooks.destroy');

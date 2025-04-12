@@ -36,6 +36,9 @@
         <li class="nav-item">
           <a class="nav-link" href="{{ route('musics.index') }}">Musik</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ route('designs.index') }}">Template</a>
+        </li>
 
         <!-- Logout link -->
         <li class="nav-item">

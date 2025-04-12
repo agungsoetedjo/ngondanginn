@@ -2,37 +2,108 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Wedding;
 use App\Models\Template;
-use App\Models\Music;
+use App\Models\Wedding;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class DesignController extends Controller
 {
-    public function edit($weddingId)
+    public function index()
     {
-        $wedding = Wedding::where('user_id', Auth::id())->findOrFail($weddingId);
-        $templates = Template::all();
-        $musics = Music::all();
+        $wedding = Wedding::where('user_id', Auth::id())->first();
 
-        return view('backend.designs.edit', compact('wedding', 'templates', 'musics'));
+        // Ambil template terkait jika ada
+        $template = null;
+        if ($wedding && $wedding->template_id) {
+            $template = Template::find($wedding->template_id);
+        }
+
+        $templates = Template::all();
+
+        return view('backend.designs.index', compact('templates', 'wedding', 'template'));
     }
 
-    public function update(Request $request, $weddingId)
+    public function create()
     {
-        $wedding = Wedding::where('user_id', Auth::id())->findOrFail($weddingId);
+        return view('backend.designs.create');
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:100',
+            'preview_image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'view_path' => 'required|string|unique:templates,view_path',
+        ]);
+
+        $file = $request->file('preview_image');
+        $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('images/templates'), $filename);
+
+        Template::create([
+            'name' => $request->name,
+            'preview_image' => $filename,
+            'view_path' => $request->view_path,
+        ]);
+
+        return redirect()->route('designs.index')->with('success', 'Template berhasil ditambahkan.');
+    }
+
+    public function edit($id)
+    {
+        $wedding = Wedding::with('template')->findOrFail($id);
+        $templates = Template::all();
+
+        return view('designs.edit', compact('wedding', 'templates'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $template = Template::findOrFail($id);
 
         $request->validate([
-            'template_id' => 'nullable|exists:templates,id',
-            'music_id' => 'nullable|exists:musics,id',
+            'name' => 'required|string|max:100',
+            'preview_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'view_path' => 'required|string|unique:templates,view_path,' . $id,
         ]);
 
-        $wedding->update([
-            'template_id' => $request->template_id,
-            'music_id' => $request->music_id,
-        ]);
+        $data = [
+            'name' => $request->name,
+            'view_path' => $request->view_path,
+        ];
 
-        return back()->with('success', 'Desain & musik diperbarui.');
+        if ($request->hasFile('preview_image')) {
+            // Hapus gambar lama jika ada
+            $oldPath = public_path('images/templates/' . $template->preview_image);
+            if (File::exists($oldPath)) {
+                File::delete($oldPath);
+            }
+
+            $file = $request->file('preview_image');
+            $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images/templates'), $filename);
+            $data['preview_image'] = $filename;
+        }
+
+        $template->update($data);
+
+        return redirect()->route('designs.index')->with('success', 'Template berhasil diupdate.');
+    }
+
+    public function destroy($id)
+    {
+        $template = Template::findOrFail($id);
+
+        $imagePath = public_path('images/templates/' . $template->preview_image);
+        if (File::exists($imagePath)) {
+            File::delete($imagePath);
+        }
+
+        $template->delete();
+
+        return redirect()->route('designs.index')->with('success', 'Template berhasil dihapus.');
     }
 }
