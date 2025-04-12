@@ -6,7 +6,6 @@ use App\Models\Gallery;
 use App\Models\Wedding;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class GalleryController extends Controller
 {
@@ -18,8 +17,10 @@ class GalleryController extends Controller
         return view('backend.galleries.index', compact('wedding', 'images'));
     }
 
-    public function store(Request $request, Wedding $wedding)
+    public function store(Request $request, $id)
     {
+        $wedding = Wedding::where('user_id', Auth::id())->findOrFail($id);
+
         $request->validate([
             'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
@@ -30,11 +31,12 @@ class GalleryController extends Controller
         $file->move(public_path('uploads/galeri'), $filename);
 
         $wedding->galleries()->create([
-            'image' => $path
+            'image' => $path,
         ]);
 
-        return redirect()->back()->with('success', 'Foto berhasil diunggah!');
+        return back()->with('success', 'Foto berhasil diunggah!');
     }
+
 
 
     public function destroy($id)

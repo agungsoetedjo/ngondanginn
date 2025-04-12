@@ -34,6 +34,7 @@
             </form>
             <a href="{{ route('rsvps.index', $wedding->id) }}" class="btn btn-sm btn-primary">RSVP</a>
             <a href="{{ route('guestbooks.index', $wedding->id) }}" class="btn btn-sm btn-primary">Buku Tamu</a>
+            <a href="{{ route('galleries.index', $wedding->id) }}" class="btn btn-sm btn-primary">Galeri</a>
           </td>
         </tr>
       @empty
