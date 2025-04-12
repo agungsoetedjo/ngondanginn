@@ -12,6 +12,7 @@ class GuestBook extends Model
     use HasFactory;
 
     protected $table = 'guest_books';
+    
     protected $fillable = [
         'wedding_id',
         'name',

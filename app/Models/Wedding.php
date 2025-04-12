@@ -25,6 +25,10 @@ class Wedding extends Model
         'music_id',
     ];
 
+    protected $casts = [
+        'wedding_date' => 'datetime',
+    ];
+
     public function user() {
         return $this->belongsTo(User::class);
     }
@@ -32,7 +36,7 @@ class Wedding extends Model
     public function rsvps() {
         return $this->hasMany(RSVP::class);
     }
-
+    
     public function guestBooks() {
         return $this->hasMany(GuestBook::class);
     }
