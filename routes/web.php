@@ -7,6 +7,7 @@ use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\GuestBookController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\MusicController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\RsvpController;
 use App\Http\Controllers\WeddingController;
 use Illuminate\Support\Facades\Route;
@@ -48,3 +49,7 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::post('/logout', [UserAuthController::class, 'logout'])->name('logout')->middleware('auth');
+
+Route::get('/pesan-undangan', [OrderController::class, 'create'])->name('order.create');
+Route::post('/pesan-undangan', [OrderController::class, 'store'])->name('order.store');
+Route::get('/pesan-undangan/berhasil/{kode_transaksi}', [OrderController::class, 'success'])->name('orders.success');

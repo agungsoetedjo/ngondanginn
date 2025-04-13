@@ -22,4 +22,8 @@ class Template extends Model
     public function weddings() {
         return $this->hasMany(Wedding::class);
     }
+
+    public function orders() {
+        return $this->hasMany(Order::class);
+    }
 }
