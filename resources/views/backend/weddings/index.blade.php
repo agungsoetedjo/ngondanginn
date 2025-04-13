@@ -6,7 +6,7 @@
 
   <a href="{{ route('weddings.create') }}" class="btn btn-primary mb-3">+ Buat Undangan Baru</a>
 
-  <table class="table table-bordered">
+  <table class="table table-bordered table-striped datatable">
     <thead>
       <tr>
         <th>Nama Pengantin</th>
@@ -17,30 +17,48 @@
       </tr>
     </thead>
     <tbody>
-      @forelse($weddings as $wedding)
+      @foreach($weddings as $wedding)
         <tr>
           <td>{{ $wedding->bride_name }} & {{ $wedding->groom_name }}</td>
           <td>{{ \Carbon\Carbon::parse($wedding->wedding_date)->format('d M Y H:i') }}</td>
           <td>{{ $wedding->place_name }}</td>
           <td>{{ $wedding->location }}</td>
           <td>
-            <a href="{{ route('weddings.edit', $wedding->slug) }}" class="btn btn-sm btn-warning">Edit</a>
+            <!-- Edit Button -->
+            <a href="{{ route('weddings.edit', $wedding->slug) }}" class="btn btn-sm btn-warning">
+              <i class="bi bi-pencil"></i> Edit
+            </a>
+
+            <!-- Delete Button -->
             <form action="{{ route('weddings.destroy', $wedding->id) }}" method="POST" style="display:inline;">
               @csrf
               @method('DELETE')
-              <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus undangan ini?')">Hapus</button>
+              <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus undangan ini?')">
+                <i class="bi bi-trash"></i> Hapus
+              </button>
             </form>
-            <a href="{{ route('rsvps.index', $wedding->id) }}" class="btn btn-sm btn-primary">RSVP</a>
-            <a href="{{ route('guestbooks.index', $wedding->id) }}" class="btn btn-sm btn-primary">Buku Tamu</a>
-            <a href="{{ route('galleries.index', $wedding->id) }}" class="btn btn-sm btn-primary">Galeri</a>
+
+            <!-- RSVP Button -->
+            <a href="{{ route('rsvps.index', $wedding->id) }}" class="btn btn-sm btn-primary">
+              <i class="bi bi-person-check"></i> RSVP
+            </a>
+
+            <!-- Guestbook Button -->
+            <a href="{{ route('guestbooks.index', $wedding->id) }}" class="btn btn-sm btn-primary">
+              <i class="bi bi-bookmarks"></i> Buku Tamu
+            </a>
+
+            <!-- Gallery Button -->
+            <a href="{{ route('galleries.index', $wedding->id) }}" class="btn btn-sm btn-primary">
+              <i class="bi bi-images"></i> Galeri
+            </a>
           </td>
         </tr>
-      @empty
-        <tr>
-          <td colspan="4">Belum ada undangan.</td>
-        </tr>
-      @endforelse
+      @endforeach
     </tbody>
   </table>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{{ asset('assets/js/ourscript.js') }}"></script>
 @endsection
