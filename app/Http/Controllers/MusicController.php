@@ -17,7 +17,7 @@ class MusicController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'file' => 'required|mimes:mp3|max:5120',
+            'file' => 'required|mimes:mp3|max:10240',
         ]);
 
         $file = $request->file('file');
@@ -30,7 +30,10 @@ class MusicController extends Controller
             'file_path' => $filePath,
         ]);
 
-        return redirect()->back()->with('success', 'Musik berhasil diunggah!');
+        return redirect()->back()->with('sweetalert', [
+            'type' => 'success',
+            'message' => 'Musik berhasil diunggah!'
+        ]);
     }
 
     public function destroy($id)
@@ -44,7 +47,9 @@ class MusicController extends Controller
 
         $music->delete();
 
-        return redirect()->back()->with('success', 'Musik berhasil dihapus!');
+        return redirect()->back()->with('sweetalert', [
+            'type' => 'success',
+            'message' => 'Musik berhasil dihapus!'
+        ]);
     }
-
 }

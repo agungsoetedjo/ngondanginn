@@ -10,7 +10,7 @@
 </head>
 <body>
   @include('backend.layouts.nav')
-  <main class="mt-4">
+  <main class="mt-4 pt-5 pb-5">
     @yield('content')
   </main>
 

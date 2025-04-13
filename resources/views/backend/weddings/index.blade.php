@@ -30,13 +30,13 @@
             </a>
 
             <!-- Delete Button -->
-            <form action="{{ route('weddings.destroy', $wedding->id) }}" method="POST" style="display:inline;">
+            <form action="{{ route('weddings.destroy', $wedding->id) }}" method="POST" class="d-inline delete-form">
               @csrf
               @method('DELETE')
-              <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus undangan ini?')">
+              <button type="button" class="btn btn-sm btn-danger btn-delete">
                 <i class="bi bi-trash"></i> Hapus
               </button>
-            </form>
+            </form>            
 
             <!-- RSVP Button -->
             <a href="{{ route('rsvps.index', $wedding->id) }}" class="btn btn-sm btn-primary">
@@ -61,4 +61,29 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{{ asset('assets/js/ourscript.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  $(document).ready(function () {
+    $('.btn-delete').click(function (e) {
+      e.preventDefault();
+
+      const form = $(this).closest('form');
+
+      Swal.fire({
+        title: 'Yakin ingin menghapus?',
+        text: "Data undangan yang dihapus tidak bisa dikembalikan!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Batal'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          form.submit();
+        }
+      });
+    });
+  });
+</script>
 @endsection

@@ -33,7 +33,7 @@
 }
 
 </style>
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
   <div class="container-fluid">
     <a class="navbar-brand" href="/dashboard"><h5 class="sitename">Ngondang<span class="fw-small bg-primary text-white px-2 rounded-2">in</span></h5></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 

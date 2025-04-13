@@ -39,7 +39,6 @@
             @endforeach
         </div>
     @endif
-
-    <a href="{{ route('weddings.index') }}" class="btn btn-secondary mt-4">← Kembali ke Daftar Undangan</a>
+    <a href="{{ route('weddings.index') }}" class="btn btn-secondary">← Kembali ke Daftar Undangan</a>
 </div>
 @endsection
