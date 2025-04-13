@@ -1,78 +1,61 @@
 @extends('backend.layouts.app')
 
 @section('content')
-<div class="container mt-5">
-    <h2 class="mb-4">Pilih Template Undangan</h2>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Manajemen Template Undangan</h2>
+        <a href="{{ route('designs.create') }}" class="btn btn-primary">+ Tambah Template</a>
+    </div>
 
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <!-- Tombol Create Template -->
-    <div class="mb-4">
-        <a href="{{ route('designs.create') }}" class="btn btn-success">
-            <i class="bi bi-plus-circle me-2"></i> Buat Template Baru
-        </a>
-    </div>
-
-    <div class="row">
-        {{-- Kiri: Daftar Template --}}
-        <div class="col-md-4">
-            <div class="list-group">
-                @foreach($templates as $template)
-                    <a href="#" class="list-group-item list-group-item-action preview-template {{ $wedding->template_id == $template->id ? 'active' : '' }}"
-                       data-id="{{ $template->id }}"
-                       data-name="{{ $template->name }}"
-                       data-image="{{ asset('images/templates/' . $template->preview_image) }}">
-                        {{ $template->name }}
-                    </a>
-                @endforeach
-            </div>
-        </div>
-
-        {{-- Kanan: Preview Template --}}
-        @if($template)
-            <div class="col-md-8">
-                <div class="card">
-                    <img id="templatePreview"
-                        src="{{ asset('images/templates/' . $template->preview_image) }}"
-                        class="card-img-top"
-                        alt="Preview Template">
-                    <div class="card-body">
-                        <h5 class="card-title" id="templateName">{{ $template->name }}</h5>
-
-                        <form id="formChooseTemplate"
-                            action="{{ route('designs.update', $wedding->id) }}"
-                            method="POST">
-                            @csrf
-                            @method('PUT')
-                            <input type="hidden" name="template_id" id="selectedTemplateId" value="{{ $wedding->template_id }}">
-                            <button type="submit" class="btn btn-primary mt-2">Gunakan Template Ini</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        @endif
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Nama</th>
+                    <th>Gambar</th>
+                    <th>View Path</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($templates as $design)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $design->name }}</td>
+                        <td>
+                            @if($design->preview_image)
+                                <img src="{{ asset('images/templates/' . $design->preview_image) }}" alt="Preview" width="120">
+                            @else
+                                <em>Tidak ada</em>
+                            @endif
+                        </td>
+                        <td><code>{{ $design->view_path }}</code></td>                      
+                        <td>
+                            <a href="{{ route('designs.preview', $design->id) }}" class="btn btn-sm btn-info" target="_blank">
+                                Preview
+                            </a>                            
+                            <a href="{{ route('designs.edit', $design->id) }}" class="btn btn-sm btn-warning">
+                                Edit
+                            </a>
+                            <form action="{{ route('designs.destroy', $design->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus template ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-sm btn-danger">Hapus</button>
+                            </form>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="text-center">Belum ada template</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
 </div>
-
-{{-- Script langsung --}}
-<script>
-    document.querySelectorAll('.preview-template').forEach(function (item) {
-        item.addEventListener('click', function (e) {
-            e.preventDefault();
-
-            const name = this.dataset.name;
-            const image = this.dataset.image;
-            const id = this.dataset.id;
-
-            document.getElementById('templatePreview').src = image;
-            document.getElementById('templateName').textContent = name;
-            document.getElementById('selectedTemplateId').value = id;
-
-            document.querySelectorAll('.preview-template').forEach(el => el.classList.remove('active'));
-            this.classList.add('active');
-        });
-    });
-</script>
 @endsection

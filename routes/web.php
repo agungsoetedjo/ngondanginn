@@ -22,6 +22,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('weddings', WeddingController::class);
     Route::resource('designs', DesignController::class);
+    Route::get('/designs/preview/{templateId}', [DesignController::class, 'preview'])->name('designs.preview');
+
     Route::get('/weddings/{id}/rsvps', [RsvpController::class, 'index'])->name('rsvps.index');
     Route::get('/weddings/{id}/guest-books', [GuestBookController::class, 'index'])->name('guestbooks.index');
     Route::get('/weddings/{id}/galleries', [GalleryController::class, 'index'])->name('galleries.index');

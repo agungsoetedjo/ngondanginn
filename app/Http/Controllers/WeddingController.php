@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Template;
 use App\Models\Wedding;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -38,6 +39,7 @@ class WeddingController extends Controller
             'wedding_date' => $request->wedding_date,
             'location' => $request->location,
             'description' => $request->description,
+            'template_id' => $request->template_id,  // Simpan template_id
         ]);
 
         return redirect()->route('weddings.index')->with('success', 'Undangan berhasil dibuat.');
@@ -45,10 +47,11 @@ class WeddingController extends Controller
 
     public function edit($slug)
     {
+        $templates = Template::all(); // Kirim semua template ke view
         $wedding = Wedding::where('user_id', Auth::id())
                       ->where('slug', $slug)
                       ->firstOrFail();
-        return view('backend.weddings.edit', compact('wedding'));
+        return view('backend.weddings.edit', compact('wedding','templates'));
     }
 
     public function update(Request $request, $id)
@@ -61,10 +64,11 @@ class WeddingController extends Controller
             'wedding_date' => 'required|date',
             'location' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'template_id' => $request->template_id,  // Simpan template_id
         ]);
 
         $wedding->update($request->only([
-            'bride_name', 'groom_name', 'wedding_date', 'location', 'description'
+            'bride_name', 'groom_name', 'wedding_date', 'location', 'description','template_id'
         ]));
 
         return redirect()->route('weddings.index')->with('success', 'Undangan berhasil diupdate.');
@@ -78,5 +82,20 @@ class WeddingController extends Controller
         $wedding->delete();
 
         return redirect()->route('weddings.index')->with('success', 'Undangan berhasil dihapus.');
+    }
+
+    public function show($id)
+    {
+        $wedding = Wedding::findOrFail($id);
+        
+        // Dapatkan template berdasarkan view_path
+        $template = $wedding->template;
+
+        // Pastikan template ada dan memiliki view_path
+        if ($template && $template->view_path) {
+            return view($template->view_path, compact('wedding'));
+        }
+
+        return redirect()->route('weddings.index')->with('error', 'Template tidak ditemukan!');
     }
 }
