@@ -3,7 +3,7 @@
 @section('content')
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Manajemen Template Undangan</h2>
+        <h4>Manajemen Template Undangan</h4>
         <a href="{{ route('designs.create') }}" class="btn btn-primary">+ Tambah Template</a>
     </div>
 

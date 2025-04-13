@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-  <h2>Daftar Undangan</h2>
+  <h4>Daftar Undangan</h4>
 
   <a href="{{ route('weddings.create') }}" class="btn btn-primary mb-3">+ Buat Undangan Baru</a>
 

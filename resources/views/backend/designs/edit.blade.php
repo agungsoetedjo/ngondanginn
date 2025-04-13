@@ -3,7 +3,7 @@
 @section('content')
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Edit Template: {{ $template->name }}</h2>
+        <h4>Edit Template: {{ $template->name }}</h4>
     </div>
 
     <form action="{{ route('designs.update', $template->id) }}" method="POST" enctype="multipart/form-data">

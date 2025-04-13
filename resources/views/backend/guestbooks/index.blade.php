@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container">
-    <h2 class="mb-4">Buku Tamu untuk: <strong>{{ $wedding->bride_name }} & {{ $wedding->groom_name }}</strong></h2>
+    <h4 class="mb-4">Buku Tamu untuk: <strong>{{ $wedding->bride_name }} & {{ $wedding->groom_name }}</strong></h4>
 
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>

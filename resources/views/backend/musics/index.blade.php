@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container">
-    <h2 class="mb-4">Daftar Musik Latar</h2>
+    <h4 class="mb-4">Daftar Musik Latar</h4>
 
     <form action="{{ route('musics.store') }}" method="POST" enctype="multipart/form-data" class="mb-4">
         @csrf
