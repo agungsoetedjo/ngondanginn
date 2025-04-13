@@ -83,9 +83,15 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle {{ request()->routeIs('profile.*') ? 'active fw-bold' : '' }}" 
                href="#" id="settingsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Pengaturan
+               
+               {{-- Icon Gear untuk Desktop --}}
+               <i class="bi bi-gear-fill d-none d-lg-inline"></i>
+               
+               {{-- Teks untuk Mobile --}}
+               <span class="d-inline d-lg-none">Pengaturan</span>
             </a>
-            <ul class="dropdown-menu" aria-labelledby="settingsDropdown">
+          
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settingsDropdown">
               <li>
                 <a class="dropdown-item {{ request()->routeIs('profile.*') ? 'active' : '' }}" href="{{ route('profile.index') }}">
                   Akun
@@ -99,6 +105,7 @@
               </li>
             </ul>
           </li>
+          
           @endauth
         </ul>
       </div>
