@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-  <h2>Buat Undangan Baru</h2>
+  <h4>Buat Undangan Baru</h4>
 
   <form action="{{ route('weddings.store') }}" method="POST">
     @csrf

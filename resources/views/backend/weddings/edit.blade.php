@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-  <h2>Edit Undangan</h2>
+  <h4>Edit Undangan</h4>
 
   <form action="{{ route('weddings.update', $wedding->slug) }}" method="POST">
     @csrf
