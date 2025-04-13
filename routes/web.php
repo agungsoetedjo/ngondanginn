@@ -34,6 +34,9 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/musics/{id}', [MusicController::class, 'destroy'])->name('musics.destroy');
     Route::post('/weddings/{id}/galleries', [GalleryController::class, 'store'])->name('galleries.store');
     Route::post('/musics', [MusicController::class, 'store'])->name('musics.store');
+
+    Route::get('/profile', [UserAuthController::class, 'showProfile'])->name('profile.index');
+    Route::post('/profile', [UserAuthController::class, 'updateProfile'])->name('profile.update');
 });
 
 Route::middleware('guest')->group(function () {
