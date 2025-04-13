@@ -18,7 +18,8 @@ class WeddingController extends Controller
 
     public function create()
     {
-        return view('backend.weddings.create');
+        $templates = Template::all();
+        return view('backend.weddings.create', compact('templates'));
     }
 
     public function store(Request $request)
@@ -26,9 +27,10 @@ class WeddingController extends Controller
         $request->validate([
             'bride_name' => 'required|string|max:100',
             'groom_name' => 'required|string|max:100',
-            'wedding_date' => 'required|date',
+            'wedding_date' => 'required|date',  // Validasi untuk tanggal dan waktu
             'location' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'template_id' => 'required|exists:templates,id',
         ]);
 
         Wedding::create([
@@ -36,27 +38,40 @@ class WeddingController extends Controller
             'slug' => Str::slug($request->bride_name . '-' . $request->groom_name . '-' . now()->timestamp),
             'bride_name' => $request->bride_name,
             'groom_name' => $request->groom_name,
-            'wedding_date' => $request->wedding_date,
+            'wedding_date' => $request->wedding_date,  // Menyimpan tanggal dan waktu
             'location' => $request->location,
+            'place_name' => $request->place_name,
             'description' => $request->description,
-            'template_id' => $request->template_id,  // Simpan template_id
+            'template_id' => $request->template_id,
         ]);
 
-        return redirect()->route('weddings.index')->with('success', 'Undangan berhasil dibuat.');
+        session()->flash('sweetalert', [
+            'type' => 'success',
+            'message' => 'Undangan berhasil dibuat!'
+        ]);
+
+        return redirect()->route('weddings.index');
     }
 
     public function edit($slug)
     {
-        $templates = Template::all(); // Kirim semua template ke view
+        $templates = Template::all();
         $wedding = Wedding::where('user_id', Auth::id())
-                      ->where('slug', $slug)
-                      ->firstOrFail();
-        return view('backend.weddings.edit', compact('wedding','templates'));
+                        ->where('slug', $slug)
+                        ->firstOrFail();
+        
+        // Format wedding_date agar sesuai dengan format datetime-local
+        $wedding_date = $wedding->wedding_date->format('Y-m-d\TH:i');
+        
+        return view('backend.weddings.edit', compact('wedding', 'templates', 'wedding_date'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $slug)
     {
-        $wedding = Wedding::where('user_id', Auth::id())->findOrFail($id);
+        // Cari pernikahan berdasarkan slug
+        $wedding = Wedding::where('user_id', Auth::id())
+                        ->where('slug', $slug)
+                        ->firstOrFail();
 
         $request->validate([
             'bride_name' => 'required|string|max:100',
@@ -64,14 +79,29 @@ class WeddingController extends Controller
             'wedding_date' => 'required|date',
             'location' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'template_id' => $request->template_id,  // Simpan template_id
+            'template_id' => 'required|exists:templates,id',
         ]);
 
-        $wedding->update($request->only([
-            'bride_name', 'groom_name', 'wedding_date', 'location', 'description','template_id'
-        ]));
+        // Cek apakah nama mempelai wanita atau pria berubah
+        $slug = Str::slug($request->bride_name . '-' . $request->groom_name . '-' . now()->timestamp);
 
-        return redirect()->route('weddings.index')->with('success', 'Undangan berhasil diupdate.');
+        $wedding->update([
+            'bride_name' => $request->bride_name,
+            'groom_name' => $request->groom_name,
+            'wedding_date' => $request->wedding_date,
+            'location' => $request->location,
+            'place_name' => $request->place_name,
+            'description' => $request->description,
+            'template_id' => $request->template_id,
+            'slug' => $slug, // Update slug jika ada perubahan
+        ]);
+
+        session()->flash('sweetalert', [
+            'type' => 'success',
+            'message' => 'Undangan berhasil diupdate!'
+        ]);
+
+        return redirect()->route('weddings.index');
     }
 
     public function destroy($slug)
@@ -81,7 +111,12 @@ class WeddingController extends Controller
                       ->firstOrFail();
         $wedding->delete();
 
-        return redirect()->route('weddings.index')->with('success', 'Undangan berhasil dihapus.');
+        session()->flash('sweetalert', [
+            'type' => 'success',
+            'message' => 'Undangan berhasil dihapus!'
+        ]);
+    
+        return redirect()->route('weddings.index');
     }
 
     public function show($id)

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('groom_name');
             $table->dateTime('wedding_date');
             $table->string('location');
+            $table->string('place_name')->nullable();
             $table->text('description')->nullable();
             $table->foreignId('template_id')->nullable()->constrained('templates')->nullOnDelete();
             $table->foreignId('music_id')->nullable()->constrained('musics')->nullOnDelete();            

@@ -4,10 +4,6 @@
 <div class="container">
   <h2>Daftar Undangan</h2>
 
-  @if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-  @endif
-
   <a href="{{ route('weddings.create') }}" class="btn btn-primary mb-3">+ Buat Undangan Baru</a>
 
   <table class="table table-bordered">
@@ -15,7 +11,8 @@
       <tr>
         <th>Nama Pengantin</th>
         <th>Tanggal</th>
-        <th>Lokasi</th>
+        <th>Nama Tempat</th>
+        <th>Lokasi Tempat</th>
         <th>Aksi</th>
       </tr>
     </thead>
@@ -24,6 +21,7 @@
         <tr>
           <td>{{ $wedding->bride_name }} & {{ $wedding->groom_name }}</td>
           <td>{{ \Carbon\Carbon::parse($wedding->wedding_date)->format('d M Y H:i') }}</td>
+          <td>{{ $wedding->place_name }}</td>
           <td>{{ $wedding->location }}</td>
           <td>
             <a href="{{ route('weddings.edit', $wedding->slug) }}" class="btn btn-sm btn-warning">Edit</a>

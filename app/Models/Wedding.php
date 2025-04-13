@@ -20,6 +20,7 @@ class Wedding extends Model
         'groom_name',
         'wedding_date',
         'location',
+        'place_name',
         'description',
         'template_id',
         'music_id',
