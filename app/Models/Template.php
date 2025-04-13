@@ -17,6 +17,7 @@ class Template extends Model
         'name',
         'preview_image',
         'view_path',
+        'price',
     ];
 
     public function weddings() {

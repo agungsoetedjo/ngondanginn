@@ -29,29 +29,34 @@ class OrderController extends Controller
             'place_name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'phone' => 'required|string|max:20',
-            'template_id' => 'required|exists:designs,id',
+            'template_id' => 'required|exists:templates,id',
         ]);
-
+    
+        $template = Template::findOrFail($request->template_id);
+    
         $order = Order::create([
-            'user_id' => null,
-            'kode_transaksi' => 'WD_ORDER_' . strtoupper(Str::uuid()->toString()), // Menggunakan UUID untuk memastikan unik
+            'user_id' => null, // atau auth()->id() kalau user sudah login
+            'kode_transaksi' => 'WD_ORDER_' . strtoupper(Str::uuid()->toString()),
             'bride_name' => $request->bride_name,
             'groom_name' => $request->groom_name,
             'wedding_date' => $request->wedding_date,
             'location' => $request->location,
             'place_name' => $request->place_name,
             'description' => $request->description,
-            'phone' => $request->phone,
-            'template_id' => $request->template_id,
+            'phone_number' => $request->phone,
+            'template_id' => $template->id,
+            'payment_total' => $template->price,
+            'payment_proof' => null,
             'status' => 'pending',
         ]);
-
+    
         return redirect()->route('orders.success', $order->kode_transaksi)->with('toast', [
             'type' => 'success',
             'message' => 'Pesanan berhasil dibuat!',
             'timer' => 3000,
         ]);
     }
+    
 
     public function success($kode_transaksi)
     {

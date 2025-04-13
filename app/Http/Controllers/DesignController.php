@@ -37,60 +37,66 @@ class DesignController extends Controller
             'name' => 'required|string|max:100',
             'preview_image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
             'view_path' => 'required|string|unique:templates,view_path',
+            'price' => 'required|numeric|min:0', // tambahkan validasi harga
         ]);
-
+    
         $file = $request->file('preview_image');
         $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
         $file->move(public_path('images/templates'), $filename);
-
+    
         Template::create([
             'name' => $request->name,
             'preview_image' => $filename,
             'view_path' => $request->view_path,
+            'price' => $request->price, // simpan harga template
+        ]);
+    
+        session()->flash('sweetalert', [
+            'type' => 'success',
+            'message' => 'Template berhasil ditambahkan!'
         ]);
 
-        return redirect()->route('designs.index')->with('success', 'Template berhasil ditambahkan.');
-    }
+        return redirect()->route('designs.index');
+    }    
 
     public function update(Request $request, $id)
     {
-        // Ambil template berdasarkan ID
         $template = Template::findOrFail($id);
-
-        // Validasi input
+    
         $request->validate([
             'name' => 'required|string|max:100',
             'preview_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'view_path' => 'required|string',
+            'price' => 'required|numeric|min:0', // validasi harga
         ]);
-
-        // Update data template
+    
         $template->name = $request->name;
         $template->view_path = $request->view_path;
-
-        // Jika ada gambar baru, upload dan ganti yang lama
+        $template->price = $request->price; // update harga
+    
         if ($request->hasFile('preview_image')) {
-            // Hapus gambar lama jika ada
             if ($template->preview_image) {
                 $oldImagePath = public_path('images/templates/' . $template->preview_image);
                 if (File::exists($oldImagePath)) {
                     File::delete($oldImagePath);
                 }
             }
-
-            // Upload gambar baru
+    
             $file = $request->file('preview_image');
             $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('images/templates'), $filename);
             $template->preview_image = $filename;
         }
-
-        // Simpan perubahan
+    
         $template->save();
+    
+        session()->flash('sweetalert', [
+            'type' => 'success',
+            'message' => 'Template berhasil diupdate!'
+        ]);
 
-        return redirect()->route('designs.index')->with('success', 'Template berhasil diupdate.');
-    }
-
+        return redirect()->route('designs.index');
+    }    
 
     public function edit($id)
     {
@@ -111,7 +117,12 @@ class DesignController extends Controller
 
         $template->delete();
 
-        return redirect()->route('designs.index')->with('success', 'Template berhasil dihapus.');
+        session()->flash('sweetalert', [
+            'type' => 'success',
+            'message' => 'Template berhasil dihapus!'
+        ]);
+
+        return redirect()->route('designs.index');
     }
 
     public function preview($templateId)

@@ -23,6 +23,8 @@ return new class extends Migration
             $table->dateTime('wedding_date'); // Tanggal & waktu pernikahan
             $table->text('description')->nullable(); // Deskripsi tambahan
             $table->string('phone_number'); // Nomor HP pemesan
+            $table->unsignedBigInteger('payment_total')->default(0);
+            $table->string('payment_proof')->nullable();
             $table->enum('status', ['pending', 'waiting_verify', 'paid', 'completed'])->default('pending');
             $table->timestamps();
         });

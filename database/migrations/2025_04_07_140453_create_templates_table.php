@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('preview_image');
-            $table->string('view_path'); // ex: templates.template-a
+            $table->string('view_path'); // ex: designs.template-a
+            $table->unsignedBigInteger('price')->default(0);
             $table->timestamps();
         });
     }

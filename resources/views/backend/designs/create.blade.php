@@ -4,58 +4,46 @@
 <div class="container mt-5">
     <h4>Tambah Template Baru</h4>
 
-    <form action="{{ route('designs.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-
-        <!-- Nama Template -->
-        <div class="mb-3">
-            <label for="name" class="form-label">Nama Template</label>
-            <input type="text" name="name" id="name" class="form-control" required oninput="generateViewPath()">
-        </div>
-
-        <!-- Gambar Preview -->
-        <div class="mb-3">
-            <label for="preview_image" class="form-label">Gambar Preview</label>
-            <input type="file" name="preview_image" id="preview_image" class="form-control" accept="image/*" required onchange="previewImage(event)">
-            <div class="mt-2">
-                <img id="preview" src="#" alt="Preview" style="display: none;" width="120">
-            </div>
-        </div>
-
-        <!-- View Path -->
-        <div class="mb-3">
-            <label for="view_path" class="form-label">View Path</label>
-            <input type="text" name="view_path" id="view_path" class="form-control" required readonly>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Simpan</button>
-    </form>
+    @include('backend.designs._form')
 </div>
 
 <script>
-    function generateViewPath() {
-        let name = document.getElementById('name').value;
-        let viewPath = 'designs.' + name.toLowerCase().replace(/\s+/g, '-');
-
-        // Hapus .blade.php jika ada
-        if (viewPath.endsWith('.blade.php')) {
-            viewPath = viewPath.replace('.blade.php', '');
-        }
-
-        document.getElementById('view_path').value = viewPath;
-    }
-
+    // Fungsi untuk menampilkan preview gambar yang dipilih
     function previewImage(event) {
-        const reader = new FileReader();
-        reader.onload = function () {
-            const output = document.getElementById('preview');
-            output.src = reader.result;
-            output.style.display = 'block';
+        var reader = new FileReader();
+        reader.onload = function() {
+            var output = document.getElementById('preview');
+            output.src = reader.result; // Update src image dengan gambar baru
+            output.style.display = 'block'; // Pastikan gambar preview ditampilkan
         };
         reader.readAsDataURL(event.target.files[0]);
     }
 
-    // Auto-generate view path saat pertama kali load
-    window.onload = generateViewPath;
+    // Fungsi untuk otomatis mengupdate view_path berdasarkan nama template
+    function generateViewPath() {
+        var name = document.getElementById('name').value;
+
+        // Pastikan view_path selalu dimulai dengan 'designs.'
+        var viewPath = name.toLowerCase().replace(/\s+/g, '-');
+
+        // Pastikan viewPath dimulai dengan 'designs.' jika belum ada
+        if (!viewPath.startsWith('designs.')) {
+            viewPath = 'designs.' + viewPath;
+        }
+
+        // Pastikan tidak ada kata '.blade.php', '.php', atau 'blade' pada viewPath
+        viewPath = viewPath.replace(/\.blade\.php$|\.php$|blade/g, '');
+
+        document.getElementById('view_path').value = viewPath;
+    }
+
+    // Panggil generateViewPath saat halaman dimuat pertama kali
+    window.onload = function() {
+        generateViewPath();  // Memanggil fungsi untuk update view_path saat halaman dimuat
+
+        // Trigger generateViewPath setiap kali ada inputan nama template (di halaman create)
+        document.getElementById('name').addEventListener('input', generateViewPath);
+    };
 </script>
+
 @endsection
