@@ -4,10 +4,10 @@
 <x-toast :type="session('toast.type')" :message="session('toast.message')" :timer="session('toast.timer')" />
 
 <div class="row justify-content-center mt-4">
-  <div class="col-10 col-sm-8 col-md-6 col-lg-4">
+  <div class="col-10 col-sm-8 col-md-6 col-lg-3">
     <div class="card shadow-lg" style="width: 100%; aspect-ratio: 1; height: auto;">
       <div class="card-header text-center">
-        <h2>Register</h2>
+        <h5>Register</h5>
       </div>
       <div class="card-body">
         <form method="POST" action="{{ route('register') }}">

@@ -10,8 +10,9 @@
 </head>
 <body>
   @include('backend.layouts.nav')
-
-  @yield('content')
+  <main class="mt-4">
+    @yield('content')
+  </main>
 
   @include('backend.layouts.footer')
 
