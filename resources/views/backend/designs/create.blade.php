@@ -1,7 +1,7 @@
 @extends('backend.layouts.app')
 
 @section('content')
-<div class="container mt-5">
+<div class="container">
     <h4>Tambah Template Baru</h4>
 
     @include('backend.designs._form')

@@ -43,5 +43,12 @@
         @endisset
     </div>
 
-    <button type="submit" class="btn btn-primary">{{ isset($template) ? 'Update Template' : 'Simpan' }}</button>
+    <!-- Tombol -->
+    <div class="mt-4 d-flex gap-2">
+        <button type="submit" class="btn btn-primary">
+            {{ isset($template) ? 'Update Template' : 'Simpan' }}
+        </button>
+        <a href="{{ route('designs.index') }}" class="btn btn-secondary">Kembali</a>
+    </div>
+
 </form>

@@ -1,11 +1,9 @@
 @extends('backend.layouts.app')
 
 @section('content')
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4>Manajemen Template Undangan</h4>
-        <a href="{{ route('designs.create') }}" class="btn btn-primary">+ Tambah Template</a>
-    </div>
+<div class="container">
+    <h4>Manajemen Template Undangan</h4>
+    <a href="{{ route('designs.create') }}" class="btn btn-primary mb-3">+ Tambah Template</a>
 
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
