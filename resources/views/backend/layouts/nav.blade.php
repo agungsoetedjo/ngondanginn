@@ -81,7 +81,7 @@
         <ul class="navbar-nav ms-auto">
           @auth
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle {{ request()->routeIs('settings.*') ? 'active fw-bold' : '' }}" 
+            <a class="nav-link dropdown-toggle {{ request()->routeIs('profile.*') ? 'active fw-bold' : '' }}" 
                href="#" id="settingsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Pengaturan
             </a>
