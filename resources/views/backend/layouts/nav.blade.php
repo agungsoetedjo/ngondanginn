@@ -43,6 +43,7 @@
 
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
+        @auth
         {{-- Dashboard --}}
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('dashboard') ? 'active fw-bold' : '' }}" href="{{ route('dashboard') }}">
@@ -50,6 +51,7 @@
           </a>
         </li>
 
+        
         {{-- Dropdown Data --}}
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle {{ request()->routeIs('weddings.*', 'musics.*', 'designs.*') ? 'active fw-bold' : '' }}" 
@@ -74,14 +76,17 @@
             </li>
           </ul>
         </li>
+        @endauth
       </ul>
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <form action="{{ route('logout') }}" method="POST" class="d-inline">
-            @csrf
-            <button type="submit" class="btn btn-link nav-link">Logout</button>
-          </form>
-        </li>
+        @auth
+          <li class="nav-item">
+            <form action="{{ route('logout') }}" method="POST" class="d-inline">
+              @csrf
+              <button type="submit" class="btn btn-link nav-link">Logout</button>
+            </form>
+          </li>
+        @endauth
       </ul>
     </div>
   </div>
