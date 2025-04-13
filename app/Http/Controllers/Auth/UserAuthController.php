@@ -24,11 +24,23 @@ class UserAuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('/dashboard');
+            return redirect()->intended('/dashboard')->with([
+                'toast' => [
+                    'type' => 'success',
+                    'message' => 'Login berhasil!',
+                    'timer' => 2000,
+                ]
+            ]);
         }
 
         return back()->withErrors([
             'email' => 'Email atau password salah.',
+        ])->with([
+            'toast' => [
+                'type' => 'error',
+                'message' => 'Email atau password salah.',
+                'timer' => 2000,
+            ]
         ]);
     }
 
@@ -52,7 +64,13 @@ class UserAuthController extends Controller
         ]);
 
         Auth::login($user);
-        return redirect()->intended('/dashboard');
+        return redirect()->intended('/dashboard')->with([
+            'toast' => [
+                'type' => 'success',
+                'message' => 'Pendaftaran berhasil, selamat datang!',
+                'timer' => 2000,
+            ]
+        ]);
     }
 
     public function logout(Request $request)
@@ -61,6 +79,12 @@ class UserAuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        return redirect('/login')->with([
+            'toast' => [
+                'type' => 'info',
+                'message' => 'Anda telah keluar.',
+                'timer' => 2000,
+            ]
+        ]);
     }
 }

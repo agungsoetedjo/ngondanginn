@@ -1,6 +1,7 @@
 @extends('backend.layouts.app')
 
 @section('content')
+<x-toast :type="session('toast.type')" :message="session('toast.message')" :timer="session('toast.timer')" />
   <h2>Login</h2>
   <form method="POST" action="{{ route('login') }}">
     @csrf
