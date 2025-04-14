@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Waktu pembuatan: 12 Apr 2025 pada 11.09
+-- Waktu pembuatan: 14 Apr 2025 pada 13.33
 -- Versi server: 8.0.30
 -- Versi PHP: 8.3.11
 
@@ -60,6 +60,29 @@ CREATE TABLE `failed_jobs` (
   `exception` longtext NOT NULL,
   `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `faqs`
+--
+
+CREATE TABLE `faqs` (
+  `id` bigint UNSIGNED NOT NULL,
+  `pertanyaan` varchar(255) NOT NULL,
+  `jawaban` text NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data untuk tabel `faqs`
+--
+
+INSERT INTO `faqs` (`id`, `pertanyaan`, `jawaban`, `created_at`, `updated_at`) VALUES
+(1, 'Maaf Min, kalau nggak punya foto, apakah masih bisa buat undangan digital Ngondang-In?', 'Tentu saja bisa Kak :) Kalau nggak ada foto, kita bisa tetap bikin undangan digital yang keren untuk Kakak. Kita bisa pakai karakter animasi dan inisial nama Kakak dan pasangan biar undangannya tetap tampil istimewa dan personal!', '2025-02-19 04:28:44', '2025-02-19 04:28:44'),
+(2, 'Min, mau tanya nih, berapa lama masa aktif undangan digitalnya?', 'Untuk masa aktif undangan digitalnya selama 1 tahun ya Kak, jadi Kakak punya banyak waktu untuk menyebarkannya ke semua tamu undangan. ', '2025-02-19 04:28:44', '2025-02-19 04:28:44'),
+(3, 'Min, untuk fitur yang tidak digunakan, apakah bisa dihapus dari undangannya?', 'Bisa banget Kak! 😊 Nanti tinggal dinote fitur apa yang ingin dihapus dari undangannya, dan kami akan sesuaikan sesuai dengan permintaan Kakak.', '2025-02-19 04:28:44', '2025-02-19 04:28:44');
 
 -- --------------------------------------------------------
 
@@ -163,12 +186,14 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (1, '0001_01_01_000000_create_users_table', 1),
 (2, '0001_01_01_000001_create_cache_table', 1),
 (3, '0001_01_01_000002_create_jobs_table', 1),
-(4, '2025_04_07_140453_create_templates_table', 1),
-(5, '2025_04_07_140534_create_musics_table', 1),
-(6, '2025_04_07_150000_create_weddings_table', 1),
 (7, '2025_04_07_150209_create_rsvps_table', 1),
 (8, '2025_04_07_150311_create_guest_books_table', 1),
-(9, '2025_04_07_150356_create_galleries_table', 1);
+(9, '2025_04_07_150356_create_galleries_table', 1),
+(10, '2025_04_12_115028_create_faqs_table', 2),
+(12, '2025_04_07_140453_create_templates_table', 4),
+(13, '2025_04_13_122214_create_orders_table', 5),
+(15, '2025_04_07_140534_create_musics_table', 7),
+(16, '2025_04_07_150000_create_weddings_table', 8);
 
 -- --------------------------------------------------------
 
@@ -179,7 +204,40 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 CREATE TABLE `musics` (
   `id` bigint UNSIGNED NOT NULL,
   `title` varchar(255) NOT NULL,
+  `artist` varchar(255) DEFAULT NULL,
   `file_path` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data untuk tabel `musics`
+--
+
+INSERT INTO `musics` (`id`, `title`, `artist`, `file_path`, `created_at`, `updated_at`) VALUES
+(1, 'Make it Right', 'Peraukertas', 'uploads/musik/67fd037c15a15.mp3', '2025-04-14 05:45:48', '2025-04-14 05:45:48');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `orders`
+--
+
+CREATE TABLE `orders` (
+  `id` bigint UNSIGNED NOT NULL,
+  `user_id` bigint UNSIGNED NOT NULL,
+  `template_id` bigint UNSIGNED DEFAULT NULL,
+  `kode_transaksi` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `bride_name` varchar(255) NOT NULL,
+  `groom_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `place_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `location` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `wedding_date` datetime NOT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `phone_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `payment_total` bigint UNSIGNED NOT NULL DEFAULT '0',
+  `payment_proof` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `status` enum('pending','waiting_verify','paid','completed') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'pending',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -244,7 +302,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('hy0mJsrZ6MCMSztbbl3wtdHMPrJAQ2aBXZqH1NoH', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiVG9aNDFXeGppZ3BZRzVIQ1lWaWl5ZTMzN1NpaWxtTWh6U2o1SmJuSyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzM6Imh0dHA6Ly9uZ29uZGFuZ2lubi50ZXN0L2Rhc2hib2FyZCI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7fQ==', 1744455178);
+('InPaH5xDMQ6ORAFtoX0FlYd5HI43fBUUQiv0ZD6a', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiNUlUOHlqS1pIZ0RGMWdKWkhxbkZWSkI3MEFHbVh6dlEzOURRV3NSUCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzI6Imh0dHA6Ly9uZ29uZGFuZ2lubi50ZXN0L3dlZGRpbmdzIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTt9', 1744637497),
+('sbfINj6PLe28wBv0Wj26AER5o7oFGzBWWd20aTWB', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiM0IwUUdBMXZ6bVlmZXNTSWx0OUZvM1AyWUtQTjB1djkxUk45cDRzQyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzg6Imh0dHA6Ly9uZ29uZGFuZ2lubi50ZXN0L3Blc2FuLXVuZGFuZ2FuIjt9fQ==', 1744557278);
 
 -- --------------------------------------------------------
 
@@ -257,9 +316,17 @@ CREATE TABLE `templates` (
   `name` varchar(255) NOT NULL,
   `preview_image` varchar(255) NOT NULL,
   `view_path` varchar(255) NOT NULL,
+  `price` bigint UNSIGNED NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data untuk tabel `templates`
+--
+
+INSERT INTO `templates` (`id`, `name`, `preview_image`, `view_path`, `price`, `created_at`, `updated_at`) VALUES
+(3, 'Spesial 01', '01134fe3-ba21-45d4-8b2a-fb898ed87aad.jpg', 'designs.spesial-01', 110000, '2025-04-13 08:03:15', '2025-04-13 08:04:00');
 
 -- --------------------------------------------------------
 
@@ -283,8 +350,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'goengx95', 'agungsoetedjo@gmail.com', NULL, '$2y$12$ImAgfLGOpnZa.U3fSrsLVOYjt/c52fc2hrQjZJe.gcjwJU1qvnQly', NULL, '2025-04-07 09:03:13', '2025-04-07 09:03:13'),
-(2, 'fast01', 'morefast01@gmail.com', NULL, '$2y$12$UbevWkWZ7yWstZVXaUAEOOVKFVLkggaulrtyONPkHZMqxnpfNgjTa', NULL, '2025-04-12 03:16:44', '2025-04-12 03:16:44');
+(1, 'Agung Soetedjo', 'agungsoetedjo@gmail.com', NULL, '$2y$12$wEMFyUpnLQ1VQJxGKASXROB3It58ShCneUlXIGQbqi2B2XUUkEqZy', NULL, '2025-04-07 09:03:13', '2025-04-07 09:03:13');
 
 -- --------------------------------------------------------
 
@@ -298,8 +364,12 @@ CREATE TABLE `weddings` (
   `slug` varchar(255) NOT NULL,
   `bride_name` varchar(255) NOT NULL,
   `groom_name` varchar(255) NOT NULL,
-  `wedding_date` datetime NOT NULL,
+  `bride_parents_info` varchar(255) DEFAULT NULL,
+  `groom_parents_info` varchar(255) DEFAULT NULL,
+  `akad_date` datetime DEFAULT NULL,
+  `reception_date` datetime DEFAULT NULL,
   `location` varchar(255) NOT NULL,
+  `place_name` varchar(255) DEFAULT NULL,
   `description` text,
   `template_id` bigint UNSIGNED DEFAULT NULL,
   `music_id` bigint UNSIGNED DEFAULT NULL,
@@ -311,8 +381,8 @@ CREATE TABLE `weddings` (
 -- Dumping data untuk tabel `weddings`
 --
 
-INSERT INTO `weddings` (`id`, `user_id`, `slug`, `bride_name`, `groom_name`, `wedding_date`, `location`, `description`, `template_id`, `music_id`, `created_at`, `updated_at`) VALUES
-(1, 1, 'santi-budi-1744445959', 'Santi', 'Budi', '2025-04-12 10:00:00', 'Jln. X No. 10', 'test', NULL, NULL, '2025-04-12 01:19:19', '2025-04-12 01:19:19');
+INSERT INTO `weddings` (`id`, `user_id`, `slug`, `bride_name`, `groom_name`, `bride_parents_info`, `groom_parents_info`, `akad_date`, `reception_date`, `location`, `place_name`, `description`, `template_id`, `music_id`, `created_at`, `updated_at`) VALUES
+(1, 1, 'diana-permata-hadi-santoso-1744636548', 'Diana Permata', 'Hadi Santoso', 'Putri ke-1 dari Bpk Andi Setiawan dan Ibu Tiara', 'Putra ke-2 dari Bpk Wawan dan Ibu Sutianingsih', '2025-05-18 09:00:00', '2025-05-18 11:00:00', 'Jln. Jakarta No. 444 Bandung', 'GSG Mandiri Sejati Bandung', '-', 3, 1, '2025-04-14 06:01:51', '2025-04-14 06:15:48');
 
 --
 -- Indexes for dumped tables
@@ -336,6 +406,12 @@ ALTER TABLE `cache_locks`
 ALTER TABLE `failed_jobs`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`);
+
+--
+-- Indeks untuk tabel `faqs`
+--
+ALTER TABLE `faqs`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indeks untuk tabel `galleries`
@@ -375,6 +451,15 @@ ALTER TABLE `migrations`
 --
 ALTER TABLE `musics`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indeks untuk tabel `orders`
+--
+ALTER TABLE `orders`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `orders_kode_transaksi_unique` (`kode_transaksi`),
+  ADD KEY `orders_user_id_foreign` (`user_id`),
+  ADD KEY `orders_template_id_foreign` (`template_id`);
 
 --
 -- Indeks untuk tabel `password_reset_tokens`
@@ -431,6 +516,12 @@ ALTER TABLE `failed_jobs`
   MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT untuk tabel `faqs`
+--
+ALTER TABLE `faqs`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT untuk tabel `galleries`
 --
 ALTER TABLE `galleries`
@@ -452,12 +543,18 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT untuk tabel `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT untuk tabel `musics`
 --
 ALTER TABLE `musics`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT untuk tabel `orders`
+--
+ALTER TABLE `orders`
   MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
@@ -470,13 +567,13 @@ ALTER TABLE `rsvps`
 -- AUTO_INCREMENT untuk tabel `templates`
 --
 ALTER TABLE `templates`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT untuk tabel `weddings`
@@ -499,6 +596,13 @@ ALTER TABLE `galleries`
 --
 ALTER TABLE `guest_books`
   ADD CONSTRAINT `guest_books_wedding_id_foreign` FOREIGN KEY (`wedding_id`) REFERENCES `weddings` (`id`) ON DELETE CASCADE;
+
+--
+-- Ketidakleluasaan untuk tabel `orders`
+--
+ALTER TABLE `orders`
+  ADD CONSTRAINT `orders_template_id_foreign` FOREIGN KEY (`template_id`) REFERENCES `templates` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `orders_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Ketidakleluasaan untuk tabel `rsvps`
