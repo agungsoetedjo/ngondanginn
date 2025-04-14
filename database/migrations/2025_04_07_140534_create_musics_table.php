@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('musics', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('artist')->nullable(); // Tambahkan kolom artist
             $table->string('file_path');
             $table->timestamps();
         });

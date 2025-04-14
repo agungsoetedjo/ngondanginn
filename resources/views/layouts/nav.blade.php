@@ -8,12 +8,12 @@
     <!-- Menu Navigasi -->
     <nav id="navmenu" class="navmenu">
       <ul>
-        <li><a href="#hero" class="active">Home</a></li>
-        <li><a href="#fitur">Fitur</a></li>
-        <li><a href="#pilihantema">Pilihan Tema</a></li>
-        <li><a href="#faq">FAQ</a></li>
-        <li><a href="#testimoni">Testimoni</a></li>
-        <li><a href="#hubungikami">Hubungi Kami</a></li>
+        <li><a href="/#hero" class="active">Home</a></li>
+        <li><a href="/#fitur">Fitur</a></li>
+        <li><a href="/#pilihantema">Pilihan Tema</a></li>
+        <li><a href="/#faq">FAQ</a></li>
+        <li><a href="/#testimoni">Testimoni</a></li>
+        <li><a href="/#hubungikami">Hubungi Kami</a></li>
         <li><a href="{{ route('order.create') }}">Pesan Sekarang</a></li>
       </ul>
       <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>

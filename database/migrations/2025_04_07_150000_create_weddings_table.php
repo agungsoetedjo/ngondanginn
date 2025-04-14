@@ -17,7 +17,10 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->string('bride_name');
             $table->string('groom_name');
-            $table->dateTime('wedding_date');
+            $table->string('bride_parents_info')->nullable();  // Keterangan orang tua mempelai wanita
+            $table->string('groom_parents_info')->nullable();  // Keterangan orang tua mempelai pria
+            $table->dateTime('akad_date')->nullable();
+            $table->dateTime('reception_date')->nullable();
             $table->string('location');
             $table->string('place_name')->nullable();
             $table->text('description')->nullable();

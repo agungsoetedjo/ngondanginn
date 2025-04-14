@@ -14,6 +14,7 @@ class Music extends Model
     protected $table = 'musics';
     protected $fillable = [
         'title',
+        'artist',
         'file_path',
     ];
 

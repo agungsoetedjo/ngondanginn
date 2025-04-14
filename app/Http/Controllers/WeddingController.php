@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Music;
 use App\Models\Template;
 use App\Models\Wedding;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -18,19 +20,25 @@ class WeddingController extends Controller
 
     public function create()
     {
+        $musics = Music::all();  // Bisa ditambahin filter jika perlu
         $templates = Template::all();
-        return view('backend.weddings.create', compact('templates'));
+        return view('backend.weddings.create', compact('templates','musics'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'bride_name' => 'required|string|max:100',
-            'groom_name' => 'required|string|max:100',
-            'wedding_date' => 'required|date',  // Validasi untuk tanggal dan waktu
+            'bride_name' => 'required|string|max:255',
+            'groom_name' => 'required|string|max:255',
+            'bride_parents_info' => 'required|string|max:255',
+            'groom_parents_info' => 'required|string|max:255',
+            'akad_date' => 'nullable|date',
+            'reception_date' => 'nullable|date',
             'location' => 'required|string|max:255',
+            'place_name' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'template_id' => 'required|exists:templates,id',
+            'template_id' => 'nullable|exists:templates,id',
+            'music_id' => 'nullable|exists:musics,id',
         ]);
 
         Wedding::create([
@@ -38,11 +46,15 @@ class WeddingController extends Controller
             'slug' => Str::slug($request->bride_name . '-' . $request->groom_name . '-' . now()->timestamp),
             'bride_name' => $request->bride_name,
             'groom_name' => $request->groom_name,
-            'wedding_date' => $request->wedding_date,  // Menyimpan tanggal dan waktu
+            'bride_parents_info' => $request->bride_parents_info,
+            'groom_parents_info' => $request->groom_parents_info,
+            'akad_date' => $request->akad_date ? Carbon::parse($request->akad_date) : null,  // Memastikan format tanggal
+            'reception_date' => $request->reception_date ? Carbon::parse($request->reception_date) : null,  // Memastikan format tanggal
             'location' => $request->location,
             'place_name' => $request->place_name,
             'description' => $request->description,
             'template_id' => $request->template_id,
+            'music_id' => $request->music_id,
         ]);
 
         session()->flash('sweetalert', [
@@ -55,15 +67,16 @@ class WeddingController extends Controller
 
     public function edit($slug)
     {
+        $musics = Music::all();
         $templates = Template::all();
         $wedding = Wedding::where('user_id', Auth::id())
                         ->where('slug', $slug)
                         ->firstOrFail();
         
         // Format wedding_date agar sesuai dengan format datetime-local
-        $wedding_date = $wedding->wedding_date->format('Y-m-d\TH:i');
+        $wedding_date = optional($wedding->wedding_date)->format('Y-m-d\TH:i') ?? '';
         
-        return view('backend.weddings.edit', compact('wedding', 'templates', 'wedding_date'));
+        return view('backend.weddings.edit', compact('wedding', 'templates','musics', 'wedding_date'));
     }
 
     public function update(Request $request, $slug)
@@ -76,10 +89,15 @@ class WeddingController extends Controller
         $request->validate([
             'bride_name' => 'required|string|max:100',
             'groom_name' => 'required|string|max:100',
-            'wedding_date' => 'required|date',
+            'bride_parents_info' => 'required|string|max:255',
+            'groom_parents_info' => 'required|string|max:255',
+            'akad_date' => 'nullable|date',
+            'reception_date' => 'nullable|date',
             'location' => 'required|string|max:255',
+            'place_name' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'template_id' => 'required|exists:templates,id',
+            'template_id' => 'nullable|exists:templates,id',
+            'music_id' => 'nullable|exists:musics,id',
         ]);
 
         // Cek apakah nama mempelai wanita atau pria berubah
@@ -88,11 +106,15 @@ class WeddingController extends Controller
         $wedding->update([
             'bride_name' => $request->bride_name,
             'groom_name' => $request->groom_name,
-            'wedding_date' => $request->wedding_date,
+            'bride_parents_info' => $request->bride_parents_info,
+            'groom_parents_info' => $request->groom_parents_info,
+            'akad_date' => $request->akad_date ? Carbon::parse($request->akad_date) : null,  // Memastikan format tanggal
+            'reception_date' => $request->reception_date ? Carbon::parse($request->reception_date) : null,  // Memastikan format tanggal
             'location' => $request->location,
             'place_name' => $request->place_name,
             'description' => $request->description,
             'template_id' => $request->template_id,
+            'music_id' => $request->music_id,
             'slug' => $slug, // Update slug jika ada perubahan
         ]);
 

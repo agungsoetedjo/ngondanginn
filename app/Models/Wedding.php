@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class Wedding extends Model
 {
@@ -18,7 +19,10 @@ class Wedding extends Model
         'slug',
         'bride_name',
         'groom_name',
-        'wedding_date',
+        'bride_parents_info',    // Keterangan orang tua mempelai wanita
+        'groom_parents_info',   // Keterangan orang tua mempelai pria
+        'akad_date',
+        'reception_date',
         'location',
         'place_name',
         'description',
@@ -27,7 +31,8 @@ class Wedding extends Model
     ];
 
     protected $casts = [
-        'wedding_date' => 'datetime',
+        'akad_date' => 'datetime',
+        'reception_date' => 'datetime',
     ];
 
     public function user() {
@@ -53,4 +58,19 @@ class Wedding extends Model
     public function music() {
         return $this->belongsTo(Music::class);
     }
+
+    public function getFormattedAkadDateAttribute()
+    {
+        return $this->akad_date 
+            ? Carbon::parse($this->akad_date)->translatedFormat('l, d F Y') . ' pukul ' . Carbon::parse($this->akad_date)->format('H:i')
+            : null;
+    }
+
+    public function getFormattedReceptionDateAttribute()
+    {
+        return $this->reception_date 
+            ? Carbon::parse($this->reception_date)->translatedFormat('l, d F Y') . ' pukul ' . Carbon::parse($this->reception_date)->format('H:i')
+            : null;
+    }
+
 }

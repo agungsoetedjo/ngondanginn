@@ -13,6 +13,10 @@
             <input type="text" name="title" id="title" class="form-control" required>
         </div>
         <div class="mb-3">
+            <label for="artist" class="form-label">Nama Artist</label>
+            <input type="text" name="artist" id="artist" class="form-control" required>
+        </div>
+        <div class="mb-3">
             <label for="file" class="form-label">Upload File Musik (MP3)</label>
             <input type="file" name="file" id="file" class="form-control" accept="audio/mp3" required>
         </div>
@@ -23,25 +27,25 @@
     @if($musics->isEmpty())
         <div class="alert alert-info">Belum ada musik yang diunggah.</div>
     @else
-        <ul class="list-group">
-            @foreach($musics as $music)
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <div>
-                        <strong>{{ $music->title }}</strong><br>
-                        <audio controls style="width: 500px">
-                            <source src="{{ asset($music->file_path) }}" type="audio/mp3">
-                            Browser tidak mendukung audio.
-                        </audio>
-                    </div>
-                    <form action="{{ route('musics.destroy', $music->id) }}" method="POST" class="d-inline delete-music-form">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-outline-danger">Hapus</button>
-                    </form>                    
-                </li>
-            @endforeach
-
-        </ul>
+    <ul class="list-group">
+        @foreach($musics as $music)
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{{ $music->title }}</strong><br>
+                    <em>{{ $music->artist }}</em><br> <!-- Menampilkan artist -->
+                    <audio controls style="width: 500px">
+                        <source src="{{ asset($music->file_path) }}" type="audio/mp3">
+                        Browser tidak mendukung audio.
+                    </audio>
+                </div>
+                <form action="{{ route('musics.destroy', $music->id) }}" method="POST" class="d-inline delete-music-form">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Hapus</button>
+                </form>                    
+            </li>
+        @endforeach
+    </ul>    
     @endif
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

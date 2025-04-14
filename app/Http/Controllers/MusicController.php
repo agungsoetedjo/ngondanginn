@@ -17,6 +17,7 @@ class MusicController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
+            'artist' => 'required|string|max:255', // Menambahkan validasi untuk artist
             'file' => 'required|mimes:mp3|max:10240',
         ]);
 
@@ -27,6 +28,7 @@ class MusicController extends Controller
 
         Music::create([
             'title' => $request->title,
+            'artist' => $request->artist, // Menyimpan artist
             'file_path' => $filePath,
         ]);
 

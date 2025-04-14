@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Gallery extends Model
 {
@@ -17,6 +18,13 @@ class Gallery extends Model
         'wedding_id',
         'image',
     ];
+
+    protected $dates = ['created_at', 'updated_at'];
+
+    public function getCreatedAtFormattedAttribute()
+    {
+        return Carbon::parse($this->created_at)->diffForHumans();
+    }
 
     public function wedding() {
         return $this->belongsTo(Wedding::class);

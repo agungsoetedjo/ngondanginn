@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class RSVP extends Model
 {
@@ -21,6 +22,14 @@ class RSVP extends Model
         'note',
     ];
 
+    protected $dates = ['created_at', 'updated_at'];
+
+    // Method untuk mendapatkan waktu dalam format "3 menit lalu"
+    public function getCreatedAtFormattedAttribute()
+    {
+        return Carbon::parse($this->created_at)->diffForHumans();
+    }
+    
     public function wedding() {
         return $this->belongsTo(Wedding::class);
     }

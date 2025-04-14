@@ -9,7 +9,7 @@
   <table class="table table-bordered table-striped datatable">
     <thead>
       <tr>
-        <th>Nama Pengantin</th>
+        <th>Pasangan</th>
         <th>Tanggal</th>
         <th>Nama Tempat</th>
         <th>Lokasi Tempat</th>
@@ -20,7 +20,10 @@
       @foreach($weddings as $wedding)
         <tr>
           <td>{{ $wedding->bride_name }} & {{ $wedding->groom_name }}</td>
-          <td>{{ \Carbon\Carbon::parse($wedding->wedding_date)->format('d M Y H:i') }}</td>
+          <td>
+            Akad: {{ $wedding->formatted_akad_date ?? '-' }} <br>
+            Resepsi: {{ $wedding->formatted_reception_date ?? '-' }}
+          </td>
           <td>{{ $wedding->place_name }}</td>
           <td>{{ $wedding->location }}</td>
           <td>
