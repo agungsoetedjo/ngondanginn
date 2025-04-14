@@ -21,6 +21,7 @@
                         <th>Email</th>
                         <th>Kehadiran</th>
                         <th>Catatan</th>
+                        <th>Tanggal RSVP</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -39,6 +40,7 @@
                                 @endif
                             </td>
                             <td>{{ $rsvp->note ?? '-' }}</td>
+                            <td>{{ $rsvp->createdAtFormatted }}</td> <!-- Menampilkan tanggal RSVP dalam format "3 menit yang lalu" -->
                             <td>
                                 <form action="{{ route('rsvps.destroy', $rsvp->id) }}" method="POST" onsubmit="return confirm('Yakin ingin hapus RSVP ini?')">
                                     @csrf

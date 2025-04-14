@@ -19,6 +19,7 @@
                     <tr>
                         <th>Nama</th>
                         <th>Pesan</th>
+                        <th>Tanggal</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -27,6 +28,7 @@
                         <tr>
                             <td>{{ $guest->name }}</td>
                             <td>{{ $guest->message }}</td>
+                            <td>{{ $guest->createdAtFormatted }}</td> <!-- Menampilkan tanggal dalam format "3 menit yang lalu" -->
                             <td>
                                 <form action="{{ route('guestbooks.destroy', $guest->id) }}" method="POST" onsubmit="return confirm('Hapus pesan ini?')">
                                     @csrf

@@ -28,6 +28,9 @@
                     <div class="card h-100">
                         <img src="{{ asset($gallery->image) }}" class="card-img-top" alt="Gallery Image">
                         <div class="card-body text-center">
+                            <p class="text-muted" style="font-size: 0.9em;">
+                                Diunggah: {{ $gallery->createdAtFormatted }} <!-- Menampilkan tanggal -->
+                            </p>
                             <form action="{{ route('galleries.destroy', $gallery->id) }}" method="POST" onsubmit="return confirm('Hapus foto ini?')">
                                 @csrf
                                 @method('DELETE')
