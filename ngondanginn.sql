@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Waktu pembuatan: 15 Apr 2025 pada 11.59
+-- Waktu pembuatan: 15 Apr 2025 pada 15.18
 -- Versi server: 8.0.30
 -- Versi PHP: 8.3.11
 
@@ -193,7 +193,7 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (12, '2025_04_07_140453_create_templates_table', 4),
 (15, '2025_04_07_140534_create_musics_table', 7),
 (16, '2025_04_07_150000_create_weddings_table', 8),
-(17, '2025_04_13_122214_create_orders_table', 9);
+(20, '2025_04_13_122214_create_orders_table', 9);
 
 -- --------------------------------------------------------
 
@@ -226,7 +226,8 @@ INSERT INTO `musics` (`id`, `title`, `artist`, `file_path`, `created_at`, `updat
 
 CREATE TABLE `orders` (
   `id` bigint UNSIGNED NOT NULL,
-  `user_id` bigint UNSIGNED NOT NULL,
+  `user_id` bigint UNSIGNED DEFAULT NULL,
+  `music_id` bigint UNSIGNED DEFAULT NULL,
   `template_id` bigint UNSIGNED DEFAULT NULL,
   `kode_transaksi` varchar(255) NOT NULL,
   `bride_name` varchar(255) NOT NULL,
@@ -245,6 +246,13 @@ CREATE TABLE `orders` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data untuk tabel `orders`
+--
+
+INSERT INTO `orders` (`id`, `user_id`, `music_id`, `template_id`, `kode_transaksi`, `bride_name`, `groom_name`, `bride_parents_info`, `groom_parents_info`, `akad_date`, `reception_date`, `place_name`, `location`, `description`, `phone_number`, `payment_total`, `payment_proof`, `status`, `created_at`, `updated_at`) VALUES
+(1, NULL, 1, 6, 'WD_ORDER_A121C9FC-DD20-437B-B309-22C1B7400613', 'asd', 'asd', 'asd', 'asd', '2025-04-20 22:00:00', '2025-04-20 23:00:00', 'sss', 'ss', NULL, '082215148544', 110000, NULL, 'pending', '2025-04-15 15:00:46', '2025-04-15 15:00:46');
 
 -- --------------------------------------------------------
 
@@ -306,8 +314,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('Jvm72qXyHbnQ9cvetrgNnAXg7f0UAhrArUlRsS9a', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiSGo0TmloOGVhaWswbExnU2xRNzZUYktzNDdDTEV6bFM1bFphc29yUyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDE6Imh0dHA6Ly9uZ29uZGFuZ2lubi50ZXN0L2Rlc2lnbnMvcHJldmlldy8zIjt9czozOiJ1cmwiO2E6MDp7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7fQ==', 1744648409),
-('pf4K3GJiaZk3LbvMB9Wm3cVBzFGfLEGuSBj0Uvfj', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiUEFxZ2F6aUlIdmVWbkI3UXphWHNBRm5rc3U2SU1zdUNoZmM0UlRYdSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzg6Imh0dHA6Ly9uZ29uZGFuZ2lubi50ZXN0L3Blc2FuLXVuZGFuZ2FuIjt9fQ==', 1744718135);
+('6xsLDSKD75sMeL63oW3gCVuourHPJBai9KSjUqL8', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiZm1JQUIyMHIwc3F0YmxOblU0b2p2M1pabTF2Y2dZUnhBMmFLdTdWUSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mjk6Imh0dHA6Ly9uZ29uZGFuZ2lubi50ZXN0L2xvZ2luIjt9fQ==', 1744730199);
 
 -- --------------------------------------------------------
 
@@ -330,8 +337,8 @@ CREATE TABLE `templates` (
 --
 
 INSERT INTO `templates` (`id`, `name`, `preview_image`, `view_path`, `price`, `created_at`, `updated_at`) VALUES
-(3, 'Spesial 01', '01134fe3-ba21-45d4-8b2a-fb898ed87aad.jpg', 'template_packs.pre_design.spesial-01', 110000, '2025-04-13 08:03:15', '2025-04-13 08:04:00'),
-(4, 'Spesial 02', 'b673b0cc-0f64-461c-9b67-ebc653e9a226.jpg', 'template_packs.pre_design.spesial-02', 75000, '2025-04-15 03:40:43', '2025-04-15 03:46:05');
+(5, 'Spesial 01', 'bc93a010-8be7-4d27-bb18-449fad70b1f7.jpg', 'template_packs.pre_design.spesial-01', 150000, '2025-04-15 14:51:40', '2025-04-15 14:52:05'),
+(6, 'Spesial 02', '00d2c7aa-b720-429b-818d-117082bbcb4d.jpg', 'template_packs.pre_design.spesial-02', 110000, '2025-04-15 14:52:28', '2025-04-15 14:52:28');
 
 -- --------------------------------------------------------
 
@@ -387,7 +394,7 @@ CREATE TABLE `weddings` (
 --
 
 INSERT INTO `weddings` (`id`, `user_id`, `slug`, `bride_name`, `groom_name`, `bride_parents_info`, `groom_parents_info`, `akad_date`, `reception_date`, `location`, `place_name`, `description`, `template_id`, `music_id`, `created_at`, `updated_at`) VALUES
-(1, 1, 'diana-permata-hadi-santoso-1744714930', 'Diana Permata', 'Hadi Santoso', 'Putri ke-1 dari Bpk Andi Setiawan dan Ibu Tiara', 'Putra ke-2 dari Bpk Wawan dan Ibu Sutianingsih', '2025-05-18 09:00:00', '2025-05-18 11:00:00', 'Jln. Jakarta No. 444 Bandung', 'GSG Mandiri Sejati Bandung', '-', 3, 2, '2025-04-14 06:01:51', '2025-04-15 04:02:10');
+(1, 1, 'diana-permata-hadi-santoso-1744728814', 'Diana Permata', 'Hadi Santoso', 'Putri ke-1 dari Bpk Andi Setiawan dan Ibu Tiara', 'Putra ke-2 dari Bpk Wawan dan Ibu Sutianingsih', '2025-05-18 09:00:00', '2025-05-18 11:00:00', 'Jln. Jakarta No. 444 Bandung', 'GSG Mandiri Sejati Bandung', '-', 5, 2, '2025-04-14 06:01:51', '2025-04-15 14:53:34');
 
 --
 -- Indexes for dumped tables
@@ -464,6 +471,7 @@ ALTER TABLE `orders`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `orders_kode_transaksi_unique` (`kode_transaksi`),
   ADD KEY `orders_user_id_foreign` (`user_id`),
+  ADD KEY `orders_music_id_foreign` (`music_id`),
   ADD KEY `orders_template_id_foreign` (`template_id`);
 
 --
@@ -548,7 +556,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT untuk tabel `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT untuk tabel `musics`
@@ -560,7 +568,7 @@ ALTER TABLE `musics`
 -- AUTO_INCREMENT untuk tabel `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT untuk tabel `rsvps`
@@ -572,7 +580,7 @@ ALTER TABLE `rsvps`
 -- AUTO_INCREMENT untuk tabel `templates`
 --
 ALTER TABLE `templates`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT untuk tabel `users`
@@ -606,8 +614,9 @@ ALTER TABLE `guest_books`
 -- Ketidakleluasaan untuk tabel `orders`
 --
 ALTER TABLE `orders`
+  ADD CONSTRAINT `orders_music_id_foreign` FOREIGN KEY (`music_id`) REFERENCES `musics` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `orders_template_id_foreign` FOREIGN KEY (`template_id`) REFERENCES `templates` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `orders_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `orders_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
 
 --
 -- Ketidakleluasaan untuk tabel `rsvps`
