@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Waktu pembuatan: 14 Apr 2025 pada 13.33
+-- Waktu pembuatan: 15 Apr 2025 pada 11.59
 -- Versi server: 8.0.30
 -- Versi PHP: 8.3.11
 
@@ -191,9 +191,9 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (9, '2025_04_07_150356_create_galleries_table', 1),
 (10, '2025_04_12_115028_create_faqs_table', 2),
 (12, '2025_04_07_140453_create_templates_table', 4),
-(13, '2025_04_13_122214_create_orders_table', 5),
 (15, '2025_04_07_140534_create_musics_table', 7),
-(16, '2025_04_07_150000_create_weddings_table', 8);
+(16, '2025_04_07_150000_create_weddings_table', 8),
+(17, '2025_04_13_122214_create_orders_table', 9);
 
 -- --------------------------------------------------------
 
@@ -215,7 +215,8 @@ CREATE TABLE `musics` (
 --
 
 INSERT INTO `musics` (`id`, `title`, `artist`, `file_path`, `created_at`, `updated_at`) VALUES
-(1, 'Make it Right', 'Peraukertas', 'uploads/musik/67fd037c15a15.mp3', '2025-04-14 05:45:48', '2025-04-14 05:45:48');
+(1, 'Make it Right', 'Peraukertas', 'uploads/musik/67fd037c15a15.mp3', '2025-04-14 05:45:48', '2025-04-14 05:45:48'),
+(2, 'Menikah Denganku', 'By The Hundreds', 'uploads/musik/67fe3c275c2dd.mp3', '2025-04-15 03:59:51', '2025-04-15 03:59:51');
 
 -- --------------------------------------------------------
 
@@ -227,17 +228,20 @@ CREATE TABLE `orders` (
   `id` bigint UNSIGNED NOT NULL,
   `user_id` bigint UNSIGNED NOT NULL,
   `template_id` bigint UNSIGNED DEFAULT NULL,
-  `kode_transaksi` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `kode_transaksi` varchar(255) NOT NULL,
   `bride_name` varchar(255) NOT NULL,
-  `groom_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `place_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `location` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `wedding_date` datetime NOT NULL,
-  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
-  `phone_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `groom_name` varchar(255) NOT NULL,
+  `bride_parents_info` varchar(255) DEFAULT NULL,
+  `groom_parents_info` varchar(255) DEFAULT NULL,
+  `akad_date` datetime DEFAULT NULL,
+  `reception_date` datetime DEFAULT NULL,
+  `place_name` varchar(255) NOT NULL,
+  `location` text NOT NULL,
+  `description` text,
+  `phone_number` varchar(255) NOT NULL,
   `payment_total` bigint UNSIGNED NOT NULL DEFAULT '0',
-  `payment_proof` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `status` enum('pending','waiting_verify','paid','completed') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'pending',
+  `payment_proof` varchar(255) DEFAULT NULL,
+  `status` enum('pending','waiting_verify','paid','completed') NOT NULL DEFAULT 'pending',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -302,8 +306,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('InPaH5xDMQ6ORAFtoX0FlYd5HI43fBUUQiv0ZD6a', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiNUlUOHlqS1pIZ0RGMWdKWkhxbkZWSkI3MEFHbVh6dlEzOURRV3NSUCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzI6Imh0dHA6Ly9uZ29uZGFuZ2lubi50ZXN0L3dlZGRpbmdzIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTt9', 1744637497),
-('sbfINj6PLe28wBv0Wj26AER5o7oFGzBWWd20aTWB', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiM0IwUUdBMXZ6bVlmZXNTSWx0OUZvM1AyWUtQTjB1djkxUk45cDRzQyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzg6Imh0dHA6Ly9uZ29uZGFuZ2lubi50ZXN0L3Blc2FuLXVuZGFuZ2FuIjt9fQ==', 1744557278);
+('Jvm72qXyHbnQ9cvetrgNnAXg7f0UAhrArUlRsS9a', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiSGo0TmloOGVhaWswbExnU2xRNzZUYktzNDdDTEV6bFM1bFphc29yUyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDE6Imh0dHA6Ly9uZ29uZGFuZ2lubi50ZXN0L2Rlc2lnbnMvcHJldmlldy8zIjt9czozOiJ1cmwiO2E6MDp7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7fQ==', 1744648409),
+('pf4K3GJiaZk3LbvMB9Wm3cVBzFGfLEGuSBj0Uvfj', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiUEFxZ2F6aUlIdmVWbkI3UXphWHNBRm5rc3U2SU1zdUNoZmM0UlRYdSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzg6Imh0dHA6Ly9uZ29uZGFuZ2lubi50ZXN0L3Blc2FuLXVuZGFuZ2FuIjt9fQ==', 1744718135);
 
 -- --------------------------------------------------------
 
@@ -326,7 +330,8 @@ CREATE TABLE `templates` (
 --
 
 INSERT INTO `templates` (`id`, `name`, `preview_image`, `view_path`, `price`, `created_at`, `updated_at`) VALUES
-(3, 'Spesial 01', '01134fe3-ba21-45d4-8b2a-fb898ed87aad.jpg', 'designs.spesial-01', 110000, '2025-04-13 08:03:15', '2025-04-13 08:04:00');
+(3, 'Spesial 01', '01134fe3-ba21-45d4-8b2a-fb898ed87aad.jpg', 'template_packs.pre_design.spesial-01', 110000, '2025-04-13 08:03:15', '2025-04-13 08:04:00'),
+(4, 'Spesial 02', 'b673b0cc-0f64-461c-9b67-ebc653e9a226.jpg', 'template_packs.pre_design.spesial-02', 75000, '2025-04-15 03:40:43', '2025-04-15 03:46:05');
 
 -- --------------------------------------------------------
 
@@ -350,7 +355,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Agung Soetedjo', 'agungsoetedjo@gmail.com', NULL, '$2y$12$wEMFyUpnLQ1VQJxGKASXROB3It58ShCneUlXIGQbqi2B2XUUkEqZy', NULL, '2025-04-07 09:03:13', '2025-04-07 09:03:13');
+(1, 'Agung Soetedjo', 'agungsoetedjo@gmail.com', NULL, '$2y$12$2Hr3GawDJJr7XSOKcUssv.qCFA95fgm5yqm/FH6Yb0OKcnOmcEugi', NULL, '2025-04-07 09:03:13', '2025-04-07 09:03:13');
 
 -- --------------------------------------------------------
 
@@ -382,7 +387,7 @@ CREATE TABLE `weddings` (
 --
 
 INSERT INTO `weddings` (`id`, `user_id`, `slug`, `bride_name`, `groom_name`, `bride_parents_info`, `groom_parents_info`, `akad_date`, `reception_date`, `location`, `place_name`, `description`, `template_id`, `music_id`, `created_at`, `updated_at`) VALUES
-(1, 1, 'diana-permata-hadi-santoso-1744636548', 'Diana Permata', 'Hadi Santoso', 'Putri ke-1 dari Bpk Andi Setiawan dan Ibu Tiara', 'Putra ke-2 dari Bpk Wawan dan Ibu Sutianingsih', '2025-05-18 09:00:00', '2025-05-18 11:00:00', 'Jln. Jakarta No. 444 Bandung', 'GSG Mandiri Sejati Bandung', '-', 3, 1, '2025-04-14 06:01:51', '2025-04-14 06:15:48');
+(1, 1, 'diana-permata-hadi-santoso-1744714930', 'Diana Permata', 'Hadi Santoso', 'Putri ke-1 dari Bpk Andi Setiawan dan Ibu Tiara', 'Putra ke-2 dari Bpk Wawan dan Ibu Sutianingsih', '2025-05-18 09:00:00', '2025-05-18 11:00:00', 'Jln. Jakarta No. 444 Bandung', 'GSG Mandiri Sejati Bandung', '-', 3, 2, '2025-04-14 06:01:51', '2025-04-15 04:02:10');
 
 --
 -- Indexes for dumped tables
@@ -543,13 +548,13 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT untuk tabel `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT untuk tabel `musics`
 --
 ALTER TABLE `musics`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT untuk tabel `orders`
@@ -567,7 +572,7 @@ ALTER TABLE `rsvps`
 -- AUTO_INCREMENT untuk tabel `templates`
 --
 ALTER TABLE `templates`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT untuk tabel `users`

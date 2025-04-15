@@ -18,9 +18,12 @@ return new class extends Migration
             $table->string('kode_transaksi')->unique();
             $table->string('bride_name');
             $table->string('groom_name');
+            $table->string('bride_parents_info')->nullable();
+            $table->string('groom_parents_info')->nullable();
+            $table->dateTime('akad_date')->nullable();
+            $table->dateTime('reception_date')->nullable();
             $table->string('place_name'); // Nama tempat acara
             $table->text('location'); // Lokasi acara lengkap
-            $table->dateTime('wedding_date'); // Tanggal & waktu pernikahan
             $table->text('description')->nullable(); // Deskripsi tambahan
             $table->string('phone_number'); // Nomor HP pemesan
             $table->unsignedBigInteger('payment_total')->default(0);

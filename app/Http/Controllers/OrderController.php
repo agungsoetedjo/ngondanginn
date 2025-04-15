@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Music;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Template;
@@ -11,11 +12,12 @@ class OrderController extends Controller
 {
     public function create()
     {
-        // Ambil semua data template dari database
+        // Ambil semua data template dan music dari database
+        $musics = Music::all(); 
         $templates = Template::all(); 
     
         // Kirim data templates ke view
-        return view('order.create', compact('templates'));
+        return view('order.create', compact('templates','musics'));
     }
     
 
