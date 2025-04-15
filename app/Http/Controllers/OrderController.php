@@ -26,43 +26,66 @@ class OrderController extends Controller
         $request->validate([
             'bride_name' => 'required|string|max:100',
             'groom_name' => 'required|string|max:100',
-            'wedding_date' => 'required|date',
+            'bride_parents_info' => 'nullable|string|max:255',
+            'groom_parents_info' => 'nullable|string|max:255',
+            'akad_date' => 'nullable|date',
+            'reception_date' => 'nullable|date',
             'location' => 'required|string|max:255',
-            'place_name' => 'required|string|max:255',
+            'place_name' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'phone' => 'required|string|max:20',
+            'phone_number' => 'required|string|max:20',
             'template_id' => 'required|exists:templates,id',
+            'music_id' => 'nullable|exists:musics,id',
         ]);
     
         $template = Template::findOrFail($request->template_id);
     
         $order = Order::create([
-            'user_id' => null, // atau auth()->id() kalau user sudah login
+            'user_id' => null,
+            'template_id' => $request->template_id,
+            'music_id' => $request->music_id,
             'kode_transaksi' => 'WD_ORDER_' . strtoupper(Str::uuid()->toString()),
             'bride_name' => $request->bride_name,
             'groom_name' => $request->groom_name,
-            'wedding_date' => $request->wedding_date,
-            'location' => $request->location,
+            'bride_parents_info' => $request->bride_parents_info,
+            'groom_parents_info' => $request->groom_parents_info,
+            'akad_date' => $request->akad_date,
+            'reception_date' => $request->reception_date,
             'place_name' => $request->place_name,
+            'location' => $request->location,
             'description' => $request->description,
-            'phone_number' => $request->phone,
-            'template_id' => $template->id,
-            'payment_total' => $template->price,
+            'phone_number' => $request->phone_number,
+            'payment_total' => $template->price ?? 0,
             'payment_proof' => null,
-            'status' => 'pending',
+            'status' => 'pending', // belum ada bukti transfer
         ]);
     
-        return redirect()->route('orders.success', $order->kode_transaksi)->with('toast', [
-            'type' => 'success',
-            'message' => 'Pesanan berhasil dibuat!',
-            'timer' => 3000,
+        return redirect()->route('order.create')->with('order_success', [
+            'kode_transaksi' => $order->kode_transaksi,
         ]);
     }
-    
 
-    public function success($kode_transaksi)
+    public function cekForm()
+    {
+        return view('order.cek-pesanan'); // form input
+    }
+
+
+    public function cekPesanan(Request $request)
+    {
+        $order = Order::where('kode_transaksi', $request->kode)->first();
+    
+        if (!$order) {
+            return redirect()->route('order.cek.form')
+                             ->with('error', 'Kode transaksi tidak ditemukan!');
+        }
+    
+        return redirect()->route('order.cek.result', ['kode_transaksi' => $request->kode]);
+    }
+
+    public function hasilPesanan($kode_transaksi)
     {
         $order = Order::where('kode_transaksi', $kode_transaksi)->firstOrFail();
-        return view('orders.success', compact('order'));
+        return view('order.hasil-cek', compact('order'));
     }
 }

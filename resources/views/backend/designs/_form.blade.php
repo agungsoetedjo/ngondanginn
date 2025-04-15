@@ -13,7 +13,7 @@
     <!-- View Path -->
     <div class="mb-3">
         <label for="view_path" class="form-label">View Path</label>
-        <input type="text" class="form-control" id="view_path" name="view_path" value="{{ old('view_path', 'design.' . ($template->view_path ?? '')) }}" required readonly>
+        <input type="text" class="form-control" id="view_path" name="view_path" value="{{ old('view_path', 'template_packs.pre_design.' . ($template->view_path ?? '')) }}" required readonly>
     </div>
 
     <div class="mb-3">

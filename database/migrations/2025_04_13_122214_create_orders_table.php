@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('template_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('music_id')->nullable()->constrained('musics')->nullOnDelete();      
+            $table->foreignId('template_id')->nullable()->constrained('templates')->nullOnDelete();
             $table->string('kode_transaksi')->unique();
             $table->string('bride_name');
             $table->string('groom_name');

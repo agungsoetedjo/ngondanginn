@@ -52,4 +52,7 @@ Route::post('/logout', [UserAuthController::class, 'logout'])->name('logout')->m
 
 Route::get('/pesan-undangan', [OrderController::class, 'create'])->name('order.create');
 Route::post('/pesan-undangan', [OrderController::class, 'store'])->name('order.store');
-Route::get('/pesan-undangan/berhasil/{kode_transaksi}', [OrderController::class, 'success'])->name('orders.success');
+Route::get('/cek-pesanan', [OrderController::class, 'cekForm'])->name('order.cek.form');
+Route::post('/cek-pesanan', [OrderController::class, 'cekPesanan'])->name('order.cek.proses');
+Route::get('/cek-pesanan/{kode_transaksi}/result', [OrderController::class, 'hasilPesanan'])->name('order.cek.result');
+

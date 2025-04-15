@@ -27,7 +27,7 @@
                 <li><a href="#">Deep Dropdown 5</a></li>
               </ul>
             </li> --}}
-            <li><a href="#">Cek Pesanan</a></li>
+            <li><a href="{{ route('order.cek.form') }}">Cek Pesanan</a></li>
           </ul>
         </li>
       </ul>
