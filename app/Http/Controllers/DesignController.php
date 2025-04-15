@@ -37,43 +37,71 @@ class DesignController extends Controller
             'name' => 'required|string|max:100',
             'preview_image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
             'view_path' => 'required|string|unique:templates,view_path',
-            'price' => 'required|numeric|min:0', // tambahkan validasi harga
+            'price' => 'required|numeric|min:0',
         ]);
-    
+
+        // Upload preview image
         $file = $request->file('preview_image');
         $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
         $file->move(public_path('images/templates'), $filename);
-    
+
+        // Buat file blade baru dari _newtemplate.blade.php
+        $newViewPath = str_replace('.', '/', $request->view_path); // convert ke path folder
+        $targetPath = resource_path("views/backend/{$newViewPath}.blade.php");
+        $templateSource = resource_path("views/backend/template_packs/pre_design/_newtemplate.blade.php");
+
+        if (!File::exists($templateSource)) {
+            return back()->withErrors(['template' => 'Template dasar tidak ditemukan.']);
+        }
+
+        // Copy isi file template dasar ke file baru
+        File::ensureDirectoryExists(dirname($targetPath));
+        File::copy($templateSource, $targetPath);
+
+        // Simpan ke database
         Template::create([
             'name' => $request->name,
             'preview_image' => $filename,
             'view_path' => $request->view_path,
-            'price' => $request->price, // simpan harga template
+            'price' => $request->price,
         ]);
-    
+
         session()->flash('sweetalert', [
             'type' => 'success',
             'message' => 'Template berhasil ditambahkan!'
         ]);
 
         return redirect()->route('designs.index');
-    }    
+    }
 
     public function update(Request $request, $id)
     {
         $template = Template::findOrFail($id);
-    
+
         $request->validate([
             'name' => 'required|string|max:100',
             'preview_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'view_path' => 'required|string',
-            'price' => 'required|numeric|min:0', // validasi harga
+            'price' => 'required|numeric|min:0',
         ]);
-    
+
+        // Rename file blade jika view_path berubah
+        if ($template->view_path !== $request->view_path) {
+            $oldPath = resource_path('views/backend/' . str_replace('.', '/', $template->view_path) . '.blade.php');
+            $newPath = resource_path('views/backend/' . str_replace('.', '/', $request->view_path) . '.blade.php');
+
+            if (File::exists($oldPath)) {
+                File::ensureDirectoryExists(dirname($newPath));
+                File::move($oldPath, $newPath);
+            }
+        }
+
+        // Update data
         $template->name = $request->name;
         $template->view_path = $request->view_path;
-        $template->price = $request->price; // update harga
-    
+        $template->price = $request->price;
+
+        // Update gambar jika ada
         if ($request->hasFile('preview_image')) {
             if ($template->preview_image) {
                 $oldImagePath = public_path('images/templates/' . $template->preview_image);
@@ -81,22 +109,22 @@ class DesignController extends Controller
                     File::delete($oldImagePath);
                 }
             }
-    
+
             $file = $request->file('preview_image');
             $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('images/templates'), $filename);
             $template->preview_image = $filename;
         }
-    
+
         $template->save();
-    
+
         session()->flash('sweetalert', [
             'type' => 'success',
             'message' => 'Template berhasil diupdate!'
         ]);
 
         return redirect()->route('designs.index');
-    }    
+    }
 
     public function edit($id)
     {
@@ -109,19 +137,27 @@ class DesignController extends Controller
     public function destroy($id)
     {
         $template = Template::findOrFail($id);
-
+    
+        // Hapus gambar preview
         $imagePath = public_path('images/templates/' . $template->preview_image);
         if (File::exists($imagePath)) {
             File::delete($imagePath);
         }
-
+    
+        // Hapus file blade berdasarkan view_path
+        $bladePath = resource_path('views/backend/' . str_replace('.', '/', $template->view_path) . '.blade.php');
+        if (File::exists($bladePath)) {
+            File::delete($bladePath);
+        }
+    
+        // Hapus dari database
         $template->delete();
-
+    
         session()->flash('sweetalert', [
             'type' => 'success',
             'message' => 'Template berhasil dihapus!'
         ]);
-
+    
         return redirect()->route('designs.index');
     }
 
@@ -140,17 +176,21 @@ class DesignController extends Controller
         return view($viewPath, [
             'template' => $template,
             'wedding' => (object)[
-                'bride_name' => 'Anna',
-                'groom_name' => 'Budi',
-                'wedding_date' => now()->addDays(30),
-                'location' => 'Jl. Kenangan No.1, Jakarta',
+                'bride_name' => 'Habib',
+                'groom_name' => 'Adiba',
+                'bride_parent_name' => 'Bpk Habibie dan Ibu Ainun',
+                'groom_parent_name' => 'Bpk Wawan dan Ibu Indah',
+                'akad_date' => '2025-05-20 09:00:00',
+                'reception_date' => '2025-05-20 11:00:00',
+                'location' => 'Gedung Serbaguna, Jakarta',
+                'love_story' => 'asdasdasdasdasd',
                 'slug' => 'anna-budi',
                 'template_id' => $template->id,
+                'rsvps' => collect([]),
+                'guestBooks' => collect([]),
+                'galleries' => collect([]),
+                'music' => null,
             ],
-            'rsvps' => collect([]),
-            'guestBooks' => collect([]),
-            'galleries' => collect([]),
-            'music' => null,
         ]);
     }
 

@@ -26,14 +26,14 @@
         var name = document.getElementById('name').value;
 
         // Pastikan view_path selalu dimulai dengan 'designs.'
-        var viewPath = 'designs.' + name.toLowerCase().replace(/\s+/g, '-');
+        var viewPath = 'template_packs.pre_design.' + name.toLowerCase().replace(/\s+/g, '-');
 
         // Pastikan tidak ada kata '.blade.php', '.php', atau 'blade' pada viewPath
         viewPath = viewPath.replace(/\.blade\.php$|\.php$|blade/g, '');
 
         // Update view_path hanya jika belum ada 'designs.' di depannya
-        if (!viewPath.startsWith('designs.')) {
-            viewPath = 'designs.' + viewPath;
+        if (!viewPath.startsWith('template_packs.pre_design.')) {
+            viewPath = 'template_packs.pre_design.' + viewPath;
         }
 
         document.getElementById('view_path').value = viewPath;

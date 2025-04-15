@@ -27,8 +27,8 @@
         var viewPath = name.toLowerCase().replace(/\s+/g, '-');
 
         // Pastikan viewPath dimulai dengan 'designs.' jika belum ada
-        if (!viewPath.startsWith('designs.')) {
-            viewPath = 'designs.' + viewPath;
+        if (!viewPath.startsWith('template_packs.pre_design.')) {
+            viewPath = 'template_packs.pre_design.' + viewPath;
         }
 
         // Pastikan tidak ada kata '.blade.php', '.php', atau 'blade' pada viewPath
