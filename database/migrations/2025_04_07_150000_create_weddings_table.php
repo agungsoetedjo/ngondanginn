@@ -25,7 +25,8 @@ return new class extends Migration
             $table->string('place_name')->nullable();
             $table->text('description')->nullable();
             $table->foreignId('template_id')->nullable()->constrained('templates')->nullOnDelete();
-            $table->foreignId('music_id')->nullable()->constrained('musics')->nullOnDelete();            
+            $table->foreignId('music_id')->nullable()->constrained('musics')->nullOnDelete();
+            $table->foreignId('order_id')->nullable()->constrained('orders')->onDelete('cascade');
             $table->timestamps();
         });
     }

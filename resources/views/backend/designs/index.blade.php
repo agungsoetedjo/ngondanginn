@@ -2,7 +2,8 @@
 
 @section('content')
 <div class="container">
-    <h4>Manajemen Template Undangan</h4>
+    <h4>Daftar Template Undangan</h4>
+    <br>
     <a href="{{ route('designs.create') }}" class="btn btn-primary mb-3">+ Tambah Template</a>
 
     @if(session('success'))

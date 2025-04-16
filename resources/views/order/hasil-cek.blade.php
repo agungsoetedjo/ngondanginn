@@ -91,25 +91,35 @@
                                 <p class="mb-1 fs-6">
                                     <span class="badge d-inline-flex align-items-center gap-1 px-3 py-2 bg-{{ 
                                         $order->status === 'completed' ? 'success' : 
-                                        ($order->status === 'paid' ? 'info' : 
-                                        ($order->status === 'waiting_verify' ? 'secondary' : 'warning')) 
+                                        ($order->status === 'paid' ? 'success' : 
+                                        ($order->status === 'waiting_verify' ? 'warning' : 
+                                        ($order->status === 'pending' ? 'danger' : 
+                                        ($order->status === 'active' ? 'secondary' : 
+                                        ($order->status === 'processed' ? 'info' : 'dark')))))
                                     }}">
-                                        @switch($order->status)
-                                            @case('pending')
-                                                <i class="bi bi-clock-history"></i> Menunggu Pembayaran
-                                                @break
-                                            @case('waiting_verify')
-                                                <i class="bi bi-hourglass-split"></i> Menunggu Verifikasi
-                                                @break
-                                            @case('paid')
-                                                <i class="bi bi-check-circle"></i> Pembayaran Diterima
-                                                @break
-                                            @case('completed')
-                                                <i class="bi bi-patch-check-fill"></i> Undangan Selesai
-                                                @break
-                                            @default
-                                                <i class="bi bi-question-circle"></i> Status Tidak Diketahui
-                                        @endswitch
+                                    @switch($order->status)
+                                        @case('pending')
+                                            <i class="bi bi-hourglass-split"></i> Menunggu Pembayaran
+                                            @break
+                                        @case('waiting_verify')
+                                            <i class="bi bi-hourglass-bottom"></i> Menunggu Verifikasi
+                                            @break
+                                        @case('paid')
+                                            <i class="bi bi-credit-card-2-check"></i> Pembayaran Diterima
+                                            @break
+                                        @case('processed')
+                                            <i class="bi bi-file-earmark-text"></i> Undangan Diproses
+                                            @break
+                                        @case('active')
+                                            <i class="bi bi-globe"></i> Undangan Dipublikasi
+                                            @break
+                                        @case('completed')
+                                            <i class="bi bi-check-circle-fill"></i> Undangan Selesai
+                                            @break
+                                        @default
+                                            <i class="bi bi-question-circle"></i> Status Tidak Dikenal
+                                    @endswitch
+                                    
                                     </span>
                                 </p>
                             </div>

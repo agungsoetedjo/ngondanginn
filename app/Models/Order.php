@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
@@ -48,5 +49,24 @@ class Order extends Model
     public function music()
     {
         return $this->belongsTo(Music::class);
+    }
+
+    public function wedding()
+    {
+        return $this->hasOne(Wedding::class);
+    }
+
+    public function getFormattedAkadDateAttribute()
+    {
+        return $this->akad_date 
+            ? Carbon::parse($this->akad_date)->translatedFormat('l, d F Y') . ' pukul ' . Carbon::parse($this->akad_date)->format('H:i')
+            : null;
+    }
+
+    public function getFormattedReceptionDateAttribute()
+    {
+        return $this->reception_date 
+            ? Carbon::parse($this->reception_date)->translatedFormat('l, d F Y') . ' pukul ' . Carbon::parse($this->reception_date)->format('H:i')
+            : null;
     }
 }

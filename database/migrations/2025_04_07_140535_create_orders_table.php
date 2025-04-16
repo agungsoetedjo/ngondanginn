@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('phone_number'); // Nomor HP pemesan
             $table->unsignedBigInteger('payment_total')->default(0);
             $table->string('payment_proof')->nullable();
-            $table->enum('status', ['pending', 'waiting_verify', 'paid', 'completed'])->default('pending');
+            $table->enum('status', ['pending', 'waiting_verify', 'paid', 'processed','active', 'completed'])->default('pending');
             $table->timestamps();
         });
     }

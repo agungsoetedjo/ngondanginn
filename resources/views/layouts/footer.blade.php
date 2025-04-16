@@ -1,7 +1,7 @@
-<footer id="footer" class="footer">
+<footer id="footer" class="footer fixed-bottom">
 
-  {{-- <div class="footer-newsletter">
-    <div class="container">
+  {{-- {{-- <div class="footer-newsletter"> --}}
+    {{-- <div class="container">
       <div class="row justify-content-center text-center">
         <div class="col-lg-6">
           <h4>Join Our Newsletter</h4>

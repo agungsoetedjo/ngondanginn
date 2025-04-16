@@ -38,6 +38,16 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/profile', [UserAuthController::class, 'showProfile'])->name('profile.index');
     Route::post('/profile', [UserAuthController::class, 'updateProfile'])->name('profile.update');
+
+    Route::get('/orders', [OrderController::class, 'adminIndex'])->name('admin.orders.index');
+    Route::post('/orders/{kode_transaksi}/assign', [OrderController::class, 'assignOrder'])->name('admin.orders.assignOrder');
+    Route::get('/orders/{kode_transaksi}', [OrderController::class, 'adminShow'])->name('admin.orders.show');
+    Route::post('/orders/{kode_transaksi}/approve', [OrderController::class, 'adminApprove'])->name('admin.orders.approve');
+    Route::post('/orders/{kode_transaksi}/reject', [OrderController::class, 'adminReject'])->name('admin.orders.reject');
+
+    Route::post('/weddings/store-from-order/{kode_transaksi}', [WeddingController::class, 'storeFromOrder'])->name('admin.weddings.storeFromOrder');
+    Route::post('/weddings/published-wedding/{kode_transaksi}', [WeddingController::class, 'storeFromOrder'])->name('admin.weddings.processWedding');
+
 });
 
 Route::middleware('guest')->group(function () {

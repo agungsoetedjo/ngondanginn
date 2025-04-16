@@ -28,6 +28,7 @@ class Wedding extends Model
         'description',
         'template_id',
         'music_id',
+        'order_id',
     ];
 
     protected $casts = [
@@ -59,6 +60,11 @@ class Wedding extends Model
         return $this->belongsTo(Music::class);
     }
 
+    public function order()
+    {
+        return $this->belongsTo(Order::class); // Jika wedding memiliki order
+    }
+    
     public function getFormattedAkadDateAttribute()
     {
         return $this->akad_date 

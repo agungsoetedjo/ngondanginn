@@ -6,6 +6,7 @@ use App\Models\Music;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Template;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class OrderController extends Controller
@@ -109,7 +110,7 @@ class OrderController extends Controller
     
         // Buat nama unik pakai UUID
         $fileName = Str::uuid() . '.' . $file->getClientOriginalExtension();
-        $file->move(public_path('uploads/bukti_pembayaran'), $fileName);
+        $file->move(public_path('uploads/payment_proof'), $fileName);
     
         // Update order
         $order->update([
@@ -122,4 +123,79 @@ class OrderController extends Controller
         return redirect()->route('order.cek.result', $order->kode_transaksi);
     }
     
+    
+    // dikelola oleh Pengelola Undangan cooooyyyy
+
+    public function adminIndex()
+    {
+        $orders = Order::whereIn('status', ['pending', 'waiting_verify', 'paid', 'processed', 'active', 'completed'])
+            ->where(function ($query) {
+                $query->where('user_id', Auth::id())
+                      ->orWhereNull('user_id');
+            })
+            ->latest()
+            ->get();
+    
+        return view('backend.orders.index', compact('orders'));
+    }
+
+    public function adminShow($kode_transaksi)
+    {
+        // Mencari order berdasarkan kode transaksi
+        $order = Order::where('kode_transaksi', $kode_transaksi)->firstOrFail();
+
+        return view('backend.orders.show', compact('order'));
+    }
+
+    public function adminApprove($kode_transaksi)
+    {
+        // Cari order berdasarkan kode transaksi
+        $order = Order::where('kode_transaksi', $kode_transaksi)->firstOrFail();
+
+        // Update status menjadi "approved" atau sesuai dengan logika yang diinginkan
+        $order->update([
+            'status' => 'paid',  // Ubah status jika perlu
+        ]);
+
+        session()->flash('success', 'Pesanan berhasil disetujui.');
+
+        return redirect()->route('admin.orders.show', $order->kode_transaksi);
+    }
+
+    public function adminReject($kode_transaksi)
+    {
+        // Cari order berdasarkan kode transaksi
+        $order = Order::where('kode_transaksi', $kode_transaksi)->firstOrFail();
+
+        // Cek jika ada bukti transfer yang diunggah, maka hapus file-nya
+        if ($order->payment_proof) {
+            $filePath = public_path($order->payment_proof);
+            
+            if (file_exists($filePath)) {
+                unlink($filePath); // Hapus file bukti transfer
+            }
+        }
+
+        // Update status menjadi "pending" dan reset bukti transfer
+        $order->update([
+            'status' => 'pending', // Kembalikan status menjadi pending
+            'payment_proof' => null, // Hapus bukti transfer
+        ]);
+
+        session()->flash('error', 'Pesanan ditolak. Bukti transfer telah dihapus.');
+
+        return redirect()->route('admin.orders.show', $order->kode_transaksi);
+    }
+
+    public function assignOrder($kode_transaksi)
+    {
+        $order = Order::where('kode_transaksi', $kode_transaksi)->firstOrFail();
+
+        $order->update([
+            'user_id' => Auth::id(),
+        ]);
+
+        return redirect()->route('admin.orders.index')->with('success', 'Order berhasil di-assign ke Anda.');
+    }
+
 }

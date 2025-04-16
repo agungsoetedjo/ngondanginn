@@ -58,6 +58,13 @@
   </div>
 </div>
 
+<!-- Nomor HP -->
+<div class="mb-3">
+  <label for="phone_number" class="form-label">Nomor HP Pemesan</label>
+  <input type="text" name="phone_number" id="phone_number" class="form-control"
+      value="{{ old('phone_number', $wedding->order->phone_number ?? '') }}" required>
+</div>
+
 <!-- Deskripsi -->
 <div class="mb-3">
   <label for="description" class="form-label">Deskripsi Singkat</label>
@@ -65,18 +72,26 @@
 </div>
 
 <!-- Template -->
-<div class="mb-3">
-  <label for="template_id" class="form-label">Pilih Template</label>
-  <select name="template_id" id="template_id" class="form-select" required>
-    <option value="">-- Pilih Template --</option>
-    @foreach($templates as $template)
-      <option value="{{ $template->id }} "
-        {{ old('template_id', $wedding->template_id ?? '') == $template->id ? 'selected' : '' }}>
-        {{ $template->name }}
-      </option>
-    @endforeach
-  </select>
-</div>
+@if(isset($wedding) && $wedding->order && $wedding->order->status === 'pending')
+    <div class="mb-3">
+        <label for="template_id" class="form-label">Pilih Template</label>
+        <select name="template_id" id="template_id" class="form-select" required>
+            <option value="">-- Pilih Template --</option>
+            @foreach($templates as $template)
+                <option value="{{ $template->id }}" 
+                    {{ old('template_id', $wedding->template_id ?? '') == $template->id ? 'selected' : '' }}>
+                    {{ $template->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+@else
+    <div class="mb-3">
+        <label for="template_id" class="form-label">Template Undangan</label>
+        <input type="hidden" name="template_id" value="{{ $wedding->template_id ?? '' }}">
+        <input type="text" class="form-control" value="{{ $wedding->template->name ?? 'Template sudah dipilih' }}" readonly>
+    </div>
+@endif
 
 <!-- Musik -->
 <div class="mb-3">

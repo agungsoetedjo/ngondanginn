@@ -3,8 +3,8 @@
 @section('content')
 <div class="container">
   <h4>Daftar Undangan</h4>
-
-  <a href="{{ route('weddings.create') }}" class="btn btn-primary mb-3">+ Buat Undangan Baru</a>
+  <br>
+  {{-- <a href="{{ route('weddings.create') }}" class="btn btn-primary mb-3">+ Buat Undangan Baru</a> --}}
 
   <table class="table table-bordered table-striped datatable">
     <thead>
