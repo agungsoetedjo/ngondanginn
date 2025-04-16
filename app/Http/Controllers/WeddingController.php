@@ -221,7 +221,7 @@ class WeddingController extends Controller
         return redirect()->route('weddings.index')->with('error', 'Template tidak ditemukan!');
     }
 
-    public function storeFromOrder($kode_transaksi)
+    public function processWedding($kode_transaksi)
     {
         $order = Order::where('kode_transaksi', $kode_transaksi)->firstOrFail();
         
@@ -259,6 +259,46 @@ class WeddingController extends Controller
         ]);
 
         return redirect()->route('weddings.index');
+    }
+
+    public function publishWedding($kode_transaksi){
+        $order = Order::where('kode_transaksi', $kode_transaksi)->firstOrFail();
+        
+        // Cek apakah status sudah 'paid'
+        if ($order->status !== 'processed') {
+            return back()->with('error', 'Order belum berstatus processed.');
+        }
+
+        $order->update([
+            'status' => 'active',
+        ]);
+
+        session()->flash('sweetalert', [
+            'type' => 'success',
+            'message' => 'Undangan berhasil dipublikasikan.'
+        ]);
+
+        return redirect()->route('admin.orders.index');
+    }
+
+    public function completeWedding($kode_transaksi){
+        $order = Order::where('kode_transaksi', $kode_transaksi)->firstOrFail();
+        
+        // Cek apakah status sudah 'paid'
+        if ($order->status !== 'active') {
+            return back()->with('error', 'Order belum berstatus publish.');
+        }
+
+        $order->update([
+            'status' => 'completed',
+        ]);
+
+        session()->flash('sweetalert', [
+            'type' => 'success',
+            'message' => 'Undangan berhasil diselesaikan.'
+        ]);
+
+        return redirect()->route('admin.orders.index');
     }
 
 }

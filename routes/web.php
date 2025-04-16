@@ -45,8 +45,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/orders/{kode_transaksi}/approve', [OrderController::class, 'adminApprove'])->name('admin.orders.approve');
     Route::post('/orders/{kode_transaksi}/reject', [OrderController::class, 'adminReject'])->name('admin.orders.reject');
 
-    Route::post('/weddings/store-from-order/{kode_transaksi}', [WeddingController::class, 'storeFromOrder'])->name('admin.weddings.storeFromOrder');
-    Route::post('/weddings/published-wedding/{kode_transaksi}', [WeddingController::class, 'storeFromOrder'])->name('admin.weddings.processWedding');
+    Route::post('/weddings/process-wedding/{kode_transaksi}', [WeddingController::class, 'processWedding'])->name('admin.weddings.processWedding');
+    Route::post('/weddings/publish-wedding/{kode_transaksi}', [WeddingController::class, 'publishWedding'])->name('admin.weddings.publishWedding');
+    Route::post('/weddings/complete-wedding/{kode_transaksi}', [WeddingController::class, 'completeWedding'])->name('admin.weddings.completeWedding');
 
 });
 

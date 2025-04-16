@@ -38,38 +38,44 @@
 
                 <dt class="col-sm-4">Status</dt>
                 <dd class="col-sm-8">
-                    {{-- <span class="badge bg-info text-dark text-uppercase">{{ $order->status }}</span> --}}
-                    <span class="text-dark text-uppercase badge bg-{{ 
-                        $order->status === 'completed' ? 'success' : 
-                        ($order->status === 'paid' ? 'success' : 
-                        ($order->status === 'waiting_verify' ? 'warning' : 
-                        ($order->status === 'pending' ? 'danger' : 
-                        ($order->status === 'active' ? 'secondary' : 
-                        ($order->status === 'processed' ? 'info' : 'dark')))))
-                    }}">
-                    @switch($order->status)
-                        @case('pending')
-                            <i class="bi bi-hourglass-split"></i> Menunggu Pembayaran
-                            @break
-                        @case('waiting_verify')
-                            <i class="bi bi-hourglass-bottom"></i> Menunggu Verifikasi
-                            @break
-                        @case('paid')
-                            <i class="bi bi-credit-card-2-check"></i> Pembayaran Diterima
-                            @break
-                        @case('processed')
-                            <i class="bi bi-file-earmark-text"></i> Undangan Diproses
-                            @break
-                        @case('active')
-                            <i class="bi bi-globe"></i> Undangan Dipublikasi
-                            @break
-                        @case('completed')
-                            <i class="bi bi-check-circle-fill"></i> Undangan Selesai
-                            @break
-                        @default
-                            <i class="bi bi-question-circle"></i> Status Tidak Dikenal
-                    @endswitch
-                    
+                        @php
+                            $status = $order->status;
+
+                            $badgeColor = match($status) {
+                                'completed' => 'success',
+                                'paid' => 'success',
+                                'waiting_verify' => 'warning',
+                                'pending' => 'danger',
+                                'active' => 'secondary',
+                                'processed' => 'info',
+                                default => 'dark',
+                            };
+
+                            $textColor = in_array($status, ['waiting_verify', 'processed']) ? 'dark' : 'white';
+                        @endphp
+                    <span class="text-{{ $textColor }} text-uppercase badge bg-{{ $badgeColor }}">
+                        @switch($status)
+                            @case('pending')
+                                <i class="bi bi-hourglass-split"></i> Menunggu Pembayaran
+                                @break
+                            @case('waiting_verify')
+                                <i class="bi bi-hourglass-bottom"></i> Menunggu Verifikasi
+                                @break
+                            @case('paid')
+                                <i class="bi bi-credit-card-2-check"></i> Pembayaran Diterima
+                                @break
+                            @case('processed')
+                                <i class="bi bi-file-earmark-text"></i> Undangan Diproses
+                                @break
+                            @case('active')
+                                <i class="bi bi-globe"></i> Undangan Dipublikasi
+                                @break
+                            @case('completed')
+                                <i class="bi bi-check-circle-fill"></i> Undangan Selesai
+                                @break
+                            @default
+                                <i class="bi bi-question-circle"></i> Status Tidak Dikenal
+                        @endswitch
                     </span>
                 </dd>
 
@@ -106,16 +112,23 @@
                 @endif
 
                 @if ($order->status === 'paid')
-                    <form action="{{ route('admin.weddings.storeFromOrder', $order->kode_transaksi) }}" method="POST" onsubmit="return confirm('Yakin ingin proseskan pesanan ini ke data undangan ?')">
+                    <form action="{{ route('admin.weddings.processWedding', $order->kode_transaksi) }}" method="POST" onsubmit="return confirm('Yakin ingin memproseskan pesanan ini ke data undangan ?')">
                         @csrf
                         <button type="submit" class="btn btn-primary">Proses ke Undangan</button>
                     </form>
                 @endif
                 
                 @if ($order->status === 'processed')
-                    <form action="{{ route('admin.weddings.processWedding', $order->kode_transaksi) }}" method="POST" onsubmit="return confirm('Yakin ingin publikasikan data pesanan ?')">
+                    <form action="{{ route('admin.weddings.publishWedding', $order->kode_transaksi) }}" method="POST" onsubmit="return confirm('Yakin ingin mempublikasikan undangan ini ?')">
                         @csrf
                         <button type="submit" class="btn btn-primary">Publikasi Undangan</button>
+                    </form>
+                @endif
+
+                @if ($order->status === 'active')
+                    <form action="{{ route('admin.weddings.completeWedding', $order->kode_transaksi) }}" method="POST" onsubmit="return confirm('Yakin ingin menyelesaikan undangan ini ?')">
+                        @csrf
+                        <button type="submit" class="btn btn-primary">Selesai Undangan</button>
                     </form>
                 @endif
                 <a href="{{ route('admin.orders.index') }}" class="btn btn-secondary ms-auto">Kembali</a>

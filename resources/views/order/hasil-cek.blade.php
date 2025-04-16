@@ -89,14 +89,22 @@
                             <div class="col-12 col-md-6 mb-3">
                                 <h6 class="text-muted fw-semibold">Status</h6>
                                 <p class="mb-1 fs-6">
-                                    <span class="badge d-inline-flex align-items-center gap-1 px-3 py-2 bg-{{ 
-                                        $order->status === 'completed' ? 'success' : 
-                                        ($order->status === 'paid' ? 'success' : 
-                                        ($order->status === 'waiting_verify' ? 'warning' : 
-                                        ($order->status === 'pending' ? 'danger' : 
-                                        ($order->status === 'active' ? 'secondary' : 
-                                        ($order->status === 'processed' ? 'info' : 'dark')))))
-                                    }}">
+                                    @php
+                                        $status = $order->status;
+
+                                        $badgeColor = match($status) {
+                                            'completed' => 'success',
+                                            'paid' => 'success',
+                                            'waiting_verify' => 'warning',
+                                            'pending' => 'danger',
+                                            'active' => 'secondary',
+                                            'processed' => 'info',
+                                            default => 'dark',
+                                        };
+
+                                        $textColor = in_array($status, ['waiting_verify', 'processed']) ? 'dark' : 'white';
+                                    @endphp
+                                    <span class="text-{{ $textColor }} badge d-inline-flex align-items-center gap-1 px-3 py-2 bg-{{ $badgeColor }}">
                                     @switch($order->status)
                                         @case('pending')
                                             <i class="bi bi-hourglass-split"></i> Menunggu Pembayaran
@@ -105,7 +113,7 @@
                                             <i class="bi bi-hourglass-bottom"></i> Menunggu Verifikasi
                                             @break
                                         @case('paid')
-                                            <i class="bi bi-credit-card-2-check"></i> Pembayaran Diterima
+                                            <i class="bi bi-check-circle-fill"></i> Pembayaran Diterima
                                             @break
                                         @case('processed')
                                             <i class="bi bi-file-earmark-text"></i> Undangan Diproses
