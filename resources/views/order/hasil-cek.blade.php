@@ -50,29 +50,30 @@
                                 <div class="col-12 col-md-6 mb-3">
                                     <h6 class="text-muted fw-semibold">Status Transaksi</h6>
                                     <p class="mb-1 fs-6">
-                                        <span class="badge px-3 py-2 bg-{{ 
+                                        <span class="badge d-inline-flex align-items-center gap-1 px-3 py-2 bg-{{ 
                                             $order->status === 'completed' ? 'success' : 
                                             ($order->status === 'paid' ? 'info' : 
                                             ($order->status === 'waiting_verify' ? 'secondary' : 'warning')) 
                                         }}">
                                             @switch($order->status)
                                                 @case('pending')
-                                                    Menunggu Pembayaran
+                                                    <i class="bi bi-clock-history"></i> Menunggu Pembayaran
                                                     @break
                                                 @case('waiting_verify')
-                                                    Menunggu Verifikasi Admin
+                                                    <i class="bi bi-hourglass-split"></i> Menunggu Verifikasi
                                                     @break
                                                 @case('paid')
-                                                    Pembayaran Diterima
+                                                    <i class="bi bi-check-circle"></i> Pembayaran Diterima
                                                     @break
                                                 @case('completed')
-                                                    Undangan Selesai
+                                                    <i class="bi bi-patch-check-fill"></i> Undangan Selesai
                                                     @break
                                                 @default
-                                                    Status Tidak Diketahui
+                                                    <i class="bi bi-question-circle"></i> Status Tidak Diketahui
                                             @endswitch
                                         </span>
                                     </p>
+                                    
                                     
                                 </div>
                             </div>
