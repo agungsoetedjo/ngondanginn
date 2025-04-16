@@ -44,7 +44,7 @@ class OrderController extends Controller
             'user_id' => null,
             'template_id' => $request->template_id,
             'music_id' => $request->music_id,
-            'kode_transaksi' => 'WD_ORDER_' . strtoupper(Str::uuid()->toString()),
+            'kode_transaksi' => 'WD_ORDER_' . Str::upper(uniqid()),
             'bride_name' => $request->bride_name,
             'groom_name' => $request->groom_name,
             'bride_parents_info' => $request->bride_parents_info,
