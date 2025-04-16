@@ -11,6 +11,9 @@
                 icon: 'error',
                 title: 'Oops...',
                 text: '{{ session('error') }}',
+                showConfirmButton: false,
+                timerProgressBar: true,
+                timer: 2000,
             });
         </script>
     @endif

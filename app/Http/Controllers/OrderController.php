@@ -70,7 +70,6 @@ class OrderController extends Controller
         return view('order.cek-pesanan'); // form input
     }
 
-
     public function cekPesanan(Request $request)
     {
         $order = Order::where('kode_transaksi', $request->kode)->first();
@@ -88,4 +87,39 @@ class OrderController extends Controller
         $order = Order::where('kode_transaksi', $kode_transaksi)->firstOrFail();
         return view('order.hasil-cek', compact('order'));
     }
+
+    public function uploadBukti(Request $request, $kode_transaksi)
+    {
+        $request->validate([
+            'phone_number' => 'required|numeric',
+            'bukti_transfer' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+    
+        $order = Order::where('kode_transaksi', $kode_transaksi)->first();
+    
+        if (!$order) {
+            return redirect()->back()->with('error', 'Order tidak ditemukan.');
+        }
+    
+        if ($order->phone_number !== $request->phone_number) {
+            return redirect()->back()->with('error', 'Nomor HP yang Anda masukkan tidak cocok dengan data pemesan.');
+        }
+    
+        $file = $request->file('bukti_transfer');
+    
+        // Buat nama unik pakai UUID
+        $fileName = Str::uuid() . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('uploads/bukti_pembayaran'), $fileName);
+    
+        // Update order
+        $order->update([
+            'payment_proof' => $fileName,
+            'status' => 'waiting_verify',
+        ]);
+    
+        session()->flash('success', 'Bukti pembayaran berhasil diunggah!');
+    
+        return redirect()->route('order.cek.result', $order->kode_transaksi);
+    }
+    
 }

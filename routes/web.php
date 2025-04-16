@@ -55,4 +55,6 @@ Route::post('/pesan-undangan', [OrderController::class, 'store'])->name('order.s
 Route::get('/cek-pesanan', [OrderController::class, 'cekForm'])->name('order.cek.form');
 Route::post('/cek-pesanan', [OrderController::class, 'cekPesanan'])->name('order.cek.proses');
 Route::get('/cek-pesanan/{kode_transaksi}/result', [OrderController::class, 'hasilPesanan'])->name('order.cek.result');
+Route::post('/cek-pesanan/{kode_transaksi}/result', [OrderController::class, 'uploadBukti'])->name('order.upload_bukti');
+
 

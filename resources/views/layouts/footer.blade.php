@@ -17,7 +17,7 @@
     </div>
   </div> --}}
 
-  <div class="container footer-top">
+  {{-- <div class="container footer-top">
     <div class="row gy-4">
       <div class="col-lg-4 col-md-6 footer-about">
         <a href="index.html" class="d-flex align-items-center">
@@ -42,7 +42,7 @@
         </ul>
       </div>
 
-      {{-- <div class="col-lg-2 col-md-3 footer-links">
+      <div class="col-lg-2 col-md-3 footer-links">
         <h4>Our Services</h4>
         <ul>
           <li><i class="bi bi-chevron-right"></i> <a href="#">Web Design</a></li>
@@ -50,7 +50,7 @@
           <li><i class="bi bi-chevron-right"></i> <a href="#">Product Management</a></li>
           <li><i class="bi bi-chevron-right"></i> <a href="#">Marketing</a></li>
         </ul>
-      </div> --}}
+      </div>
 
       <div class="col-lg-4 col-md-12">
         <h4>Ikuti Kami</h4>
@@ -63,7 +63,7 @@
       </div>
 
     </div>
-  </div>
+  </div> --}}
 
   <div class="container copyright text-center mt-4">
     <p>© <span>Copyright</span> <strong class="px-1 sitename">Ngondang-In</strong> <span>All Rights Reserved</span></p>
