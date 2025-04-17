@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Waktu pembuatan: 16 Apr 2025 pada 16.55
+-- Waktu pembuatan: 17 Apr 2025 pada 15.58
 -- Versi server: 8.0.30
 -- Versi PHP: 8.3.11
 
@@ -103,7 +103,7 @@ CREATE TABLE `galleries` (
 --
 
 INSERT INTO `galleries` (`id`, `wedding_id`, `image`, `created_at`, `updated_at`) VALUES
-(3, 5, 'uploads/galeri/67ffd95b7bc1b.jpg', '2025-04-16 16:22:51', '2025-04-16 16:22:51');
+(4, 2, 'uploads/galeri/68011bb3ddaf8.jpg', '2025-04-17 15:18:11', '2025-04-17 15:18:11');
 
 -- --------------------------------------------------------
 
@@ -181,8 +181,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (10, '2025_04_12_115028_create_faqs_table', 2),
 (12, '2025_04_07_140453_create_templates_table', 4),
 (15, '2025_04_07_140534_create_musics_table', 7),
-(21, '2025_04_07_140535_create_orders_table', 8),
-(22, '2025_04_07_150000_create_weddings_table', 8);
+(23, '2025_04_07_140535_create_orders_table', 9),
+(24, '2025_04_07_150000_create_weddings_table', 10);
 
 -- --------------------------------------------------------
 
@@ -215,23 +215,12 @@ INSERT INTO `musics` (`id`, `title`, `artist`, `file_path`, `created_at`, `updat
 
 CREATE TABLE `orders` (
   `id` bigint UNSIGNED NOT NULL,
-  `user_id` bigint UNSIGNED DEFAULT NULL,
-  `music_id` bigint UNSIGNED DEFAULT NULL,
-  `template_id` bigint UNSIGNED DEFAULT NULL,
   `kode_transaksi` varchar(255) NOT NULL,
-  `bride_name` varchar(255) NOT NULL,
-  `groom_name` varchar(255) NOT NULL,
-  `bride_parents_info` varchar(255) DEFAULT NULL,
-  `groom_parents_info` varchar(255) DEFAULT NULL,
-  `akad_date` datetime DEFAULT NULL,
-  `reception_date` datetime DEFAULT NULL,
-  `place_name` varchar(255) NOT NULL,
-  `location` text NOT NULL,
-  `description` text,
+  `nama_pemesan` varchar(255) NOT NULL,
   `phone_number` varchar(255) NOT NULL,
   `payment_total` bigint UNSIGNED NOT NULL DEFAULT '0',
   `payment_proof` varchar(255) DEFAULT NULL,
-  `status` enum('pending','waiting_verify','paid','processed','active','completed') NOT NULL DEFAULT 'pending',
+  `status` enum('pending','waiting_verify','paid','processed','published','completed') NOT NULL DEFAULT 'pending',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -240,8 +229,8 @@ CREATE TABLE `orders` (
 -- Dumping data untuk tabel `orders`
 --
 
-INSERT INTO `orders` (`id`, `user_id`, `music_id`, `template_id`, `kode_transaksi`, `bride_name`, `groom_name`, `bride_parents_info`, `groom_parents_info`, `akad_date`, `reception_date`, `place_name`, `location`, `description`, `phone_number`, `payment_total`, `payment_proof`, `status`, `created_at`, `updated_at`) VALUES
-(1, 4, 2, 5, 'WD_ORDER_67FFBD32188BA', 'Winda Purnama', 'Wawan Hermawan', 'Putri ke-1 dari Bpk. Wahyu dan Ibu. Wiwin', 'Putra ke-1 dari Bpk. Andi dan Ibu. Hermawati', '2025-04-20 08:00:00', '2025-04-20 10:00:00', 'Gedung Kampoeng X', 'Jln. X No. 10', '-', '082215148544', 150000, '605af4b7-6d76-4022-91d3-4311e85e5e7e.jpeg', 'processed', '2025-04-16 14:22:42', '2025-04-16 16:53:31');
+INSERT INTO `orders` (`id`, `kode_transaksi`, `nama_pemesan`, `phone_number`, `payment_total`, `payment_proof`, `status`, `created_at`, `updated_at`) VALUES
+(3, 'WD_ORDER_6800ED8F5D280', 'Rizky Maulana', '082215148544', 150000, 'c6ff19ff-6969-4420-90d9-3e384ac4d733.jpeg', 'waiting_verify', '2025-04-17 12:01:19', '2025-04-17 15:39:03');
 
 -- --------------------------------------------------------
 
@@ -292,7 +281,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('1wWJHUHvzEuqBD3eKQjUDbkxYf0rcZt8R659nm8a', 4, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoic1FzRFBrVmdlNGdXYXJHM2NndWRFRXIwaHZnZ3BEZzBudEVEUFBFMiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NjU6Imh0dHA6Ly9uZ29uZGFuZ2lubi50ZXN0L2Nlay1wZXNhbmFuL1dEX09SREVSXzY3RkZCRDMyMTg4QkEvcmVzdWx0Ijt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6NDt9', 1744822452);
+('wsuz9aNDZACi90a58pqT7z9hILEf5bP3GQNenSDl', 4, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiRXVKOTdzWGd1OXRvRUtzSTJZRnNuY20wcTRBOGVpN0YzWDhZc244ViI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NjU6Imh0dHA6Ly9uZ29uZGFuZ2lubi50ZXN0L2Nlay1wZXNhbmFuL1dEX09SREVSXzY4MDBFRDhGNUQyODAvcmVzdWx0Ijt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6NDt9', 1744904933);
 
 -- --------------------------------------------------------
 
@@ -351,7 +340,7 @@ INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `re
 
 CREATE TABLE `weddings` (
   `id` bigint UNSIGNED NOT NULL,
-  `user_id` bigint UNSIGNED NOT NULL,
+  `user_id` bigint UNSIGNED DEFAULT NULL,
   `slug` varchar(255) NOT NULL,
   `bride_name` varchar(255) NOT NULL,
   `groom_name` varchar(255) NOT NULL,
@@ -374,7 +363,7 @@ CREATE TABLE `weddings` (
 --
 
 INSERT INTO `weddings` (`id`, `user_id`, `slug`, `bride_name`, `groom_name`, `bride_parents_info`, `groom_parents_info`, `akad_date`, `reception_date`, `location`, `place_name`, `description`, `template_id`, `music_id`, `order_id`, `created_at`, `updated_at`) VALUES
-(5, 4, 'winda-purnama-wawan-hermawan-1744817342', 'Winda Purnama', 'Wawan Hermawan', 'Putri ke-1 dari Bpk. Wahyu dan Ibu. Wiwin', 'Putra ke-1 dari Bpk. Andi dan Ibu. Hermawati', '2025-04-20 08:00:00', '2025-04-20 10:00:00', 'Jln. X No. 10', 'Gedung Kampoeng X', '-', 5, 2, 1, '2025-04-16 15:29:02', '2025-04-16 15:29:02');
+(2, 4, 'ananda-nadya-aulia-spd-ananda-rizky-maulana-st-1744902953', 'Ananda Nadya Aulia, S.Pd.', 'Ananda Rizky Maulana, S.T.', 'Putri ketiga dari Bpk. Drs. H. Muhammad Yusuf dan Ibu Dra. Hj. Nuraeni', 'Putra sulung dari Bpk. H. Sofyan Anwar dan Ibu Hj. Rukmini', '2025-04-20 09:00:00', '2025-04-20 11:00:00', 'Jl. Raya Sudirman No. 123, Jakarta Selatan', 'Gedung Serbaguna Graha Citra', 'sasdasdaddas', 5, 2, 3, '2025-04-17 12:01:19', '2025-04-17 15:47:50');
 
 --
 -- Indexes for dumped tables
@@ -449,10 +438,7 @@ ALTER TABLE `musics`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `orders_kode_transaksi_unique` (`kode_transaksi`),
-  ADD KEY `orders_user_id_foreign` (`user_id`),
-  ADD KEY `orders_music_id_foreign` (`music_id`),
-  ADD KEY `orders_template_id_foreign` (`template_id`);
+  ADD UNIQUE KEY `orders_kode_transaksi_unique` (`kode_transaksi`);
 
 --
 -- Indeks untuk tabel `password_reset_tokens`
@@ -519,7 +505,7 @@ ALTER TABLE `faqs`
 -- AUTO_INCREMENT untuk tabel `galleries`
 --
 ALTER TABLE `galleries`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT untuk tabel `guest_books`
@@ -537,7 +523,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT untuk tabel `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT untuk tabel `musics`
@@ -549,7 +535,7 @@ ALTER TABLE `musics`
 -- AUTO_INCREMENT untuk tabel `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT untuk tabel `rsvps`
@@ -573,7 +559,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT untuk tabel `weddings`
 --
 ALTER TABLE `weddings`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
@@ -590,14 +576,6 @@ ALTER TABLE `galleries`
 --
 ALTER TABLE `guest_books`
   ADD CONSTRAINT `guest_books_wedding_id_foreign` FOREIGN KEY (`wedding_id`) REFERENCES `weddings` (`id`) ON DELETE CASCADE;
-
---
--- Ketidakleluasaan untuk tabel `orders`
---
-ALTER TABLE `orders`
-  ADD CONSTRAINT `orders_music_id_foreign` FOREIGN KEY (`music_id`) REFERENCES `musics` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `orders_template_id_foreign` FOREIGN KEY (`template_id`) REFERENCES `templates` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `orders_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
 
 --
 -- Ketidakleluasaan untuk tabel `rsvps`
