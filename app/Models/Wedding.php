@@ -52,7 +52,7 @@ class Wedding extends Model
         return $this->hasMany(Gallery::class);
     }
 
-    public function templates() {
+    public function template() {
         return $this->belongsTo(Template::class);
     }
 

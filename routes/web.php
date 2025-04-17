@@ -67,5 +67,6 @@ Route::get('/cek-pesanan', [OrderController::class, 'cekForm'])->name('order.cek
 Route::post('/cek-pesanan', [OrderController::class, 'cekPesanan'])->name('order.cek.proses');
 Route::get('/cek-pesanan/{kode_transaksi}/result', [OrderController::class, 'hasilPesanan'])->name('order.cek.result');
 Route::post('/cek-pesanan/{kode_transaksi}/result', [OrderController::class, 'uploadBukti'])->name('order.upload_bukti');
+Route::post('/order/update-template/{kode_transaksi}', [OrderController::class, 'updateTemplate'])->name('order.update.template');
 
 

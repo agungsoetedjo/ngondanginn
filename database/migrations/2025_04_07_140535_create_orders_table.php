@@ -13,23 +13,19 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignId('music_id')->nullable()->constrained('musics')->nullOnDelete();      
-            $table->foreignId('template_id')->nullable()->constrained('templates')->nullOnDelete();
             $table->string('kode_transaksi')->unique();
-            $table->string('bride_name');
-            $table->string('groom_name');
-            $table->string('bride_parents_info')->nullable();
-            $table->string('groom_parents_info')->nullable();
-            $table->dateTime('akad_date')->nullable();
-            $table->dateTime('reception_date')->nullable();
-            $table->string('place_name'); // Nama tempat acara
-            $table->text('location'); // Lokasi acara lengkap
-            $table->text('description')->nullable(); // Deskripsi tambahan
-            $table->string('phone_number'); // Nomor HP pemesan
+            $table->string('nama_pemesan');
+            $table->string('phone_number');
             $table->unsignedBigInteger('payment_total')->default(0);
             $table->string('payment_proof')->nullable();
-            $table->enum('status', ['pending', 'waiting_verify', 'paid', 'processed','active', 'completed'])->default('pending');
+            $table->enum('status', [
+                'pending',         // Belum ada pembayaran
+                'waiting_verify',  // Sudah bayar, menunggu verifikasi admin
+                'paid',            // Sudah diverifikasi, siap diproses
+                'processed',       // Sedang dibuatkan undangan
+                'published',       // Sudah tayang
+                'completed'        // Selesai, semua proses beres
+            ])->default('pending');
             $table->timestamps();
         });
     }

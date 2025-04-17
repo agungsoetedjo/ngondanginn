@@ -46,7 +46,6 @@
         </script>
     @endif
 
-
     <!-- Section Title -->
     <div class="container section-title" data-aos="fade-up">
         <span>Pesan Undangan Digital</span>
@@ -57,6 +56,21 @@
         <form action="{{ route('order.store') }}" method="POST">
             @csrf
         
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="nama_pemesan" class="form-label">Nama Pemesan</label>
+                        <input type="text" name="nama_pemesan" id="nama_pemesan" class="form-control" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="phone_number" class="form-label">Nomor HP Pemesan</label>
+                        <input type="text" name="phone_number" id="phone_number" class="form-control" required>
+                    </div>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-3">
@@ -124,12 +138,6 @@
                     <div class="mb-3">
                         <label for="description" class="form-label">Deskripsi (Opsional)</label>
                         <textarea name="description" id="description" class="form-control" rows="4"></textarea>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="phone_number" class="form-label">Nomor HP Pemesan</label>
-                        <input type="text" name="phone_number" id="phone_number" class="form-control" required>
                     </div>
                 </div>
             </div>

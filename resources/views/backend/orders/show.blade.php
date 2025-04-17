@@ -5,7 +5,7 @@
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Detail Pesanan - {{ $order->kode_transaksi }}</h5>
-            @if(is_null($order->user_id))
+            @if(is_null($order->wedding->user_id))
                 <form action="{{ route('admin.orders.assignOrder', $order->kode_transaksi) }}" method="POST" class="ms-auto">
                     @csrf
                     <button class="btn btn-light btn-sm" onclick="return confirm('Ambil alih order ini?')">Ambil Order</button>
@@ -16,25 +16,25 @@
         <div class="card-body">
             <dl class="row mb-3">
                 <dt class="col-sm-4">Nama Mempelai (Wanita & Pria)</dt>
-                <dd class="col-sm-8">{{ $order->bride_name }} & {{ $order->groom_name }}</dd>
+                <dd class="col-sm-8">{{ $order->wedding->bride_name }} & {{ $order->wedding->groom_name }}</dd>
                 
                 <dt class="col-sm-4">Orangtua Mempelai Wanita</dt>
-                <dd class="col-sm-8">{{ $order->bride_parents_info }}</dd>
+                <dd class="col-sm-8">{{ $order->wedding->bride_parents_info }}</dd>
 
                 <dt class="col-sm-4">Orangtua Mempelai Pria</dt>
-                <dd class="col-sm-8">{{ $order->groom_parents_info }}</dd>
+                <dd class="col-sm-8">{{ $order->wedding->groom_parents_info }}</dd>
 
                 <dt class="col-sm-4">Nomor HP Pemesan</dt>
                 <dd class="col-sm-8">{{ $order->phone_number }}</dd>
 
                 <dt class="col-sm-4">Lokasi Acara</dt>
-                <dd class="col-sm-8">{{ $order->place_name }} - {{ $order->location }}</dd>
+                <dd class="col-sm-8">{{ $order->wedding->place_name }} - {{ $order->wedding->location }}</dd>
 
                 <dt class="col-sm-4">Tanggal Akad</dt>
-                <dd class="col-sm-8">{{ $order->formatted_akad_date ?? '-' }}</dd>
+                <dd class="col-sm-8">{{ $order->wedding->formatted_akad_date ?? '-' }}</dd>
 
                 <dt class="col-sm-4">Tanggal Resepsi</dt>
-                <dd class="col-sm-8">{{ $order->formatted_reception_date ?? '-' }}</dd>
+                <dd class="col-sm-8">{{ $order->wedding->formatted_reception_date ?? '-' }}</dd>
 
                 <dt class="col-sm-4">Status</dt>
                 <dd class="col-sm-8">
@@ -42,12 +42,12 @@
                             $status = $order->status;
 
                             $badgeColor = match($status) {
-                                'completed' => 'success',
-                                'paid' => 'success',
-                                'waiting_verify' => 'warning',
                                 'pending' => 'danger',
-                                'active' => 'secondary',
+                                'waiting_verify' => 'warning',
+                                'paid' => 'success',
                                 'processed' => 'info',
+                                'published' => 'secondary',
+                                'completed' => 'success',
                                 default => 'dark',
                             };
 
@@ -67,7 +67,7 @@
                             @case('processed')
                                 <i class="bi bi-file-earmark-text"></i> Undangan Diproses
                                 @break
-                            @case('active')
+                            @case('published')
                                 <i class="bi bi-globe"></i> Undangan Dipublikasi
                                 @break
                             @case('completed')
@@ -81,7 +81,7 @@
 
                 <dt class="col-sm-4">User Assigned</dt>
                 <dd class="col-sm-8">
-                    {{ $order->user->name ?? 'Belum diassign' }}
+                    {{ $order->wedding->user->name ?? 'Belum diassign' }}
                 </dd>
             </dl>
 
@@ -99,7 +99,7 @@
             </div>
 
             <div class="d-flex gap-2">
-                @if(!is_null($order->user_id) && $order->user_id === auth()->id() && $order->status === 'waiting_verify')
+                @if(!is_null($order->wedding->user_id) && $order->wedding->user_id === auth()->id() && $order->status === 'waiting_verify')
                     <form action="{{ route('admin.orders.approve', $order->kode_transaksi) }}" method="POST">
                         @csrf
                         <button type="submit" class="btn btn-success">Verifikasi</button>
@@ -125,7 +125,7 @@
                     </form>
                 @endif
 
-                @if ($order->status === 'active')
+                @if ($order->status === 'published')
                     <form action="{{ route('admin.weddings.completeWedding', $order->kode_transaksi) }}" method="POST" onsubmit="return confirm('Yakin ingin menyelesaikan undangan ini ?')">
                         @csrf
                         <button type="submit" class="btn btn-primary">Selesai Undangan</button>

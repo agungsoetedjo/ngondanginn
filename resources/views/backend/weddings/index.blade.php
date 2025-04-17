@@ -10,9 +10,8 @@
     <thead>
       <tr>
         <th>Pasangan</th>
-        <th>Tanggal</th>
-        <th>Nama Tempat</th>
-        <th>Lokasi Tempat</th>
+        <th style="width: 25%;">Tanggal</th>
+        <th>Lokasi</th>
         <th>Aksi</th>
       </tr>
     </thead>
@@ -24,12 +23,11 @@
             Akad: {{ $wedding->formatted_akad_date ?? '-' }} <br>
             Resepsi: {{ $wedding->formatted_reception_date ?? '-' }}
           </td>
-          <td>{{ $wedding->place_name }}</td>
-          <td>{{ $wedding->location }}</td>
+          <td>{{ $wedding->place_name }} - {{ $wedding->location }}</td>
           <td>
             <!-- Edit Button -->
             <a href="{{ route('weddings.edit', $wedding->slug) }}" class="btn btn-sm btn-warning">
-              <i class="bi bi-pencil"></i> Edit
+              <i class="bi bi-pencil"></i>
             </a>
 
             <!-- Delete Button -->
@@ -37,23 +35,23 @@
               @csrf
               @method('DELETE')
               <button type="button" class="btn btn-sm btn-danger btn-delete">
-                <i class="bi bi-trash"></i> Hapus
+                <i class="bi bi-trash"></i>
               </button>
             </form>            
 
             <!-- RSVP Button -->
             <a href="{{ route('rsvps.index', $wedding->id) }}" class="btn btn-sm btn-primary">
-              <i class="bi bi-person-check"></i> RSVP
+              <i class="bi bi-person-check"></i>
             </a>
 
             <!-- Guestbook Button -->
             <a href="{{ route('guestbooks.index', $wedding->id) }}" class="btn btn-sm btn-primary">
-              <i class="bi bi-bookmarks"></i> Buku Tamu
+              <i class="bi bi-book"></i>
             </a>
 
             <!-- Gallery Button -->
             <a href="{{ route('galleries.index', $wedding->id) }}" class="btn btn-sm btn-primary">
-              <i class="bi bi-images"></i> Galeri
+              <i class="bi bi-images"></i>
             </a>
           </td>
         </tr>

@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Music;
 use Illuminate\Http\Request;
-use App\Models\Order;
-use App\Models\Template;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use App\Models\Music;
+use App\Models\Order;
+use App\Models\Template;
+use App\Models\Wedding;
 
 class OrderController extends Controller
 {
@@ -21,7 +22,6 @@ class OrderController extends Controller
         return view('order.create', compact('templates','musics'));
     }
     
-
     public function store(Request $request)
     {
         $request->validate([
@@ -41,31 +41,39 @@ class OrderController extends Controller
     
         $template = Template::findOrFail($request->template_id);
     
+        // 1. Simpan ke tabel orders
         $order = Order::create([
+            'kode_transaksi' => 'WD_ORDER_' . Str::upper(uniqid()),
+            'nama_pemesan' => $request->nama_pemesan,
+            'phone_number' => $request->phone_number,
+            'payment_total' => $template->price ?? 0,
+            'payment_proof' => null,
+            'status' => 'pending',
+        ]);
+    
+        // 2. Simpan ke tabel weddings
+        Wedding::create([
             'user_id' => null,
+            'order_id' => $order->id,
             'template_id' => $request->template_id,
             'music_id' => $request->music_id,
-            'kode_transaksi' => 'WD_ORDER_' . Str::upper(uniqid()),
+            'slug' => Str::slug($request->bride_name . '-' . $request->groom_name . '-' . Str::random(5)),
             'bride_name' => $request->bride_name,
             'groom_name' => $request->groom_name,
             'bride_parents_info' => $request->bride_parents_info,
             'groom_parents_info' => $request->groom_parents_info,
             'akad_date' => $request->akad_date,
             'reception_date' => $request->reception_date,
-            'place_name' => $request->place_name,
             'location' => $request->location,
+            'place_name' => $request->place_name,
             'description' => $request->description,
-            'phone_number' => $request->phone_number,
-            'payment_total' => $template->price ?? 0,
-            'payment_proof' => null,
-            'status' => 'pending', // belum ada bukti transfer
         ]);
     
         return redirect()->route('order.create')->with('order_success', [
             'kode_transaksi' => $order->kode_transaksi,
         ]);
     }
-
+    
     public function cekForm()
     {
         return view('order.cek-pesanan'); // form input
@@ -85,8 +93,9 @@ class OrderController extends Controller
 
     public function hasilPesanan($kode_transaksi)
     {
-        $order = Order::where('kode_transaksi', $kode_transaksi)->firstOrFail();
-        return view('order.hasil-cek', compact('order'));
+        $order = Order::with('wedding.template')->where('kode_transaksi', $kode_transaksi)->firstOrFail();
+        $templates = Template::all(); // Kirim semua template ke view
+        return view('order.hasil-cek', compact('order','templates'));
     }
 
     public function uploadBukti(Request $request, $kode_transaksi)
@@ -123,15 +132,14 @@ class OrderController extends Controller
         return redirect()->route('order.cek.result', $order->kode_transaksi);
     }
     
-    
     // dikelola oleh Pengelola Undangan cooooyyyy
-
     public function adminIndex()
     {
-        $orders = Order::whereIn('status', ['pending', 'waiting_verify', 'paid', 'processed', 'active', 'completed'])
-            ->where(function ($query) {
-                $query->where('user_id', Auth::id())
-                      ->orWhereNull('user_id');
+        $orders = Order::with('wedding')
+            ->whereIn('status', ['pending', 'waiting_verify', 'paid', 'processed', 'published', 'completed'])
+            ->whereHas('wedding', function ($query) {
+                $query->whereNull('user_id')
+                      ->orWhere('user_id', Auth::id());
             })
             ->latest()
             ->get();
@@ -157,7 +165,10 @@ class OrderController extends Controller
             'status' => 'paid',  // Ubah status jika perlu
         ]);
 
-        session()->flash('success', 'Pesanan berhasil disetujui.');
+        session()->flash('sweetalert', [
+            'type' => 'success',
+            'message' => 'Pesanan berhasil disetujui.'
+        ]);
 
         return redirect()->route('admin.orders.show', $order->kode_transaksi);
     }
@@ -182,8 +193,11 @@ class OrderController extends Controller
             'payment_proof' => null, // Hapus bukti transfer
         ]);
 
-        session()->flash('error', 'Pesanan ditolak. Bukti transfer telah dihapus.');
-
+        session()->flash('sweetalert', [
+            'type' => 'error',
+            'message' => 'Pesanan ditolak. Bukti transfer telah dihapus.'
+        ]);
+        
         return redirect()->route('admin.orders.show', $order->kode_transaksi);
     }
 
@@ -191,11 +205,37 @@ class OrderController extends Controller
     {
         $order = Order::where('kode_transaksi', $kode_transaksi)->firstOrFail();
 
-        $order->update([
+        $order->wedding->update([
             'user_id' => Auth::id(),
         ]);
 
         return redirect()->route('admin.orders.index')->with('success', 'Order berhasil di-assign ke Anda.');
+    }
+
+    public function updateTemplate(Request $request, $kode_transaksi)
+    {
+        $order = Order::where('kode_transaksi', $kode_transaksi)->firstOrFail();
+
+        if ($order->status !== 'pending') {
+            return back()->with('error', 'Template hanya bisa diganti saat status pending.');
+        }
+
+        $request->validate([
+            'template_id' => 'required|exists:templates,id',
+        ]);
+
+        $template = Template::find($request->template_id);
+
+        // Update wedding & total pembayaran
+        $order->wedding->update([
+            'template_id' => $template->id,
+        ]);
+
+        $order->update([
+            'payment_total' => $template->price,
+        ]);
+
+        return back()->with('success', 'Template berhasil diperbarui.');
     }
 
 }
