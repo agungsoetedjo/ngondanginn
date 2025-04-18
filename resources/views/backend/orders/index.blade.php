@@ -15,8 +15,8 @@
             <thead>
                 <tr>
                     <th>Kode Transaksi</th>
-                    <th>Nama Mempelai</th>
-                    <th>Template</th>
+                    <th>Nama Pemesan</th>
+                    <th>Nomor HP Pemesan</th>
                     <th>Status</th>
                     <th>Aksi</th>
                 </tr>
@@ -25,8 +25,8 @@
                 @foreach($orders as $order)
                     <tr>
                         <td>{{ $order->kode_transaksi }}</td>
-                        <td>{{ $order->wedding->bride_name }} & {{ $order->wedding->groom_name }}</td>
-                        <td>{{ $order->wedding->template->name ?? '-' }}</td>
+                        <td>{{ $order->nama_pemesan }}</td>
+                        <td>{{ $order->phone_number }}</td>
                         @php
                             $status = $order->status;
 

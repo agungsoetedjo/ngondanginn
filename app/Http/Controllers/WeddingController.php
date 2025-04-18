@@ -16,9 +16,12 @@ class WeddingController extends Controller
     public function index()
     {
         $weddings = Wedding::with('order')
-            ->where('user_id', Auth::id())
-            ->latest()
-            ->get();
+        ->where('user_id', Auth::id())
+        ->whereHas('order', function ($query) {
+            $query->where('status', '!=', 'completed');
+        })
+        ->latest()
+        ->get();
     
         return view('backend.weddings.index', compact('weddings'));
     }

@@ -24,9 +24,6 @@
                 <dt class="col-sm-4">Orangtua Mempelai Pria</dt>
                 <dd class="col-sm-8">{{ $order->wedding->groom_parents_info }}</dd>
 
-                <dt class="col-sm-4">Nomor HP Pemesan</dt>
-                <dd class="col-sm-8">{{ $order->phone_number }}</dd>
-
                 <dt class="col-sm-4">Lokasi Acara</dt>
                 <dd class="col-sm-8">{{ $order->wedding->place_name }} - {{ $order->wedding->location }}</dd>
 
@@ -35,6 +32,18 @@
 
                 <dt class="col-sm-4">Tanggal Resepsi</dt>
                 <dd class="col-sm-8">{{ $order->wedding->formatted_reception_date ?? '-' }}</dd>
+
+                <dt class="col-sm-4">Deskripsi</dt>
+                <dd class="col-sm-8">{{ $order->wedding->description }}</dd>
+
+                <dt class="col-sm-4">Template</dt>
+                <dd class="col-sm-8">{{ $order->wedding->template->name }}</dd>
+
+                <dt class="col-sm-4">Musik Latar</dt>
+                <dd class="col-sm-8">{{ $order->wedding->music->artist }} - {{ $order->wedding->music->title }}</dd>
+
+                <dt class="col-sm-4">Total Pembayaran</dt>
+                <dd class="col-sm-8">Rp{{ number_format($order->payment_total, 0, ',', '.') }}</dd>
 
                 <dt class="col-sm-4">Status</dt>
                 <dd class="col-sm-8">
