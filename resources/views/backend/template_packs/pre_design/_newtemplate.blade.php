@@ -4,216 +4,455 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Undangan Pernikahan</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Link AOS CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }} " rel="stylesheet">
+    <link href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }} " rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/aos/aos.css') }}" rel="stylesheet">
     <style>
         * {
-            font-family: 'Georgia', serif;
+            font-family: 'Playfair Display', 'Georgia', serif; box-sizing: border-box;
         }
-
         body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            overflow-x: hidden;
-            background: #f8f9fa;
+            margin: 0; padding: 0; height: 100%; color: #333; scroll-behavior: smooth;
         }
-
-        .container {
-            width: 100%;
-            max-width: 560px;
-            margin: 0 auto;
-            padding: 0 15px;
+        .container { 
+            max-width: 560px; margin: 0 auto; padding: 0 15px;
         }
-
-        .section {
-            padding: 20px;
-            text-align: center;
-            width: 100%;
-            background: #fff;
-            margin-bottom: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        .content-wrapper {
+            background-color: #d5e9eb; padding: 10px;
         }
-
         .cover-section {
-            background: linear-gradient(to bottom right, #e0e0e0, #ffffff);
-            height: 100vh;
-            position: relative;
-            display: flex;
-            align-items: flex-end;
-            padding: 0 20px 60px;
+            background: linear-gradient(to top, #9ed0ec, #d5e9eb); height: 100vh; display: flex; align-items: flex-end; justify-content: center; padding: 0 20px 60px; position: relative; overflow: hidden; text-align: center;
         }
-
-        .invitation-sections {
-            background: linear-gradient(to bottom right, #e0e0e0, #ffffff);
-            min-height: 100vh;
-            padding: 40px 20px 60px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            display: none; /* Sembunyikan bagian undangan awalnya */
+        .cover-section::before {
+            content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.6), transparent 70%); animation: rotateBg 20s linear infinite; z-index: 0;
         }
-
+        @keyframes rotateBg {
+            from { transform: rotate(0deg); } to { transform: rotate(360deg); }
+        }
         .cover-content {
-            text-align: left;
+            position: relative; z-index: 1;
         }
-
         .cover-title {
-            font-size: 2rem;
-            color: #555;
-            margin-bottom: 10px;
+            font-size: 1rem; color: #04345f; letter-spacing: 1px;
         }
-
         .couple-names {
-            font-size: 2.8rem;
-            font-weight: bold;
-            color: #c2185b;
-            margin-bottom: 10px;
+            font-family: 'Great Vibes', cursive; font-size: 1.5rem; font-weight: normal; color: #0a2a54; margin: 10px 0; text-shadow: 2px 2px 3px rgba(0,0,0,0.1);
         }
-
+        .sub-couple-names {
+            font-family: 'Great Vibes', cursive; font-size: 2rem; font-weight: bold; margin: 10px 0; text-shadow: 2px 2px 3px rgba(0,0,0,0.1);
+        }
         .guest-name {
-            font-size: 1.1rem;
-            color: #444;
-            margin-bottom: 20px;
+            font-size: 1.1rem; color: #162c4b; margin-bottom: 20px;
         }
-
         .open-btn {
-            padding: 8px 10px;
-            font-size: 1.2rem;
-            background-color: #6a1b9a;
+            padding: 5px 20px; font-size: 1rem; background-color: #2a317c; color: white; border: none; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.3s ease;
+        }
+        .open-btn:hover {
+            background-color: #171c51; transform: scale(1.05);
+        }
+        .invitation-sections {
+            visibility: hidden; opacity: 0;height: 0; overflow: hidden; transition: all 0.5s ease;
+        }
+        .invitation-sections.show {
+            visibility: visible; opacity: 1; height: auto; overflow: visible;
+        }
+        .section {
+            background: #ffffff; padding: 25px 20px; border-radius: 16px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); text-align: center; transition: transform 0.3s ease; margin-bottom: 20px;
+        }
+        .section:hover {
+            transform: translateY(-4px);
+        }
+        .section h3, .section h4 {
+            color: #04345f; margin-bottom: 10px; font-weight: 600;
+        }
+        @media (max-width: 560px) {
+            .couple-names { font-size: 2.3rem; } .open-btn { font-size: 1rem; padding: 8px 16px; } .section { padding: 15px; }
+            #countdown {
+                gap: 10px;
+                justify-content: center;
+            }
+            .count-box {
+                padding: 8px 12px;
+                min-width: 60px;
+            }
+            .count-box span {
+                font-size: 1.5rem;
+            }
+            .count-box .label {
+                font-size: 0.8rem;
+            }
+        }
+        .gallery-section .row {
+            display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+        }
+        .gallery-section img {
+            width: 100%; max-width: 150px; height: auto; border-radius: 10px; object-fit: cover; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: transform 0.3s;
+        }
+        .gallery-section img:hover {
+            transform: scale(1.05);
+        }
+        .rsvp-section {
+            background-color: #f9f9f9; padding: 40px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .attendance-stats {
+            margin-bottom: 40px; display: flex; justify-content: space-around; gap: 20px;
+        }
+        .stats-box {
+            background-color: #153170; color: white; padding: 15px; border-radius: 10px; width: 120px; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .stats-box h5 {
+            font-size: 1.2rem; margin-bottom: 5px;
+        }
+        .attendance-number {
+            font-size: 1.5rem; font-weight: bold;
+        }
+        .rsvp-form input, .rsvp-form select, .rsvp-form textarea {
+            border-radius: 8px; border: 1px solid #ddd; padding: 12px; font-size: 1rem;
+        }
+        .rsvp-form button {
+            background-color: #153170; color: white; font-size: 1.1rem; border: none; padding: 12px; border-radius: 8px; cursor: pointer;
+        }
+        .rsvp-form button:hover {
+            background-color: #004080;
+        }
+        .section.fade-out {
+            opacity: 0; transform: translateY(20px); transition: all 0.5s ease;
+        }
+        #countdown {
+            padding: 20px 0; text-align: center; flex-wrap: wrap; gap: 16px;
+        }
+        .count-box {
+            background-color: #153170; border-radius: 12px; padding: 2px; width: 70px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .count-box span {
+            font-size: 1rem; font-weight: bold; color: #ffffff; display: block;
+        }
+        .count-box .label {
+            font-size: 0.55rem; color: #ffffff;
+        }
+        #save-the-date h2 {
+            font-family: 'Great Vibes', cursive; font-size: 2rem; color: #24448f;
+        }
+        #amplop-digital h2 {
+            font-family: 'Great Vibes', cursive; font-size: 2rem; color: #24448f;
+        }
+        #galeri-foto h2 {
+            font-family: 'Great Vibes', cursive; font-size: 2rem; color: #24448f;
+        }
+        #love-story h2 {
+            font-family: 'Great Vibes', cursive; font-size: 2rem; color: #24448f;
+        }
+        #rsvp h2 {
+            font-family: 'Great Vibes', cursive; font-size: 2rem; color: #24448f;
+        }
+        .mandiri-card {
+            width: 280px; height: 175px; background: linear-gradient(135deg, #dcdcdc, #a9a9a9); border-radius: 16px; color: #000; padding: 16px; box-shadow: 0 6px 14px rgba(0,0,0,0.2); font-family: 'Segoe UI', sans-serif; position: relative; overflow: hidden;
+        }
+        .mandiri-logo {
+            position: absolute; top: 10px; right: 16px; width: 80px; opacity: 0.9;
+        }
+        .mandiri-chip {
+            width: 40px; height: 30px; background: #c0c0c0; border-radius: 6px; margin-top: 30px; margin-bottom: 12px;
+        }
+        .mandiri-number {
+            font-size: 1rem; letter-spacing: 2px; margin-bottom: 16px;
+        }
+        .mandiri-info {
+            display: flex; justify-content: space-between; align-items: flex-end; font-size: 0.8rem;
+        }
+        .glossy-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(120deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 60%); z-index: 0;
+        }
+        .gift-card {
+            width: 280px; height: 175px; background: linear-gradient(135deg, #f5f5f5, #d3d3d3); border-radius: 16px; color: #000; padding: 16px; box-shadow: 0 6px 14px rgba(0,0,0,0.2); position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; gap: 4px; font-size: 0.9rem; margin-bottom: 10px;
+        }
+        .music-toggle-wrapper {
+            position: fixed; top: 20px; right: 20px; z-index: 50;
+        }
+        #playPauseButton {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 1rem;
+            padding: 10px 20px;
+            background-color: #153170;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 9999;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             transition: background-color 0.3s ease;
         }
-
-        .open-btn:hover {
-            background-color: #4a148c;
+        #playPauseButton:hover {
+            background-color: #1a438a;
         }
-
-        @media (max-width: 560px) {
-            .couple-names {
-                font-size: 2.2rem;
-            }
-
-            .guest-name {
-                font-size: 1rem;
-            }
-
-            .section {
-                padding: 10px;
-            }
+        #playPauseIcon {
+            font-size: 1.5rem;
         }
     </style>
 </head>
 <body>
-
-    <div class="container">
-        <!-- Cover Section (Tanpa AOS) -->
-        <div class="cover-section">
-            <div class="cover-content" data-aos="zoom-in-up" data-aos-delay="300">
-                <div class="cover-title">The Wedding of</div>
-                <div class="couple-names">{{ $wedding->bride_name }} & {{ $wedding->groom_name }}</div>
-                <div class="guest-name">
-                    Kepada Bapak/Ibu/Saudara/i<br><strong>{{ request()->get('to') ?? 'Nama Tamu' }}</strong>
-                </div>
-                <button class="open-btn" onclick="openInvitation()">Buka Undangan</button>
+    <audio id="bgMusic" loop>
+        <source src="{{ asset('uploads/musik/67fe3c275c2dd.mp3') }}" type="audio/mp3">
+    </audio>
+<div class="container">
+    <div class="music-toggle-wrapper">
+        <button id="playPauseButton">
+            <i id="playPauseIcon" class="bi bi-play-circle"></i>
+        </button>
+    </div>
+    <div class="cover-section">
+        <div class="cover-content" data-aos="zoom-in-up" data-aos-delay="300">
+            <div class="cover-title">The Wedding of</div>
+            <div class="couple-names">{{ $wedding->bride_name }} <br>&<br> {{ $wedding->groom_name }}</div>
+            <div class="guest-name">
+                Kepada Bapak/Ibu/Saudara/i<br><strong>{{ request()->get('to') ?? 'Nama Tamu' }}</strong>
             </div>
-        </div>
-
-        <!-- Wrapper for other sections -->
-        <div class="invitation-sections">
-            <!-- Second Section: Save the Date -->
-            <div class="section save-the-date">
-                <h3>Kami berharap Anda menjadi bagian dari hari istimewa kami!</h3>
-                <p>Save the Date: {{ \Carbon\Carbon::parse($wedding->reception_date)->translatedFormat('d F Y') }}</p>
-            </div>
-
-            <!-- Third Section: Kata Pengantar -->
-            <div class="section kata-pengantar">
-                <h3>Dengan penuh suka cita, kami mengundang Anda untuk hadir dalam pernikahan kami.</h3>
-                <p>
-                    Kami, <strong>{{ $wedding->bride_name }}</strong> dan <strong>{{ $wedding->groom_name }}</strong>, 
-                    bersama dengan keluarga besar, yaitu 
-                    <strong>{{ $wedding->bride_parent_name }}</strong> (Orang Tua Mempelai Wanita) dan 
-                    <strong>{{ $wedding->groom_parent_name }}</strong> (Orang Tua Mempelai Pria), 
-                    dengan bahagia mengundang Anda untuk menjadi saksi kebahagiaan kami.
-                </p>
-            </div>
-
-            <!-- Fourth Section: Akad Nikah & Resepsi -->
-            <div class="section akad-section" data-aos="fade-up">
-                <h4>Akad Nikah</h4>
-                <p>{{ \Carbon\Carbon::parse($wedding->akad_date)->translatedFormat('d F Y H:i') }}</p>
-                <h4>Resepsi</h4>
-                <p>{{ \Carbon\Carbon::parse($wedding->reception_date)->translatedFormat('d F Y H:i') }}</p>
-                <p>Lokasi: {{ $wedding->location }}</p>
-            </div>
-
-            <!-- Fifth Section: Amplop Digital -->
-            <div class="section amplop-section" data-aos="fade-up">
-                <h3>Amplop Digital</h3>
-                <p>Untuk memberikan hadiah secara digital, klik tombol di bawah ini:</p>
-                <button class="btn btn-success">Beri Hadiah</button>
-            </div>
-
-            <!-- Sixth Section: Galeri Foto -->
-            <div class="section gallery-section" data-aos="fade-up">
-                <h3>Galeri Foto</h3>
-                <p>Berikut adalah beberapa foto dari pernikahan kami:</p>
-                <div class="row">
-                    @foreach($wedding->galleries as $gallery)
-                    <div class="col-md-4 mb-3">
-                        <img src="{{ asset($gallery->image) }}" alt="Gallery Image">
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-
-            <!-- Seventh Section: Love Story -->
-            <div class="section love-story-section" data-aos="fade-up">
-                <h3>Cerita Cinta Kami</h3>
-                <p>{{ $wedding->love_story }}</p>
-            </div>
-
-            <!-- Eighth Section: RSVP -->
-            <div class="section rsvp-section" data-aos="fade-up">
-                <h3>RSVP</h3>
-                <p>Apakah Anda akan hadir?</p>
-                <form action="" method="POST">
-                    @csrf
-                    <button class="btn btn-primary" name="attendance" value="Yes">Hadir</button>
-                    <button class="btn btn-secondary" name="attendance" value="No">Tidak Hadir</button>
-                </form>
-            </div>
-
-            <!-- Ninth Section: Terima Kasih -->
-            <div class="section thank-you" data-aos="fade-up">
-                <h3>Terima Kasih</h3>
-                <p>Kami sangat menghargai kehadiran Anda di hari istimewa kami.</p>
-                <p><em>Salam hangat,</em></p>
-                <p><strong>{{ $wedding->bride_name }} & {{ $wedding->groom_name }}</strong></p>
-            </div>
+            <button class="open-btn" onclick="openInvitation()">Buka Undangan</button>
         </div>
     </div>
+    <div class="invitation-sections" id="invitationContent">
+        <div class="content-wrapper">
+            <section id="intro" class="section" data-aos="fade-up" data-aos-delay="100">
+                <h7>THE WEDDING OF</h7>
+                <div class="sub-couple-names">{{ $wedding->bride_name }} <br>&<br> {{ $wedding->groom_name }}</div>
+                <p style="font-size: 1rem;">Kami berharap Anda menjadi bagian dari hari istimewa kami!</p>
+                <div id="countdown" class="d-flex justify-content-center flex-wrap gap-3">
+                    <div class="count-box"><span id="days">00</span><div class="label">Hari</div></div>
+                    <div class="count-box"><span id="hours">00</span><div class="label">Jam</div></div>
+                    <div class="count-box"><span id="minutes">00</span><div class="label">Menit</div></div>
+                    <div class="count-box"><span id="seconds">00</span><div class="label">Detik</div></div>
+                </div>
+                <p style="margin-top: 4px; font-weight:bold; ">{{ \Carbon\Carbon::parse($wedding->akad_date)->translatedFormat('l, d F Y') }}</p>
+                <a class="btn btn-primary text-white" style="background-color: #153170;" href="#save-the-date">Save The Date</a>
+            </section>
+        
+            <section id="perkenalan-keluarga" class="section" data-aos="fade-up" data-aos-delay="200">
+                <p style="font-family: 'Amiri', serif; font-size: 2rem; color: #153170;">
+                    بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ
+                </p>
+                <p style="font-family: 'Great Vibes', cursive; font-size: 1.5rem; color: #153170;">
+                    Assalamu'alaikum Wr. Wb.
+                </p>
+                <p style="color: #153170; font-size: 0.95rem;">
+                    Tanpa mengurangi rasa hormat.<br>
+                    Kami mengundang Bapak/Ibu/Saudara/i<br>
+                    serta Kerabat sekalian untuk menghadiri<br>
+                    acara pernikahan kami :
+                </p>
+                <div class="sub-couple-names">{{ $wedding->bride_name }}</div>
+                {{ $wedding->bride_parents_info }}
+                <div>
+                    &
+                </div>
+                <div class="sub-couple-names">{{ $wedding->groom_name }}</div>
+                {{ $wedding->groom_parents_info }}
+            </section>
+        
+            <section id="save-the-date" class="section" data-aos="fade-up" data-aos-delay="300">
+                <h2 class="mb-4">Save The Date</h2>
+                <p class="text-center">
+                    "Dan segala sesuatu Kami ciptakan berpasang-pasangan agar kamu mengingat (kebesaran Allah).“
+                </p>
+                <p class="text-center">
+                (QS. Az Zariyat: 49)
+                </p>
+                <h2>Akad Nikah</h2>
+                <p style="font-weight: bold;">
+                    {{ \Carbon\Carbon::parse($wedding->akad_date)->translatedFormat('l, d F Y') }} pukul {{ \Carbon\Carbon::parse($wedding->akad_date)->translatedFormat('H:i') }}
+                </p>
+                <h2>Resepsi</h2>
+                <p style="font-weight: bold;">
+                    {{ \Carbon\Carbon::parse($wedding->reception_date)->translatedFormat('l, d F Y') }} pukul {{ \Carbon\Carbon::parse($wedding->reception_date)->translatedFormat('H:i') }}
+                </p>
+                <p><i>Tempat: {{ $wedding->place_name }}</i></p>
+                <p><i>Alamat: {{ $wedding->location }}</i></p>
+            </section>
+        
+            <section id="amplop-digital" class="section" data-aos="fade-up" data-aos-delay="400">
+                <h2 class="mb-4">Amplop Digital</h2>
+                <p>Doa Restu Anda merupakan<br>
+                    karunia yang sangat berarti bagi kami.</p>
+                <p>Dan jika memberi adalah ungkapan tanda kasih<br>
+                    Anda, Anda dapat memberi kado secara cashless.</p>
+                    <button class="btn btn-primary mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#mandiriCard" aria-expanded="false" aria-controls="mandiriCard">
+                        <i class="bi bi-gift"></i> Klik Disini
+                    </button>
 
-    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-    <script>
-        AOS.init({
-            duration: 1000, // Durasi animasi
-            once: true // Animasi hanya terjadi sekali
+                    <div class="collapse" id="mandiriCard">
+                        <div class="d-flex justify-content-center align-items-center" style="min-height: 300px;">
+                            <div class="mandiri-card position-relative overflow-hidden">
+                                <!-- Efek Glossy -->
+                                <div class="glossy-layer"></div>
+                                <img src="{{ asset('assets/img/Bank_Mandiri_logo.svg') }}" alt="Mandiri Logo" class="mandiri-logo">
+                                <div class="mandiri-chip"></div>
+                                <div class="mandiri-number">1234 5678 9012 3456</div>
+                                <div class="mandiri-info">
+                                    <div class="mandiri-name">NAMA ANDA</div>
+                                    <div class="mandiri-valid">Valid Thru<br><strong>12/29</strong></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center align-items-center">
+                            <div class="gift-card">
+                                <i class="bi bi-gift-fill"></i>
+                                <h6 class="mb-1">Kirim Hadiah</h6>
+                                <div><strong>Nama Penerima:</strong> Ahmad Wijaya</div>
+                                <div><strong>No. HP:</strong> 0812-3456-7890</div>
+                                <div><strong>Alamat:</strong> Jl. Kenangan No. 123, Jakarta Selatan</div>
+                            </div>
+                        </div>
+                    </div>
+            </section>
+
+            <section id="galeri-foto" class="section gallery-section" data-aos="fade-up" data-aos-delay="500">
+                <h2 class="mb-4">Galeri Foto</h2>
+                <p class="text-center">Tidak ada yang spesial dalam cerita kami. Tapi kami sangat spesial untuk satu sama lain. Dan Kami bersyukur, dipertemukan Allah diwaktu terbaik, Kini kami menanti hari istimewa kami.</p>
+                <div class="row">
+                    @foreach($wedding->galleries as $gallery)
+                        <div class="col-md-4 mb-3">
+                            <img src="{{ asset($gallery->image) }}" alt="Gallery Image" class="img-fluid rounded shadow-sm">
+                        </div>
+                    @endforeach
+                </div>
+            </section>
+        
+            <section id="love-story" class="section" data-aos="fade-up" data-aos-delay="600">
+                <h2 class="mb-4">Love Story</h2>
+                <p>{{ $wedding->love_story }}</p>
+            </section>
+        
+            <section id="rsvp" class="section rsvp-section" data-aos="fade-up" data-aos-delay="700">
+                <h2 class="mb-4">Ucapkan Sesuatu</h2>
+            
+                <div class="attendance-stats d-flex justify-content-around mb-4">
+                    <div class="stats-box">
+                        <p class="attendance-number" id="attending-count">0</p>
+                        <h5>Hadir</h5>
+                    </div>
+                    <div class="stats-box">
+                        <p class="attendance-number" id="not-attending-count">0</p>
+                        <h5>Tidak Hadir</h5>
+                    </div>
+                </div>
+                
+                <form action="" method="POST" class="rsvp-form">
+                    @csrf
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Masukkan Nama Anda" required>
+                    </div>
+            
+                    <div class="mb-3">
+                        <textarea style="resize: vertical;" class="form-control" id="message" name="message" rows="3" placeholder="Tulis Ucapan Anda..." required></textarea>
+                    </div>
+            
+                    <div class="mb-3">
+                        <select class="form-select" id="attendance" name="attendance" required>
+                            <option value="Yes">Hadir</option>
+                            <option value="No">Tidak Hadir</option>
+                        </select>
+                    </div>
+            
+                    <button type="submit" class="btn btn-primary w-100">Kirim Konfirmasi</button>
+                </form>
+            
+            </section>
+
+            <section class="section" data-aos="fade-up" data-aos-delay="800">
+                <p>Merupakan suatu kehormatan dan kebahagiaan bagi kami, apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu. Atas kehadiran dan doa restunya, kami mengucapkan terima kasih.</p>
+                <p style="font-family: 'Great Vibes', cursive; font-size: 1.5rem; color: #153170;">
+                    Wassalamu'alaikum Wr. Wb.
+                </p>
+                <div class="sub-couple-names">{{ $wedding->bride_name }} <br>&<br> {{ $wedding->groom_name }}</div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }} "></script>
+<script src="{{ asset('assets/vendor/aos/aos.js') }}"></script>
+<script>
+    AOS.init({ duration: 1000, once: false });
+
+    let lastScrollTop = 0;
+
+    function openInvitation() {
+        playPauseButton.innerHTML = '<i id="playPauseIcon" class="bi bi-pause-circle"></i>';
+        document.getElementById('bgMusic').play().catch(e => console.log(e));
+        document.querySelector('.cover-section').style.display = 'none';
+        const content = document.querySelector('.invitation-sections');
+        content.classList.add('show');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(() => {
+            AOS.refresh();
+        }, 300);
+    }
+
+    window.addEventListener('scroll', () => {
+        let currentScroll = window.scrollY || document.documentElement.scrollTop;
+
+        document.querySelectorAll('.section').forEach(section => {
+            const rect = section.getBoundingClientRect();
+            const isVisible = rect.top < window.innerHeight && rect.bottom >= 0;
+
+            if (isVisible) {
+                if (currentScroll < lastScrollTop) {
+                    section.classList.add('fade-out');
+                } else {
+                    section.classList.remove('fade-out');
+                }
+            }
         });
 
-        function openInvitation() {
-            // Memunculkan seluruh section dengan animasi
-            document.querySelector('.cover-section').style.display = 'none';
-            document.querySelector('.invitation-sections').style.display = 'flex';
-            
-            // Menginisialisasi kembali AOS setelah semua section dimunculkan
-            AOS.refresh();
+        lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+    });
+
+    const akadDate = new Date("{{ $wedding->akad_date }}").getTime();
+
+    const countdown = setInterval(() => {
+        const now = new Date().getTime();
+        const distance = akadDate - now;
+
+        if (distance < 0) {
+            clearInterval(countdown);
+            document.getElementById("countdown").innerHTML = "<strong>Sudah Dimulai!</strong>";
+            return;
         }
-    </script>
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        document.getElementById("days").innerText = days.toString().padStart(2, '0');
+        document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
+        document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
+        document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
+    }, 1000);
+
+        const audio = document.getElementById('bgMusic');
+        const playPauseButton = document.getElementById('playPauseButton');
+        const playPauseIcon = document.getElementById('playPauseIcon');
+
+        playPauseButton.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play().then(() => {
+                    playPauseIcon.classList.replace('bi-play-circle', 'bi-pause-circle');
+                    playPauseButton.innerHTML = '<i id="playPauseIcon" class="bi bi-pause-circle"></i>';
+                }).catch(e => console.log(e));
+            } else {
+                audio.pause();
+                playPauseIcon.classList.replace('bi-pause-circle', 'bi-play-circle');
+                playPauseButton.innerHTML = '<i id="playPauseIcon" class="bi bi-play-circle"></i>';
+            }
+        });
+
+</script>
 </body>
 </html>
