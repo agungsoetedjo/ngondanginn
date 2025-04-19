@@ -12,6 +12,7 @@
         <th>Pasangan</th>
         <th style="width: 25%;">Tanggal</th>
         <th>Lokasi</th>
+        <th>Link</th>
         <th>Aksi</th>
       </tr>
     </thead>
@@ -24,6 +25,15 @@
             Resepsi: {{ $wedding->formatted_reception_date ?? '-' }}
           </td>
           <td>{{ $wedding->place_name }} - {{ $wedding->location }}</td>
+          <td>
+            @if(in_array($wedding->order->status, ['processed', 'published', 'completed']))
+            <a href="{{ route('wedding.checks', $wedding->slug) }}" target="_blank">
+              <span class="badge bg-primary">Cek Undangan</span>
+            </a>
+            @else
+            <span class="badge bg-danger">Undangan belum diproses</span>
+            @endif
+          </td>
           <td>
             <!-- Edit Button -->
             <a href="{{ route('weddings.edit', $wedding->slug) }}" class="btn btn-sm btn-warning">

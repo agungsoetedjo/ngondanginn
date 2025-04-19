@@ -29,7 +29,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/weddings/{id}/guest-books', [GuestBookController::class, 'index'])->name('guestbooks.index');
     Route::get('/weddings/{id}/galleries', [GalleryController::class, 'index'])->name('galleries.index');
     Route::get('/musics', [MusicController::class, 'index'])->name('musics.index');
-    Route::delete('/dashboard/rsvps/{id}', [RsvpController::class, 'destroy'])->name('rsvps.destroy');
+    Route::delete('/rsvps/rsvps/{id}', [RsvpController::class, 'destroy'])->name('rsvps.destroy');
     Route::delete('/guest-books/{id}', [GuestBookController::class, 'destroy'])->name('guestbooks.destroy');
     Route::delete('/galleries/{id}', [GalleryController::class, 'destroy'])->name('galleries.destroy');
     Route::delete('/musics/{id}', [MusicController::class, 'destroy'])->name('musics.destroy');
@@ -48,7 +48,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/weddings/process-wedding/{kode_transaksi}', [WeddingController::class, 'processWedding'])->name('admin.weddings.processWedding');
     Route::post('/weddings/publish-wedding/{kode_transaksi}', [WeddingController::class, 'publishWedding'])->name('admin.weddings.publishWedding');
     Route::post('/weddings/complete-wedding/{kode_transaksi}', [WeddingController::class, 'completeWedding'])->name('admin.weddings.completeWedding');
-
 });
 
 Route::middleware('guest')->group(function () {
@@ -58,6 +57,9 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', [UserAuthController::class, 'showRegisterForm'])->name('register');
     Route::post('/register', [UserAuthController::class, 'register']);
 });
+
+Route::get('/wedding/{slug}', [WeddingController::class, 'weddingChecks'])->name('wedding.checks');
+Route::post('/wedding/{slug}/rsvp', [RsvpController::class, 'store'])->name('rsvp.store');
 
 Route::post('/logout', [UserAuthController::class, 'logout'])->name('logout')->middleware('auth');
 

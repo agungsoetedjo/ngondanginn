@@ -15,9 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('wedding_id')->constrained('weddings')->onDelete('cascade');
             $table->string('name');
-            $table->string('email')->nullable();
-            $table->enum('attendance', ['yes', 'no', 'maybe']);
-            $table->text('note')->nullable();
+            $table->enum('attendance', ['yes', 'no']);
+            $table->text('reason')->nullable();
             $table->timestamps();
         });
     }

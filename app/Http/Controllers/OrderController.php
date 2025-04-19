@@ -118,12 +118,14 @@ class OrderController extends Controller
         $file = $request->file('bukti_transfer');
     
         // Buat nama unik pakai UUID
-        $fileName = Str::uuid() . '.' . $file->getClientOriginalExtension();
+        $fileName = uniqid() . '.' . $file->getClientOriginalExtension();
+        $path = 'uploads/payment_proof/' . $fileName;
         $file->move(public_path('uploads/payment_proof'), $fileName);
+
     
         // Update order
         $order->update([
-            'payment_proof' => $fileName,
+            'payment_proof' => $path,
             'status' => 'waiting_verify',
         ]);
     

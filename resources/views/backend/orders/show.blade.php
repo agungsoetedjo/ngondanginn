@@ -98,7 +98,7 @@
                 <h6>Bukti Transfer</h6>
                 @if ($order->payment_proof)
                     <div style="max-width: 250px;">
-                        <img src="{{ asset('uploads/payment_proof/' . $order->payment_proof) }}"
+                        <img src="{{ asset($order->payment_proof) }}"
                              alt="Bukti Transfer"
                              class="img-thumbnail img-fluid w-100">
                     </div>
@@ -121,23 +121,23 @@
                 @endif
 
                 @if ($order->status === 'paid')
-                    <form action="{{ route('admin.weddings.processWedding', $order->kode_transaksi) }}" method="POST" onsubmit="return confirm('Yakin ingin memproseskan pesanan ini ke data undangan ?')">
+                    <form action="{{ route('admin.weddings.processWedding', $order->kode_transaksi) }}" method="POST">
                         @csrf
-                        <button type="submit" class="btn btn-primary">Proses ke Undangan</button>
+                        <button type="submit" data-title="Proses ke Undangan ?" data-text="Pesanan ini akan diproseskan menjadi undangan aktif. Lanjutkan ?" class="btn btn-primary btn-confirm">Proses ke Undangan</button>
                     </form>
                 @endif
                 
                 @if ($order->status === 'processed')
-                    <form action="{{ route('admin.weddings.publishWedding', $order->kode_transaksi) }}" method="POST" onsubmit="return confirm('Yakin ingin mempublikasikan undangan ini ?')">
+                    <form action="{{ route('admin.weddings.publishWedding', $order->kode_transaksi) }}" method="POST">
                         @csrf
-                        <button type="submit" class="btn btn-primary">Publikasi Undangan</button>
+                        <button type="submit" data-title="Publikasikan Undangan ?" data-text="Setelah dipublikasi, undangan bisa diakses publik." class="btn btn-primary btn-confirm">Publikasi Undangan</button>
                     </form>
                 @endif
 
                 @if ($order->status === 'published')
-                    <form action="{{ route('admin.weddings.completeWedding', $order->kode_transaksi) }}" method="POST" onsubmit="return confirm('Yakin ingin menyelesaikan undangan ini ?')">
+                    <form action="{{ route('admin.weddings.completeWedding', $order->kode_transaksi) }}" method="POST">
                         @csrf
-                        <button type="submit" class="btn btn-primary">Selesai Undangan</button>
+                        <button type="submit" data-title="Selesaikan Undangan ?" data-text="Pesanan akan dianggap selesai dan tidak bisa dibatalkan. Lanjutkan ?" class="btn btn-primary btn-confirm">Selesai Undangan</button>
                     </form>
                 @endif
                 <a href="{{ route('admin.orders.index') }}" class="btn btn-secondary ms-auto">Kembali</a>
@@ -145,4 +145,32 @@
         </div>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  $(document).ready(function () {
+    $('.btn-confirm').click(function (e) {
+      e.preventDefault();
+
+      const form = $(this).closest('form');
+      const title = $(this).data('title') || 'Yakin ingin melanjutkan aksi ini?';
+      const text = $(this).data('text') || 'Tindakan ini tidak dapat dibatalkan.';
+
+      Swal.fire({
+        title: title,
+        text: text,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#18743d',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, Lanjutkan!',
+        cancelButtonText: 'Batal'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          form.submit();
+        }
+      });
+    });
+  });
+</script>
 @endsection

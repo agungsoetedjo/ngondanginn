@@ -17,9 +17,8 @@ class RSVP extends Model
     protected $fillable = [
         'wedding_id',
         'name',
-        'email',
         'attendance',
-        'note',
+        'reason',
     ];
 
     protected $dates = ['created_at', 'updated_at'];

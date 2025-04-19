@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Music;
 use App\Models\Order;
+use App\Models\RSVP;
 use App\Models\Template;
 use App\Models\Wedding;
 use Carbon\Carbon;
@@ -275,5 +276,29 @@ class WeddingController extends Controller
 
         return redirect()->route('admin.orders.show', $order->kode_transaksi);
     }
+
+    public function weddingChecks($slug)
+    {
+        // Ambil data wedding beserta relasi order
+        $wedding = Wedding::with(['order','template'])->where('slug', $slug)->firstOrFail();
+        $attendingCount = RSVP::where('wedding_id', $wedding->id)
+        ->where('attendance', 'yes')
+        ->count();
+
+        $notAttendingCount = RSVP::where('wedding_id', $wedding->id)
+        ->where('attendance', 'no')
+        ->count();
+        
+        // Ambil view_path dari template
+        $viewPath = 'backend.' . $wedding->template->view_path;
+        // Cek status order untuk memastikan akses
+        if (!in_array($wedding->order->status, ['processed', 'published', 'completed'])) {
+            abort(403, 'Undangan belum dapat diakses.');
+        }
+    
+        // Render view dengan nama yang ada di viewPath
+        return view($viewPath, compact('wedding','attendingCount','notAttendingCount'));
+    }
+    
 
 }

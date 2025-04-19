@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Undangan Pernikahan</title>
     <link href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }} " rel="stylesheet">
     <link href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }} " rel="stylesheet">
@@ -99,8 +100,11 @@
         .attendance-stats {
             margin-bottom: 40px; display: flex; justify-content: space-around; gap: 20px;
         }
-        .stats-box {
-            background-color: #153170; color: white; padding: 15px; border-radius: 10px; width: 120px; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        .stats-box-attend {
+            background-color: #178245; color: white; padding: 15px; border-radius: 10px; width: 120px; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .stats-box-notattend {
+            background-color: #af2626; color: white; padding: 15px; border-radius: 10px; width: 120px; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .stats-box h5 {
             font-size: 1.2rem; margin-bottom: 5px;
@@ -325,43 +329,51 @@
         
             <section id="love-story" class="section" data-aos="fade-up" data-aos-delay="600">
                 <h2 class="mb-4">Love Story</h2>
-                <p>{{ $wedding->love_story }}</p>
+                <p>{{ $wedding->description }}</p>
             </section>
         
             <section id="rsvp" class="section rsvp-section" data-aos="fade-up" data-aos-delay="700">
                 <h2 class="mb-4">Ucapkan Sesuatu</h2>
             
                 <div class="attendance-stats d-flex justify-content-around mb-4">
-                    <div class="stats-box">
-                        <p class="attendance-number" id="attending-count">0</p>
+                    <div class="stats-box-attend">
+                        <p class="attendance-number" id="attending-count">{{ $attendingCount }}</p>
                         <h5>Hadir</h5>
                     </div>
-                    <div class="stats-box">
-                        <p class="attendance-number" id="not-attending-count">0</p>
+                    <div class="stats-box-notattend">
+                        <p class="attendance-number" id="not-attending-count">{{ $notAttendingCount }}</p>
                         <h5>Tidak Hadir</h5>
                     </div>
                 </div>
                 
-                <form action="" method="POST" class="rsvp-form">
+                <form id="rsvp-form" method="POST" action="{{ route('rsvp.store', $wedding->slug) }}" class="rsvp-form">
                     @csrf
                     <div class="mb-3">
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Masukkan Nama Anda" required>
+                        <input type="text" class="form-control" id="name" name="nama_tamu" placeholder="Masukkan Nama Anda" required>
                     </div>
-            
+                
                     <div class="mb-3">
-                        <textarea style="resize: vertical;" class="form-control" id="message" name="message" rows="3" placeholder="Tulis Ucapan Anda..." required></textarea>
+                        <textarea style="resize: vertical;" class="form-control" id="message" name="ucapan" rows="3" placeholder="Tulis Ucapan Anda..." required></textarea>
                     </div>
-            
+                
                     <div class="mb-3">
-                        <select class="form-select" id="attendance" name="attendance" required>
-                            <option value="Yes">Hadir</option>
-                            <option value="No">Tidak Hadir</option>
+                        <select class="form-select" id="kehadiran" name="kehadiran" required>
+                            <option value="">--Kehadirannya--</option>
+                            <option value="yes">Hadir</option>
+                            <option value="no">Tidak Hadir</option>
                         </select>
                     </div>
-            
+                
+                    <div class="mb-3" id="reason-field" style="display: none;">
+                        <textarea class="form-control" id="alasan" name="alasan" rows="3" placeholder="Tulis Alasan Anda"></textarea>
+                    </div>
+                
                     <button type="submit" class="btn btn-primary w-100">Kirim Konfirmasi</button>
                 </form>
-            
+                
+                <!-- Tempat untuk notifikasi -->
+                <div id="form-response" class="mt-3"></div>
+
             </section>
 
             <section class="section" data-aos="fade-up" data-aos-delay="800">
@@ -375,9 +387,86 @@
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }} "></script>
 <script src="{{ asset('assets/vendor/aos/aos.js') }}"></script>
 <script>
+    const form = document.getElementById('rsvp-form');
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    // cegah klik tombol submit rsvp berkali-kali
+    document.addEventListener("DOMContentLoaded", function () {
+    form.addEventListener('submit', function (e) {
+            // Cegah klik ganda
+            submitBtn.disabled = true;
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // DOM element
+        const attendanceSelect = document.getElementById('kehadiran');
+        const reasonField = document.getElementById('reason-field');
+        const reasonInput = document.getElementById('alasan');
+        const responseDiv = document.getElementById('form-response');
+
+        // Validasi alasan hadir/tidak
+        if (attendanceSelect) {
+            attendanceSelect.addEventListener('change', function () {
+                if (this.value === 'no') {
+                    reasonField.style.display = 'block';
+                    reasonInput.setAttribute('required', 'required');
+                } else {
+                    reasonField.style.display = 'none';
+                    reasonInput.removeAttribute('required');
+                }
+            });
+        }
+
+        // Submit AJAX RSVP
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                const formData = new FormData(form);
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                formData.forEach((value, key) => {
+                    console.log(key + ": " + value);  // Debug log
+                });
+
+                fetch("{{ route('rsvp.store', ['slug' => $wedding->slug]) }}", {
+                    method: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    if (data.success) {
+                        responseDiv.innerHTML = `<div class="alert alert-success alert-dismissible fade show" role="alert">${data.message}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>`;
+                        submitBtn.disabled = false;
+                        form.reset();
+                        document.getElementById('attending-count').textContent = data.attending_count;
+                        document.getElementById('not-attending-count').textContent = data.not_attending_count;
+                        reasonField.style.display = 'none'; // sembunyikan alasan setelah reset
+                    } else {
+                        responseDiv.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert">${data.message}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    responseDiv.innerHTML = `<div class="alert alert-danger">Terjadi kesalahan. Silakan coba lagi.</div>`;
+                });
+            });
+        } else {
+            console.error("Form RSVP tidak ditemukan.");
+        }
+    });
+
+    // beri efek AOS
     AOS.init({ duration: 1000, once: false });
 
     let lastScrollTop = 0;
@@ -413,6 +502,7 @@
         lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
     });
 
+    // hitungan mundur hari nikah
     const akadDate = new Date("{{ $wedding->akad_date }}").getTime();
 
     const countdown = setInterval(() => {
@@ -436,23 +526,23 @@
         document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
     }, 1000);
 
+        // tombol play pause musik latar
         const audio = document.getElementById('bgMusic');
         const playPauseButton = document.getElementById('playPauseButton');
         const playPauseIcon = document.getElementById('playPauseIcon');
 
-        playPauseButton.addEventListener('click', () => {
-            if (audio.paused) {
-                audio.play().then(() => {
-                    playPauseIcon.classList.replace('bi-play-circle', 'bi-pause-circle');
-                    playPauseButton.innerHTML = '<i id="playPauseIcon" class="bi bi-pause-circle"></i>';
-                }).catch(e => console.log(e));
-            } else {
-                audio.pause();
+    playPauseButton.addEventListener('click', () => {
+        if (audio.paused) {
+            audio.play().then(() => {
+                playPauseIcon.classList.replace('bi-play-circle', 'bi-pause-circle');
+                playPauseButton.innerHTML = '<i id="playPauseIcon" class="bi bi-pause-circle"></i>';
+            }).catch(e => console.log(e));
+        } else {
+            audio.pause();
                 playPauseIcon.classList.replace('bi-pause-circle', 'bi-play-circle');
-                playPauseButton.innerHTML = '<i id="playPauseIcon" class="bi bi-play-circle"></i>';
-            }
-        });
-
+            playPauseButton.innerHTML = '<i id="playPauseIcon" class="bi bi-play-circle"></i>';
+        }
+    });
 </script>
 </body>
 </html>

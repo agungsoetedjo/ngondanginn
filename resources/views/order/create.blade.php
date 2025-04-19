@@ -14,37 +14,16 @@
                     title: 'Pesanan Berhasil!',
                     html: `
                         <p>Kode Transaksi Anda:</p>
-                        <strong id="kodeTransaksi">${kode}</strong>
+                        <strong>${kode}</strong>
                         <br>
-                        <button id="btnCopy" class="btn btn-sm btn-outline-primary mt-2">Salin Kode</button>
-                        <br>
-                        <a href="${url}" class="btn btn-sm btn-success mt-2">Lihat Pesanan</a>
+                        <a href="${url}" class="btn btn-sm btn-success mt-3">Lihat Pesanan Anda :)</a>
                     `,
                     icon: 'success',
-                    confirmButtonText: 'Tutup',
-                    didRender: () => {
-                        document.getElementById('btnCopy').addEventListener('click', () => {
-                            const kodeText = document.getElementById("kodeTransaksi").innerText;
-                            navigator.clipboard.writeText(kodeText).then(() => {
-                                const Toast = Swal.mixin({
-                                    toast: true,
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 1500,
-                                    timerProgressBar: true,
-                                });
-
-                                Toast.fire({
-                                    icon: 'success',
-                                    title: 'Kode disalin!'
-                                });
-                            });
-                        });
-                    }
                 });
             });
         </script>
     @endif
+
 
     <!-- Section Title -->
     <div class="container section-title" data-aos="fade-up">
