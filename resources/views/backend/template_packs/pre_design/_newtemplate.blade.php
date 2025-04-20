@@ -100,8 +100,11 @@
         .attendance-stats {
             margin-bottom: 40px; display: flex; justify-content: space-around; gap: 20px;
         }
-        .stats-box {
-            background-color: #153170; color: white; padding: 15px; border-radius: 10px; width: 120px; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        .stats-box-attend {
+            background-color: #178245; color: white; padding: 15px; border-radius: 10px; width: 120px; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .stats-box-notattend {
+            background-color: #af2626; color: white; padding: 15px; border-radius: 10px; width: 120px; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .stats-box h5 {
             font-size: 1.2rem; margin-bottom: 5px;
@@ -200,7 +203,7 @@
 </head>
 <body>
     <audio id="bgMusic" loop>
-        <source src="{{ asset('uploads/musik/67fe3c275c2dd.mp3') }}" type="audio/mp3">
+        <source src="{{ asset($wedding->music->file_path) }}" type="audio/mp3">
     </audio>
 <div class="container">
     <div class="music-toggle-wrapper">
@@ -326,18 +329,18 @@
         
             <section id="love-story" class="section" data-aos="fade-up" data-aos-delay="600">
                 <h2 class="mb-4">Love Story</h2>
-                <p>{{ $wedding->love_story }}</p>
+                <p>{{ $wedding->description }}</p>
             </section>
         
             <section id="rsvp" class="section rsvp-section" data-aos="fade-up" data-aos-delay="700">
                 <h2 class="mb-4">Ucapkan Sesuatu</h2>
             
                 <div class="attendance-stats d-flex justify-content-around mb-4">
-                    <div class="stats-box">
-                        <p class="attendance-number" id="attending-count">{{ $attendingCount }}0</p>
+                    <div class="stats-box-attend">
+                        <p class="attendance-number" id="attending-count">{{ $attendingCount }}</p>
                         <h5>Hadir</h5>
                     </div>
-                    <div class="stats-box">
+                    <div class="stats-box-notattend">
                         <p class="attendance-number" id="not-attending-count">{{ $notAttendingCount }}</p>
                         <h5>Tidak Hadir</h5>
                     </div>
@@ -368,7 +371,6 @@
                     <button type="submit" class="btn btn-primary w-100">Kirim Konfirmasi</button>
                 </form>
                 
-                
                 <!-- Tempat untuk notifikasi -->
                 <div id="form-response" class="mt-3"></div>
 
@@ -389,9 +391,19 @@
 <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }} "></script>
 <script src="{{ asset('assets/vendor/aos/aos.js') }}"></script>
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById('rsvp-form');
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    // cegah klik tombol submit rsvp berkali-kali
+    document.addEventListener("DOMContentLoaded", function () {
+    form.addEventListener('submit', function (e) {
+            // Cegah klik ganda
+            submitBtn.disabled = true;
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
         // DOM element
-        const form = document.getElementById('rsvp-form');
         const attendanceSelect = document.getElementById('kehadiran');
         const reasonField = document.getElementById('reason-field');
         const reasonInput = document.getElementById('alasan');
@@ -435,7 +447,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     console.log(data);
                     if (data.success) {
                         responseDiv.innerHTML = `<div class="alert alert-success alert-dismissible fade show" role="alert">${data.message}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>`;
+                        submitBtn.disabled = false;
                         form.reset();
+                        document.getElementById('attending-count').textContent = data.attending_count;
+                        document.getElementById('not-attending-count').textContent = data.not_attending_count;
                         reasonField.style.display = 'none'; // sembunyikan alasan setelah reset
                     } else {
                         responseDiv.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert">${data.message}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>`;
@@ -451,6 +466,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // beri efek AOS
     AOS.init({ duration: 1000, once: false });
 
     let lastScrollTop = 0;
@@ -515,18 +531,18 @@ document.addEventListener("DOMContentLoaded", function () {
         const playPauseButton = document.getElementById('playPauseButton');
         const playPauseIcon = document.getElementById('playPauseIcon');
 
-        playPauseButton.addEventListener('click', () => {
-            if (audio.paused) {
-                audio.play().then(() => {
-                    playPauseIcon.classList.replace('bi-play-circle', 'bi-pause-circle');
-                    playPauseButton.innerHTML = '<i id="playPauseIcon" class="bi bi-pause-circle"></i>';
-                }).catch(e => console.log(e));
-            } else {
-                audio.pause();
+    playPauseButton.addEventListener('click', () => {
+        if (audio.paused) {
+            audio.play().then(() => {
+                playPauseIcon.classList.replace('bi-play-circle', 'bi-pause-circle');
+                playPauseButton.innerHTML = '<i id="playPauseIcon" class="bi bi-pause-circle"></i>';
+            }).catch(e => console.log(e));
+        } else {
+            audio.pause();
                 playPauseIcon.classList.replace('bi-pause-circle', 'bi-play-circle');
-                playPauseButton.innerHTML = '<i id="playPauseIcon" class="bi bi-play-circle"></i>';
-            }
-        });
+            playPauseButton.innerHTML = '<i id="playPauseIcon" class="bi bi-play-circle"></i>';
+        }
+    });
 </script>
 </body>
 </html>
