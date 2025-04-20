@@ -52,6 +52,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/archive', [OrderController::class, 'indexArchive'])->name('index-archive');
     Route::get('/archive/{kode_transaksi}', [OrderController::class, 'showArchive'])->name('show-archive');
+    
 });
 
 Route::middleware('guest')->group(function () {

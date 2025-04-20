@@ -170,7 +170,11 @@
                         <button type="submit" data-title="Selesaikan Undangan ?" data-text="Pesanan akan dianggap selesai dan tidak bisa dibatalkan. Lanjutkan ?" class="btn btn-primary btn-confirm">Selesai Undangan</button>
                     </form>
                 @endif
-                <a href="{{ route('admin.orders.index') }}" class="btn btn-secondary ms-auto">Kembali</a>
+                @if (request()->routeIs('admin.orders.show'))
+                    <a href="{{ route('admin.orders.index') }}" class="btn btn-secondary ms-auto">Kembali</a>
+                @elseif (request()->routeIs('show-archive'))
+                    <a href="{{ route('index-archive') }}" class="btn btn-secondary ms-auto">Kembali</a>
+                @endif
             </div>
         </div>
     </div>

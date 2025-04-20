@@ -82,7 +82,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('index-archive') ? 'active fw-bold' : '' }}" href="{{ route('index-archive') }}">
+            <a class="nav-link {{ request()->routeIs(['index-archive','show-archive']) ? 'active fw-bold' : '' }}" href="{{ route('index-archive') }}">
               Arsip
             </a>
           </li>
