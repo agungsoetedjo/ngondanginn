@@ -35,7 +35,7 @@
                                 'paid' => 'success',
                                 'waiting_verify' => 'warning',
                                 'pending' => 'danger',
-                                'active' => 'secondary',
+                                'published' => 'secondary',
                                 'processed' => 'info',
                                 default => 'dark',
                             };
@@ -58,7 +58,7 @@
                                     @case('processed')
                                         <i class="bi bi-file-earmark-text"></i> Undangan Diproses
                                         @break
-                                    @case('active')
+                                    @case('published')
                                         <i class="bi bi-globe"></i> Undangan Dipublikasi
                                         @break
                                     @case('completed')

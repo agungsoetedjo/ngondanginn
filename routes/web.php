@@ -59,8 +59,8 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [UserAuthController::class, 'register']);
 });
 
-Route::get('/wedding/{slug}', [WeddingController::class, 'weddingChecks'])->name('wedding.checks');
-Route::post('/wedding/{slug}/rsvp', [RsvpController::class, 'store'])->name('rsvp.store');
+Route::get('/fe/{slug}', [WeddingController::class, 'weddingChecks'])->name('wedding.checks');
+Route::post('/fe/{slug}/rsvp', [RsvpController::class, 'store'])->name('rsvp.store');
 
 Route::post('/logout', [UserAuthController::class, 'logout'])->name('logout')->middleware('auth');
 

@@ -104,7 +104,7 @@
                                         'paid' => 'success',
                                         'waiting_verify' => 'warning',
                                         'pending' => 'danger',
-                                        'active' => 'secondary',
+                                        'published' => 'secondary',
                                         'processed' => 'info',
                                         default => 'dark',
                                     };
@@ -116,7 +116,7 @@
                                         @case('waiting_verify') <i class="bi bi-hourglass-bottom"></i> Menunggu Verifikasi @break
                                         @case('paid') <i class="bi bi-check-circle-fill"></i> Pembayaran Diterima @break
                                         @case('processed') <i class="bi bi-file-earmark-text"></i> Undangan Diproses @break
-                                        @case('active') <i class="bi bi-globe"></i> Undangan Dipublikasi @break
+                                        @case('published') <i class="bi bi-globe"></i> Undangan Dipublikasi @break
                                         @case('completed') <i class="bi bi-check-circle-fill"></i> Undangan Selesai @break
                                         @default <i class="bi bi-question-circle"></i> Status Tidak Dikenal
                                     @endswitch
@@ -162,6 +162,13 @@
                                         <i class="bi bi-upload"></i> Upload Bukti Pembayaran
                                     </button>
                                 </form>
+                            </div>
+                            @endif
+
+                            @if ($order->status === 'published')
+                            <div class="col-md-12 mt-3">
+                                <h6 class="text-muted">Link Undangan : </h6>
+                                <a href="{{ route('wedding.checks', $order->wedding->slug) }}" target="_blank"><span class="badge bg-success">{{ $order->wedding->slug }}</span></a>
                             </div>
                             @endif
 
