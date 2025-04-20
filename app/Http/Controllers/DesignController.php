@@ -184,7 +184,7 @@ class DesignController extends Controller
                 'reception_date' => '2025-05-20 11:00:00',
                 'place_name' => 'Gedung Serbaguna Graha Citra',
                 'location' => 'Jl. Raya Sudirman No. 123, Jakarta Selatan',
-                'love_story' => 'asdasdasdasdasd',
+                'description' => 'asdasdasdasdasd',
                 'slug' => 'anna-budi',
                 'template_id' => $template->id,
                 'rsvps' => collect([]),
@@ -196,6 +196,8 @@ class DesignController extends Controller
                 ]),
                 'music' => (object)['file_path' => ''],
             ],
+            'attendingCount' => '0',
+            'notAttendingCount' => '0',
         ]);
     }
 
