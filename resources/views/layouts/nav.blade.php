@@ -8,33 +8,24 @@
     <!-- Menu Navigasi -->
     <nav id="navmenu" class="navmenu">
       <ul>
-        <li><a href="/#hero" class="active">Home</a></li>
-        <li><a href="/#fitur">Fitur</a></li>
-        <li><a href="/#pilihantema">Pilihan Tema</a></li>
-        <li><a href="/#faq">FAQ</a></li>
-        <li><a href="/#testimoni">Testimoni</a></li>
-        <li><a href="/#hubungikami">Hubungi Kami</a></li>
-        
-        <li class="dropdown"><a href="#"><span>Pesan Sekarang</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+        <li><a href="/#hero" class="{{ request()->is('/') ? 'active' : '' }}">Home</a></li>
+        <li><a href="/#fitur" class="{{ request()->is('/') ? 'active' : '' }}">Fitur</a></li>
+        <li><a href="/#pilihantema" class="{{ request()->is('/') ? 'active' : '' }}">Pilihan Tema</a></li>
+        <li><a href="/#faq" class="{{ request()->is('/') ? 'active' : '' }}">FAQ</a></li>
+        <li><a href="/#testimoni" class="{{ request()->is('/') ? 'active' : '' }}">Testimoni</a></li>
+        <li><a href="/#hubungikami" class="{{ request()->is('/') ? 'active' : '' }}">Hubungi Kami</a></li>
+    
+        <li class="dropdown">
+          <a href="#" class="{{ request()->is('pesan-undangan') || request()->is('cek-pesanan') ? 'active' : '' }}">
+              <span>Pesan Sekarang</span> <i class="bi bi-chevron-down toggle-dropdown"></i>
+          </a>
           <ul>
-            <li><a href="{{ route('order.create') }}">Buat Pesanan</a></li>
-            {{-- <li class="dropdown"><a href="#"><span>Deep Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-              <ul>
-                <li><a href="#">Deep Dropdown 1</a></li>
-                <li><a href="#">Deep Dropdown 2</a></li>
-                <li><a href="#">Deep Dropdown 3</a></li>
-                <li><a href="#">Deep Dropdown 4</a></li>
-                <li><a href="#">Deep Dropdown 5</a></li>
-              </ul>
-            </li> --}}
-            <li><a href="{{ route('order.cek.form') }}">Cek Pesanan</a></li>
+              <li><a href="{{ route('order.create') }}" class="{{ request()->is('pesan-undangan') ? 'active' : '' }}">Buat Pesanan</a></li>
+              <li><a href="{{ route('order.cek.form') }}" class="{{ request()->is('cek-pesanan') ? 'active' : '' }}">Cek Pesanan</a></li>
           </ul>
-        </li>
-      </ul>
+      </li>
+      </ul>    
       <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
     </nav>
-
-    {{-- <!-- Tombol Pesan Sekarang -->
-    <a class="btn ms-3 btn-primary" href="index.html#about">Pesan Sekarang</a> --}}
   </div>
 </header>
