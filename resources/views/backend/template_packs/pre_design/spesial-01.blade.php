@@ -42,7 +42,7 @@
             font-family: 'Great Vibes', cursive; font-size: 1.5rem; font-weight: normal; color: #0a2a54; margin: 10px 0; text-shadow: 2px 2px 3px rgba(0,0,0,0.1);
         }
         .sub-couple-names {
-            font-family: 'Great Vibes', cursive; font-size: 2rem; font-weight: bold; margin: 10px 0; text-shadow: 2px 2px 3px rgba(0,0,0,0.1);
+            font-family: 'Great Vibes', cursive; font-size: 2rem; font-weight: bold; color: #0a2a54; margin: 10px 0; text-shadow: 2px 2px 3px rgba(0,0,0,0.1);
         }
         .guest-name {
             font-size: 1.1rem; color: #162c4b; margin-bottom: 20px;

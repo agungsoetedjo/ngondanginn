@@ -21,10 +21,10 @@
             max-width: 560px; margin: 0 auto; padding: 0 15px;
         }
         .content-wrapper {
-            background-color: #d5e9eb; padding: 10px;
+            background-color: #ebe8d5; padding: 10px;
         }
         .cover-section {
-            background: linear-gradient(to top, #9ed0ec, #d5e9eb); height: 100vh; display: flex; align-items: flex-end; justify-content: center; padding: 0 20px 60px; position: relative; overflow: hidden; text-align: center;
+            background: linear-gradient(to top, #ecdb9e, #eaebd5); height: 100vh; display: flex; align-items: flex-end; justify-content: center; padding: 0 20px 60px; position: relative; overflow: hidden; text-align: center;
         }
         .cover-section::before {
             content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.6), transparent 70%); animation: rotateBg 20s linear infinite; z-index: 0;
@@ -36,22 +36,22 @@
             position: relative; z-index: 1;
         }
         .cover-title {
-            font-size: 1rem; color: #04345f; letter-spacing: 1px;
+            font-size: 1rem; color: #5f5904; letter-spacing: 1px;
         }
         .couple-names {
-            font-family: 'Great Vibes', cursive; font-size: 1.5rem; font-weight: normal; color: #0a2a54; margin: 10px 0; text-shadow: 2px 2px 3px rgba(0,0,0,0.1);
+            font-family: 'Great Vibes', cursive; font-size: 1.5rem; font-weight: normal; color: #54480a; margin: 10px 0; text-shadow: 2px 2px 3px rgba(0,0,0,0.1);
         }
         .sub-couple-names {
-            font-family: 'Great Vibes', cursive; font-size: 2rem; font-weight: bold; margin: 10px 0; text-shadow: 2px 2px 3px rgba(0,0,0,0.1);
+            font-family: 'Great Vibes', cursive; font-size: 2rem; font-weight: bold; color: #54480a; margin: 10px 0; text-shadow: 2px 2px 3px rgba(0,0,0,0.1);
         }
         .guest-name {
-            font-size: 1.1rem; color: #162c4b; margin-bottom: 20px;
+            font-size: 1.1rem; color: #4b4416; margin-bottom: 20px;
         }
         .open-btn {
-            padding: 5px 20px; font-size: 1rem; background-color: #2a317c; color: white; border: none; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.3s ease;
+            padding: 5px 20px; font-size: 1rem; background-color: #7c632a; color: white; border: none; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.3s ease;
         }
         .open-btn:hover {
-            background-color: #171c51; transform: scale(1.05);
+            background-color: #514417; transform: scale(1.05);
         }
         .invitation-sections {
             visibility: hidden; opacity: 0;height: 0; overflow: hidden; transition: all 0.5s ease;
@@ -66,7 +66,7 @@
             transform: translateY(-4px);
         }
         .section h3, .section h4 {
-            color: #04345f; margin-bottom: 10px; font-weight: 600;
+            color: #5f5404; margin-bottom: 10px; font-weight: 600;
         }
         @media (max-width: 560px) {
             .couple-names { font-size: 2.3rem; } .open-btn { font-size: 1rem; padding: 8px 16px; } .section { padding: 15px; }
@@ -128,7 +128,7 @@
             padding: 20px 0; text-align: center; flex-wrap: wrap; gap: 16px;
         }
         .count-box {
-            background-color: #153170; border-radius: 12px; padding: 2px; width: 70px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: #706215; border-radius: 12px; padding: 2px; width: 70px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         .count-box span {
             font-size: 1rem; font-weight: bold; color: #ffffff; display: block;
@@ -137,19 +137,19 @@
             font-size: 0.55rem; color: #ffffff;
         }
         #save-the-date h2 {
-            font-family: 'Great Vibes', cursive; font-size: 2rem; color: #24448f;
+            font-family: 'Great Vibes', cursive; font-size: 2rem; color: #8f6424;
         }
         #amplop-digital h2 {
-            font-family: 'Great Vibes', cursive; font-size: 2rem; color: #24448f;
+            font-family: 'Great Vibes', cursive; font-size: 2rem; color: #8f6424;
         }
         #galeri-foto h2 {
-            font-family: 'Great Vibes', cursive; font-size: 2rem; color: #24448f;
+            font-family: 'Great Vibes', cursive; font-size: 2rem; color: #8f6424;
         }
         #love-story h2 {
-            font-family: 'Great Vibes', cursive; font-size: 2rem; color: #24448f;
+            font-family: 'Great Vibes', cursive; font-size: 2rem; color: #8f6424;
         }
         #rsvp h2 {
-            font-family: 'Great Vibes', cursive; font-size: 2rem; color: #24448f;
+            font-family: 'Great Vibes', cursive; font-size: 2rem; color: #8f6424;
         }
         .mandiri-card {
             width: 280px; height: 175px; background: linear-gradient(135deg, #dcdcdc, #a9a9a9); border-radius: 16px; color: #000; padding: 16px; box-shadow: 0 6px 14px rgba(0,0,0,0.2); font-family: 'Segoe UI', sans-serif; position: relative; overflow: hidden;
@@ -234,17 +234,17 @@
                     <div class="count-box"><span id="seconds">00</span><div class="label">Detik</div></div>
                 </div>
                 <p style="margin-top: 4px; font-weight:bold; ">{{ \Carbon\Carbon::parse($wedding->akad_date)->translatedFormat('l, d F Y') }}</p>
-                <a class="btn btn-primary text-white" style="background-color: #153170;" href="#save-the-date">Save The Date</a>
+                <a class="btn btn-primary text-white" style="background-color: #706215;" href="#save-the-date">Save The Date</a>
             </section>
         
             <section id="perkenalan-keluarga" class="section" data-aos="fade-up" data-aos-delay="200">
-                <p style="font-family: 'Amiri', serif; font-size: 2rem; color: #153170;">
+                <p style="font-family: 'Amiri', serif; font-size: 2rem; color: #706215;">
                     بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ
                 </p>
-                <p style="font-family: 'Great Vibes', cursive; font-size: 1.5rem; color: #153170;">
+                <p style="font-family: 'Great Vibes', cursive; font-size: 1.5rem; color: #706215;">
                     Assalamu'alaikum Wr. Wb.
                 </p>
-                <p style="color: #153170; font-size: 0.95rem;">
+                <p style="color: #706215; font-size: 0.95rem;">
                     Tanpa mengurangi rasa hormat.<br>
                     Kami mengundang Bapak/Ibu/Saudara/i<br>
                     serta Kerabat sekalian untuk menghadiri<br>
@@ -378,7 +378,7 @@
 
             <section class="section" data-aos="fade-up" data-aos-delay="800">
                 <p>Merupakan suatu kehormatan dan kebahagiaan bagi kami, apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu. Atas kehadiran dan doa restunya, kami mengucapkan terima kasih.</p>
-                <p style="font-family: 'Great Vibes', cursive; font-size: 1.5rem; color: #153170;">
+                <p style="font-family: 'Great Vibes', cursive; font-size: 1.5rem; color: #707015;">
                     Wassalamu'alaikum Wr. Wb.
                 </p>
                 <div class="sub-couple-names">{{ $wedding->bride_name }} <br>&<br> {{ $wedding->groom_name }}</div>
