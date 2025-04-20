@@ -277,10 +277,30 @@ class WeddingController extends Controller
         return redirect()->route('admin.orders.show', $order->kode_transaksi);
     }
 
+    public function updateMusic(Request $request, $id)
+    {
+        $request->validate([
+            'music_id' => 'required|exists:musics,id',
+        ]);
+
+        $wedding = Wedding::findOrFail($id);
+
+        // pastikan user yang mengelola undangan ini adalah user yang sedang login
+        if ($wedding->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $wedding->music_id = $request->music_id;
+        $wedding->save();
+
+        return back()->with('success', 'Musik latar berhasil diperbarui!');
+    }
+
     public function weddingChecks($slug)
     {
         // Ambil data wedding beserta relasi order
-        $wedding = Wedding::with(['order','template'])->where('slug', $slug)->firstOrFail();
+        $wedding = Wedding::with(['order','template','music'])->where('slug', $slug)->firstOrFail();
+
         $attendingCount = RSVP::where('wedding_id', $wedding->id)
         ->where('attendance', 'yes')
         ->count();

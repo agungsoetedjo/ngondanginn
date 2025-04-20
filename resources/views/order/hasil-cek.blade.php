@@ -34,8 +34,9 @@
                 <div class="d-flex justify-content-between flex-wrap align-items-center mb-4">
                     <div>
                         <h5 class="fw-bold text-dark mb-1">Bukti Pesanan</h5>
-                        <small class="text-muted">Tanggal: {{ now()->format('d M Y') }}</small><br>
-                        <small class="text-muted">Nama Pemesan: {{ $order->nama_pemesan ?? '-' }}</small>
+                        <small class="text-muted">Tanggal : {{ now()->format('d M Y') }}</small><br>
+                        <small class="text-muted">Nama Pemesan : {{ $order->nama_pemesan ?? '-' }}</small><br>
+                        <small class="text-muted">Musik Latar : {{ $order->wedding->music->artist ?? '-' }} - {{ $order->wedding->music->title ?? '-' }}</small>
                     </div>
                     <div class="order-md-1 text-md-end text-center mt-3 mt-md-0">
                         <span class="badge bg-primary px-3 py-2 fs-6">
@@ -78,10 +79,15 @@
                                 <h6 class="text-muted">Tempat Acara</h6>
                                 <p>{{ $order->wedding->place_name }}</p>
                             </div>
-
+                            
                             <div class="col-md-6">
                                 <h6 class="text-muted">Lokasi</h6>
                                 <p>{{ $order->wedding->location }}</p>
+                            </div>
+                            
+                            <div class="col-12">
+                                <h6 class="text-muted">Deskripsi</h6>
+                                <p class="fst-italic">{{ $order->wedding->description ?? '-' }}</p>
                             </div>
 
                             <div class="col-md-6">

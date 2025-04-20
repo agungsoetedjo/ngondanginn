@@ -151,10 +151,11 @@ class OrderController extends Controller
 
     public function adminShow($kode_transaksi)
     {
+        $musics = Music::all();
         // Mencari order berdasarkan kode transaksi
         $order = Order::where('kode_transaksi', $kode_transaksi)->firstOrFail();
 
-        return view('backend.orders.show', compact('order'));
+        return view('backend.orders.show', compact('order','musics'));
     }
 
     public function adminApprove($kode_transaksi)

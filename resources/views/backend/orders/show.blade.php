@@ -1,6 +1,20 @@
 @extends('backend.layouts.app')
 
 @section('content')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@if(session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Sukses!',
+                text: '{{ session('success') }}',
+                showConfirmButton: false,
+                timerProgressBar: true,
+                timer: 2000,
+            });
+        </script>
+    @endif
 <div class="container py-4">
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
@@ -40,7 +54,23 @@
                 <dd class="col-sm-8">{{ $order->wedding->template->name }}</dd>
 
                 <dt class="col-sm-4">Musik Latar</dt>
-                <dd class="col-sm-8">{{ $order->wedding->music->artist }} - {{ $order->wedding->music->title }}</dd>
+                <dd class="col-sm-8">
+                    @if ($order->wedding->user_id)
+                    <form action="{{ route('weddings.updateMusic', $order->wedding->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <select name="music_id" id="music_id" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+                            @foreach ($musics as $music)
+                                <option value="{{ $music->id }}" {{ $order->wedding->music_id == $music->id ? 'selected' : '' }}>
+                                    {{ $music->artist }} - {{ $music->title }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </form>
+                    @else
+                    {{ $order->wedding->music->artist }} - {{ $order->wedding->music->title }}
+                    @endif
+                </dd>
 
                 <dt class="col-sm-4">Total Pembayaran</dt>
                 <dd class="col-sm-8">Rp{{ number_format($order->payment_total, 0, ',', '.') }}</dd>

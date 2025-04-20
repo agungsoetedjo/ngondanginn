@@ -203,7 +203,7 @@
 </head>
 <body>
     <audio id="bgMusic" loop>
-        <source src="{{ asset('uploads/musik/67fe3c275c2dd.mp3') }}" type="audio/mp3">
+        <source src="{{ asset($wedding->music->file_path) }}" type="audio/mp3">
     </audio>
 <div class="container">
     <div class="music-toggle-wrapper">
