@@ -55,7 +55,7 @@
 
                 <dt class="col-sm-4">Musik Latar</dt>
                 <dd class="col-sm-8">
-                    @if ($order->wedding->user_id)
+                    @if ($order->wedding->user_id && !in_array($order->status,['published','completed']))
                     <form action="{{ route('weddings.updateMusic', $order->wedding->id) }}" method="POST">
                         @csrf
                         @method('PUT')

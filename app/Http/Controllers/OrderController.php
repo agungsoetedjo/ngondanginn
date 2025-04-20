@@ -138,7 +138,7 @@ class OrderController extends Controller
     public function adminIndex()
     {
         $orders = Order::with('wedding')
-            ->whereIn('status', ['pending', 'waiting_verify', 'paid', 'processed', 'published', 'completed'])
+            ->whereIn('status', ['pending', 'waiting_verify', 'paid', 'processed', 'published'])
             ->whereHas('wedding', function ($query) {
                 $query->whereNull('user_id')
                       ->orWhere('user_id', Auth::id());
@@ -239,6 +239,31 @@ class OrderController extends Controller
         ]);
 
         return back()->with('success', 'Template berhasil diperbarui.');
+    }
+
+    // pesanan yang sudah selesai
+
+    public function indexArchive()
+    {
+        $orders = Order::with('wedding')
+            ->whereIn('status', ['completed'])
+            ->whereHas('wedding', function ($query) {
+                $query->whereNull('user_id')
+                      ->orWhere('user_id', Auth::id());
+            })
+            ->latest()
+            ->get();
+    
+        return view('backend.orders.index', compact('orders'));
+    }
+
+    public function showArchive($kode_transaksi)
+    {
+        $musics = Music::all();
+        // Mencari order berdasarkan kode transaksi
+        $order = Order::where('kode_transaksi', $kode_transaksi)->firstOrFail();
+
+        return view('backend.orders.show', compact('order','musics'));
     }
 
 }

@@ -2,8 +2,14 @@
 
 @section('content')
 <div class="container">
-    <h4 class="mb-4">Manajemen Pesanan</h4>
-
+    <h4 class="mb-4">
+    @if (request()->routeIs('admin.orders.index'))
+    Manajemen Pesanan
+    @elseif (request()->routeIs('index-archive'))
+    Arsip Pesanan
+    @endif
+    </h4>
+    
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
@@ -71,8 +77,13 @@
                         </td>
 
                         <td>
-                            <a href="{{ route('admin.orders.show', $order->kode_transaksi) }}" class="btn btn-sm btn-primary">Detail</a>
+                            @if (request()->routeIs('admin.orders.index'))
+                                <a href="{{ route('admin.orders.show', $order->kode_transaksi) }}" class="btn btn-sm btn-primary">Detail</a>
+                            @elseif (request()->routeIs('index-archive'))
+                                <a href="{{ route('show-archive', $order->kode_transaksi) }}" class="btn btn-sm btn-primary">Detail</a>
+                            @endif
                         </td>
+                        
                     </tr>
                 @endforeach
             </tbody>

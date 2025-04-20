@@ -77,8 +77,13 @@
             </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.orders.*') ? 'active fw-bold' : '' }}" href="{{ route('admin.orders.index') }}">
+            <a class="nav-link {{ request()->routeIs('admin.orders.index') ? 'active fw-bold' : '' }}" href="{{ route('admin.orders.index') }}">
               Pesanan
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('index-archive') ? 'active fw-bold' : '' }}" href="{{ route('index-archive') }}">
+              Arsip
             </a>
           </li>
           @endauth

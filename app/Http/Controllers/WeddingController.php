@@ -184,6 +184,15 @@ class WeddingController extends Controller
         if ($wedding->order_id) {
             $order = Order::find($wedding->order_id);
             if ($order) {
+                // Hapus file payment_proof dari folder public jika ada
+                if ($order->payment_proof) {
+                    $filePath = public_path($order->payment_proof);
+                    if (file_exists($filePath)) {
+                        unlink($filePath); // Hapus file bukti transfer
+                    }
+                }
+    
+                // Hapus order
                 $order->delete();
             }
         }

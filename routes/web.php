@@ -49,6 +49,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/weddings/process-wedding/{kode_transaksi}', [WeddingController::class, 'processWedding'])->name('admin.weddings.processWedding');
     Route::post('/weddings/publish-wedding/{kode_transaksi}', [WeddingController::class, 'publishWedding'])->name('admin.weddings.publishWedding');
     Route::post('/weddings/complete-wedding/{kode_transaksi}', [WeddingController::class, 'completeWedding'])->name('admin.weddings.completeWedding');
+
+    Route::get('/archive', [OrderController::class, 'indexArchive'])->name('index-archive');
+    Route::get('/archive/{kode_transaksi}', [OrderController::class, 'showArchive'])->name('show-archive');
 });
 
 Route::middleware('guest')->group(function () {
