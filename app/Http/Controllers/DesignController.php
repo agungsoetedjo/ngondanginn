@@ -194,7 +194,7 @@ class DesignController extends Controller
                     (object)['image' => 'assets/img/portfolio/app-2.jpg'],
                     (object)['image' => 'assets/img/portfolio/app-3.jpg'],
                 ]),
-                'music' => null,
+                'music' => (object)['file_path' => ''],
             ],
         ]);
     }
