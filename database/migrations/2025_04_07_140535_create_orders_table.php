@@ -16,10 +16,13 @@ return new class extends Migration
             $table->string('kode_transaksi')->unique();
             $table->string('nama_pemesan');
             $table->string('phone_number');
+            $table->string('payment_destination')->nullable();
             $table->unsignedBigInteger('payment_total')->default(0);
             $table->string('payment_proof')->nullable();
+            $table->string('payment_desc')->nullable();
             $table->enum('status', [
                 'pending',         // Belum ada pembayaran
+                'rejected',        // Pembayaran Ditolak
                 'waiting_verify',  // Sudah bayar, menunggu verifikasi admin
                 'paid',            // Sudah diverifikasi, siap diproses
                 'processed',       // Sedang dibuatkan undangan

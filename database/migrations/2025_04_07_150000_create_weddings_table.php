@@ -21,8 +21,10 @@ return new class extends Migration
             $table->string('groom_parents_info')->nullable();  // Keterangan orang tua mempelai pria
             $table->dateTime('akad_date')->nullable();
             $table->dateTime('reception_date')->nullable();
-            $table->string('location');
-            $table->string('place_name')->nullable();
+            $table->string('akad_location');
+            $table->string('akad_place_name')->nullable();
+            $table->string('reception_location');
+            $table->string('reception_place_name')->nullable();
             $table->text('description')->nullable();
             $table->foreignId('template_id')->nullable()->constrained('templates')->nullOnDelete();
             $table->foreignId('music_id')->nullable()->constrained('musics')->nullOnDelete();
