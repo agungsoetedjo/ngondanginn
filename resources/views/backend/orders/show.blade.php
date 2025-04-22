@@ -1,20 +1,6 @@
 @extends('backend.layouts.app')
 
 @section('content')
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-@if(session('success'))
-        <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Sukses!',
-                text: '{{ session('success') }}',
-                showConfirmButton: false,
-                timerProgressBar: true,
-                timer: 2000,
-            });
-        </script>
-    @endif
 <div class="container py-4">
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
@@ -22,7 +8,7 @@
             @if(is_null($order->wedding->user_id))
                 <form action="{{ route('admin.orders.assignOrder', $order->kode_transaksi) }}" method="POST" class="ms-auto">
                     @csrf
-                    <button class="btn btn-light btn-sm" onclick="return confirm('Ambil alih order ini?')">Ambil Order</button>
+                    <button data-title="Ambil pesanan ini ?" data-text="Setelah diambil, pesanan tersebut sudah dikelola oleh Anda" class="btn btn-light btn-sm btn-confirm">Ambil Pesanan</button>
                 </form>
             @endif
         </div>
@@ -38,8 +24,11 @@
                 <dt class="col-sm-4">Orangtua Mempelai Pria</dt>
                 <dd class="col-sm-8">{{ $order->wedding->groom_parents_info }}</dd>
 
-                <dt class="col-sm-4">Lokasi Acara</dt>
-                <dd class="col-sm-8">{{ $order->wedding->place_name }} - {{ $order->wedding->location }}</dd>
+                <dt class="col-sm-4">Lokasi Akad</dt>
+                <dd class="col-sm-8">{{ $order->wedding->akad_place_name }} - {{ $order->wedding->akad_location }}</dd>
+
+                <dt class="col-sm-4">Lokasi Resepsi</dt>
+                <dd class="col-sm-8">{{ $order->wedding->reception_place_name }} - {{ $order->wedding->reception_location }}</dd>
 
                 <dt class="col-sm-4">Tanggal Akad</dt>
                 <dd class="col-sm-8">{{ $order->wedding->formatted_akad_date ?? '-' }}</dd>
@@ -83,6 +72,7 @@
                             $badgeColor = match($status) {
                                 'pending' => 'danger',
                                 'waiting_verify' => 'warning',
+                                'rejected' => 'danger',
                                 'paid' => 'success',
                                 'processed' => 'info',
                                 'published' => 'secondary',
@@ -99,6 +89,9 @@
                                 @break
                             @case('waiting_verify')
                                 <i class="bi bi-hourglass-bottom"></i> Menunggu Verifikasi
+                                @break
+                            @case('rejected')
+                                <i class="bi bi-x"></i> Pembayaran Ditolak
                                 @break
                             @case('paid')
                                 <i class="bi bi-credit-card-2-check"></i> Pembayaran Diterima
@@ -118,9 +111,9 @@
                     </span>
                 </dd>
 
-                <dt class="col-sm-4">User Assigned</dt>
+                <dt class="col-sm-4">Pengelola Undangan</dt>
                 <dd class="col-sm-8">
-                    {{ $order->wedding->user->name ?? 'Belum diassign' }}
+                    {{ $order->wedding->user->name ?? 'Belum ada pengelola' }}
                 </dd>
             </dl>
 
@@ -138,19 +131,20 @@
             </div>
 
             <div class="d-flex gap-2">
-                @if(!is_null($order->wedding->user_id) && $order->wedding->user_id === auth()->id() && $order->status === 'waiting_verify')
+                @if($order->status === 'waiting_verify')
                     <form action="{{ route('admin.orders.approve', $order->kode_transaksi) }}" method="POST">
                         @csrf
                         <button type="submit" class="btn btn-success">Verifikasi</button>
                     </form>
 
-                    <form action="{{ route('admin.orders.reject', $order->kode_transaksi) }}" method="POST">
+                    <form id="reject-form-{{ $order->kode_transaksi }}" action="{{ route('admin.orders.reject', $order->kode_transaksi) }}" method="POST">
                         @csrf
-                        <button type="submit" class="btn btn-danger">Tolak</button>
+                        <input type="hidden" name="reason" id="reject-reason-{{ $order->kode_transaksi }}">
+                        <button type="button" class="btn btn-danger" onclick="confirmRejection('{{ $order->kode_transaksi }}')">Tolak</button>
                     </form>
                 @endif
 
-                @if ($order->status === 'paid')
+                @if ($order->status === 'paid' && $order->wedding->user_id)
                     <form action="{{ route('admin.weddings.processWedding', $order->kode_transaksi) }}" method="POST">
                         @csrf
                         <button type="submit" data-title="Proses ke Undangan ?" data-text="Pesanan ini akan diproseskan menjadi undangan aktif. Lanjutkan ?" class="btn btn-primary btn-confirm">Proses ke Undangan</button>
@@ -206,5 +200,27 @@
       });
     });
   });
+
+    function confirmRejection(kodeTransaksi) {
+        Swal.fire({
+            title: 'Tolak Pembayaran',
+            input: 'text',
+            inputLabel: 'Alasan penolakan',
+            inputPlaceholder: 'Masukkan alasan pembayaran ditolak',
+            showCancelButton: true,
+            confirmButtonText: 'Kirim',
+            cancelButtonText: 'Batal',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'Alasan wajib diisi!';
+                }
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('reject-reason-' + kodeTransaksi).value = result.value;
+                document.getElementById('reject-form-' + kodeTransaksi).submit();
+            }
+        });
+    }
 </script>
 @endsection

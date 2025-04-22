@@ -64,9 +64,10 @@
 
             Swal.fire({
                 icon: sweetalert.type, // 'success' atau 'error'
-                title: sweetalert.type === 'error' ? 'Terjadi Kesalahan' : 'Sukses',
+                title: sweetalert.type === 'warning' ? 'Peringatan' : (sweetalert.type === 'error' ? 'Error' : 'Sukses'),
                 text: sweetalert.message,
                 showConfirmButton: false,
+                timerProgressBar: true,
                 timer: 2000
             });
         });

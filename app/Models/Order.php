@@ -12,8 +12,10 @@ class Order extends Model
         'kode_transaksi',
         'nama_pemesan',
         'phone_number',
+        'payment_destination',
         'payment_total',
         'payment_proof',
+        'payment_desc',
         'status',
     ];
 

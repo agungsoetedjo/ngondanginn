@@ -67,7 +67,7 @@ class RsvpController extends Controller
             // Return success response
             return response()->json([
                 'success' => true,
-                'message' => 'RSVP berhasil terkirim!',
+                'message' => 'Ucapanmu berhasil terkirim!',
                 'attending_count' => $attendingCount,
                 'not_attending_count' => $notAttendingCount
             ]);

@@ -52,7 +52,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/archive', [OrderController::class, 'indexArchive'])->name('index-archive');
     Route::get('/archive/{kode_transaksi}', [OrderController::class, 'showArchive'])->name('show-archive');
-    
 });
 
 Route::middleware('guest')->group(function () {
@@ -76,5 +75,10 @@ Route::get('/cek-pesanan/{kode_transaksi}/result', [OrderController::class, 'has
 Route::post('/cek-pesanan/{kode_transaksi}/result', [OrderController::class, 'uploadBukti'])->name('order.upload_bukti');
 Route::post('/order/update-template/{kode_transaksi}', [OrderController::class, 'updateTemplate'])->name('order.update.template');
 
+// Route::middleware(['auth', 'can:isBendahara'])->group(function () {
+// // isi route khusus 
+// });
 
-
+// Route::middleware(['auth', 'can:isPengelola'])->group(function () {
+// // isi route khusus 
+// });

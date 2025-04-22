@@ -77,7 +77,7 @@
             </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.orders.index') ? 'active fw-bold' : '' }}" href="{{ route('admin.orders.index') }}">
+            <a class="nav-link {{ request()->routeIs(['admin.orders.index','admin.orders.show']) ? 'active fw-bold' : '' }}" href="{{ route('admin.orders.index') }}">
               Pesanan
             </a>
           </li>

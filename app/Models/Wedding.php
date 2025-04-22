@@ -23,8 +23,10 @@ class Wedding extends Model
         'groom_parents_info',   // Keterangan orang tua mempelai pria
         'akad_date',
         'reception_date',
-        'location',
-        'place_name',
+        'akad_location',
+        'akad_place_name',
+        'reception_location',
+        'reception_place_name',
         'description',
         'template_id',
         'music_id',

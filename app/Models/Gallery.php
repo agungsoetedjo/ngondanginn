@@ -17,6 +17,7 @@ class Gallery extends Model
     protected $fillable = [
         'wedding_id',
         'image',
+        'image_desc',
     ];
 
     protected $dates = ['created_at', 'updated_at'];

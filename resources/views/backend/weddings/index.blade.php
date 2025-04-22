@@ -24,7 +24,10 @@
             Akad: {{ $wedding->formatted_akad_date ?? '-' }} <br>
             Resepsi: {{ $wedding->formatted_reception_date ?? '-' }}
           </td>
-          <td>{{ $wedding->place_name }} - {{ $wedding->location }}</td>
+          <td>
+            Akad : {{ $wedding->akad_place_name }} - {{ $wedding->akad_location }} <br>
+            Resepsi : {{ $wedding->reception_place_name }} - {{ $wedding->reception_location }}
+          </td>
           <td>
             @if(in_array($wedding->order->status, ['processed', 'published', 'completed']))
             <a href="{{ route('wedding.checks', $wedding->slug) }}" target="_blank">

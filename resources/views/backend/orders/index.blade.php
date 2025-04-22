@@ -9,13 +9,6 @@
     Arsip Pesanan
     @endif
     </h4>
-    
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-    @if(session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
 
         <table class="table table-bordered table-striped datatable">
             <thead>
@@ -37,10 +30,11 @@
                             $status = $order->status;
 
                             $badgeColor = match($status) {
+                                'pending' => 'danger',
+                                'waiting_verify' => 'warning',
+                                'rejected' => 'danger',
                                 'completed' => 'success',
                                 'paid' => 'success',
-                                'waiting_verify' => 'warning',
-                                'pending' => 'danger',
                                 'published' => 'secondary',
                                 'processed' => 'info',
                                 default => 'dark',
@@ -57,6 +51,9 @@
                                         @break
                                     @case('waiting_verify')
                                         <i class="bi bi-hourglass-bottom"></i> Menunggu Verifikasi
+                                        @break
+                                    @case('rejected')
+                                        <i class="bi bi-x"></i> Pembayaran Ditolak
                                         @break
                                     @case('paid')
                                         <i class="bi bi-credit-card-2-check"></i> Pembayaran Diterima

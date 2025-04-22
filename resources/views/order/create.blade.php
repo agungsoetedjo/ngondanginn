@@ -70,14 +70,14 @@
                     <div class="mb-3">
                         <label for="bride_parents_info" class="form-label">Orang Tua Mempelai Wanita</label>
                         <input type="text" name="bride_parents_info" id="bride_parents_info" class="form-control"
-                            placeholder="Contoh: Putri dari Ayah X dan Ibu Y">
+                            placeholder="Contoh: Putri ke-X dari Ayah X dan Ibu Y">
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="groom_parents_info" class="form-label">Orang Tua Mempelai Pria</label>
                         <input type="text" name="groom_parents_info" id="groom_parents_info" class="form-control"
-                            placeholder="Contoh: Putra dari Ayah A dan Ibu B">
+                            placeholder="Contoh: Putra ke-X dari Ayah A dan Ibu B">
                     </div>
                 </div>
             </div>
@@ -100,14 +100,14 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label for="place_name" class="form-label">Tempat Acara</label>
-                        <input type="text" name="place_name" id="place_name" class="form-control" required>
+                        <label for="place_name" class="form-label">Tempat Akad</label>
+                        <input type="text" name="akad_place_name" id="akad_place_name" class="form-control" required>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label for="location" class="form-label">Alamat Lengkap</label>
-                        <input type="text" name="location" id="location" class="form-control" required>
+                        <label for="location" class="form-label">Alamat Akad</label>
+                        <input type="text" name="akad_location" id="akad_location" class="form-control" required>
                     </div>
                 </div>
             </div>
@@ -115,7 +115,22 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label for="description" class="form-label">Deskripsi (Opsional)</label>
+                        <label for="place_name" class="form-label">Tempat Resepsi</label>
+                        <input type="text" name="reception_place_name" id="reception_place_name" class="form-control" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Alamat Resepsi</label>
+                        <input type="text" name="reception_location" id="reception_location" class="form-control" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Kisah Cinta</label>
                         <textarea name="description" id="description" class="form-control" rows="4"></textarea>
                     </div>
                 </div>

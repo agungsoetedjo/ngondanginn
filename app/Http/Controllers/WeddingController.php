@@ -43,8 +43,10 @@ class WeddingController extends Controller
             'groom_parents_info' => 'nullable|string|max:255',
             'akad_date' => 'nullable|date',
             'reception_date' => 'nullable|date',
-            'location' => 'required|string|max:255',
-            'place_name' => 'nullable|string|max:255',
+            'akad_location' => 'required|string|max:255',
+            'akad_place_name' => 'nullable|string|max:255',
+            'reception_location' => 'required|string|max:255',
+            'reception_place_name' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'phone_number' => 'required|string|max:20',
             'template_id' => 'required|exists:templates,id',
@@ -59,8 +61,10 @@ class WeddingController extends Controller
             'kode_transaksi' => $kodeTransaksi,
             'nama_pemesan' => $request->nama_pemesan,
             'phone_number' => $request->phone_number,
+            'payment_destination' => $request->payment_destination,
             'payment_total' => $template->price ?? 0,
             'payment_proof' => null,
+            'payment_desc' => null,
             'status' => 'pending',
         ]);
 
@@ -75,8 +79,10 @@ class WeddingController extends Controller
             'groom_parents_info' => $request->groom_parents_info,
             'akad_date' => $request->akad_date ? Carbon::parse($request->akad_date) : null,
             'reception_date' => $request->reception_date ? Carbon::parse($request->reception_date) : null,
-            'location' => $request->location,
-            'place_name' => $request->place_name,
+            'akad_location' => $request->location,
+            'akad_place_name' => $request->place_name,
+            'reception_location' => $request->location,
+            'reception_place_name' => $request->place_name,
             'description' => $request->description,
             'template_id' => $request->template_id,
             'music_id' => $request->music_id,
@@ -116,8 +122,10 @@ class WeddingController extends Controller
             'groom_parents_info' => 'required|string|max:255',
             'akad_date' => 'nullable|date',
             'reception_date' => 'nullable|date',
-            'location' => 'required|string|max:255',
-            'place_name' => 'nullable|string|max:255',
+            'akad_location' => 'required|string|max:255',
+            'akad_place_name' => 'nullable|string|max:255',
+            'reception_location' => 'required|string|max:255',
+            'reception_place_name' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'template_id' => 'nullable|exists:templates,id', // Validasi template_id
             'music_id' => 'nullable|exists:musics,id',
@@ -134,8 +142,10 @@ class WeddingController extends Controller
             'groom_parents_info' => $request->groom_parents_info,
             'akad_date' => $request->akad_date ? Carbon::parse($request->akad_date) : null,
             'reception_date' => $request->reception_date ? Carbon::parse($request->reception_date) : null,
-            'location' => $request->location,
-            'place_name' => $request->place_name,
+            'akad_location' => $request->location,
+            'akad_place_name' => $request->place_name,
+            'reception_location' => $request->location,
+            'reception_place_name' => $request->place_name,
             'description' => $request->description,
             'music_id' => $request->music_id,
             'slug' => $slug,
@@ -194,6 +204,16 @@ class WeddingController extends Controller
     
                 // Hapus order
                 $order->delete();
+            }
+        }
+
+        if ($wedding->galleries && $wedding->galleries->count()) {
+            foreach ($wedding->galleries as $gallery) {
+                $filePath = public_path($gallery->image);
+                if (file_exists($filePath)) {
+                    unlink($filePath); // Hapus file foto
+                }
+                $gallery->delete(); // Hapus data dari database
             }
         }
     
@@ -283,7 +303,7 @@ class WeddingController extends Controller
             'message' => 'Undangan berhasil diselesaikan.'
         ]);
 
-        return redirect()->route('admin.orders.show', $order->kode_transaksi);
+        return redirect()->route('show-archive', $order->kode_transaksi);
     }
 
     public function updateMusic(Request $request, $id)
@@ -308,7 +328,12 @@ class WeddingController extends Controller
     public function weddingChecks($slug)
     {
         // Ambil data wedding beserta relasi order
-        $wedding = Wedding::with(['order','template','music'])->where('slug', $slug)->firstOrFail();
+        $wedding = Wedding::with(['order','template','music','galleries'])->where('slug', $slug)->firstOrFail();
+
+        $cover = $wedding->galleries->where('image_desc', 1)->first();
+        $groomPhoto = $wedding->galleries->where('image_desc', 2)->first();
+        $bridePhoto = $wedding->galleries->where('image_desc', 3)->first();
+        $galleryPhotos = $wedding->galleries->where('image_desc', 0);
 
         $attendingCount = RSVP::where('wedding_id', $wedding->id)
         ->where('attendance', 'yes')
@@ -326,8 +351,6 @@ class WeddingController extends Controller
         }
     
         // Render view dengan nama yang ada di viewPath
-        return view($viewPath, compact('wedding','attendingCount','notAttendingCount'));
+        return view($viewPath, compact('wedding','attendingCount','notAttendingCount','cover', 'groomPhoto', 'bridePhoto', 'galleryPhotos'));
     }
-    
-
 }

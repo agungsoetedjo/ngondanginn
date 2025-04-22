@@ -31,8 +31,10 @@ class OrderController extends Controller
             'groom_parents_info' => 'nullable|string|max:255',
             'akad_date' => 'nullable|date',
             'reception_date' => 'nullable|date',
-            'location' => 'required|string|max:255',
-            'place_name' => 'nullable|string|max:255',
+            'akad_location' => 'required|string|max:255',
+            'akad_place_name' => 'nullable|string|max:255',
+            'reception_location' => 'required|string|max:255',
+            'reception_place_name' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'phone_number' => 'required|string|max:20',
             'template_id' => 'required|exists:templates,id',
@@ -46,8 +48,10 @@ class OrderController extends Controller
             'kode_transaksi' => 'WD_ORDER_' . Str::upper(uniqid()),
             'nama_pemesan' => $request->nama_pemesan,
             'phone_number' => $request->phone_number,
+            'payment_destination' => null,
             'payment_total' => $template->price ?? 0,
             'payment_proof' => null,
+            'payment_desc' => null,
             'status' => 'pending',
         ]);
     
@@ -64,8 +68,10 @@ class OrderController extends Controller
             'groom_parents_info' => $request->groom_parents_info,
             'akad_date' => $request->akad_date,
             'reception_date' => $request->reception_date,
-            'location' => $request->location,
-            'place_name' => $request->place_name,
+            'akad_location' => $request->akad_location,
+            'akad_place_name' => $request->akad_place_name,
+            'reception_location' => $request->reception_location,
+            'reception_place_name' => $request->reception_place_name,
             'description' => $request->description,
         ]);
     
@@ -101,7 +107,6 @@ class OrderController extends Controller
     public function uploadBukti(Request $request, $kode_transaksi)
     {
         $request->validate([
-            'phone_number' => 'required|numeric',
             'bukti_transfer' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
     
@@ -111,34 +116,39 @@ class OrderController extends Controller
             return redirect()->back()->with('error', 'Order tidak ditemukan.');
         }
     
-        if ($order->phone_number !== $request->phone_number) {
-            return redirect()->back()->with('error', 'Nomor HP yang Anda masukkan tidak cocok dengan data pemesan.');
-        }
-    
         $file = $request->file('bukti_transfer');
     
-        // Buat nama unik pakai UUID
+        // Hapus file lama jika ada
+        if ($order->payment_proof) {
+            $oldPath = public_path($order->payment_proof);
+            if (file_exists($oldPath)) {
+                unlink($oldPath);
+            }
+        }
+    
+        // Simpan file baru
         $fileName = uniqid() . '.' . $file->getClientOriginalExtension();
         $path = 'uploads/payment_proof/' . $fileName;
         $file->move(public_path('uploads/payment_proof'), $fileName);
-
     
         // Update order
         $order->update([
+            'payment_destination' => $request->payment_destination,
             'payment_proof' => $path,
             'status' => 'waiting_verify',
+            'payment_desc' => null, // Reset alasan penolakan sebelumnya
         ]);
-    
+
         session()->flash('success', 'Bukti pembayaran berhasil diunggah!');
     
         return redirect()->route('order.cek.result', $order->kode_transaksi);
-    }
+    }    
     
     // dikelola oleh Pengelola Undangan cooooyyyy
     public function adminIndex()
     {
         $orders = Order::with('wedding')
-            ->whereIn('status', ['pending', 'waiting_verify', 'paid', 'processed', 'published'])
+            ->whereIn('status', ['pending', 'rejected', 'waiting_verify', 'paid', 'processed', 'published'])
             ->whereHas('wedding', function ($query) {
                 $query->whereNull('user_id')
                       ->orWhere('user_id', Auth::id());
@@ -176,31 +186,21 @@ class OrderController extends Controller
         return redirect()->route('admin.orders.show', $order->kode_transaksi);
     }
 
-    public function adminReject($kode_transaksi)
+    public function adminReject(Request $request, $kode_transaksi)
     {
-        // Cari order berdasarkan kode transaksi
         $order = Order::where('kode_transaksi', $kode_transaksi)->firstOrFail();
 
-        // Cek jika ada bukti transfer yang diunggah, maka hapus file-nya
-        if ($order->payment_proof) {
-            $filePath = public_path($order->payment_proof);
-            
-            if (file_exists($filePath)) {
-                unlink($filePath); // Hapus file bukti transfer
-            }
-        }
-
-        // Update status menjadi "pending" dan reset bukti transfer
         $order->update([
-            'status' => 'pending', // Kembalikan status menjadi pending
-            'payment_proof' => null, // Hapus bukti transfer
+            'status' => 'rejected',
+            'payment_desc' => $request->reason, // alasan dari SweetAlert
+            // payment_proof tetap dipertahankan
         ]);
 
         session()->flash('sweetalert', [
             'type' => 'error',
-            'message' => 'Pesanan ditolak. Bukti transfer telah dihapus.'
+            'message' => 'Pesanan ditolak. Alasan: ' . $request->reason
         ]);
-        
+
         return redirect()->route('admin.orders.show', $order->kode_transaksi);
     }
 
@@ -212,7 +212,12 @@ class OrderController extends Controller
             'user_id' => Auth::id(),
         ]);
 
-        return redirect()->route('admin.orders.index')->with('success', 'Order berhasil di-assign ke Anda.');
+        session()->flash('sweetalert', [
+            'type' => 'success',
+            'message' => 'Pesanan berhasil dikelola oleh Anda.'
+        ]);
+    
+        return redirect()->route('admin.orders.show', $order->kode_transaksi);
     }
 
     public function updateTemplate(Request $request, $kode_transaksi)

@@ -42,11 +42,14 @@
                         <span class="badge bg-primary px-3 py-2 fs-6">
                             #{{ $order->kode_transaksi }}
                         </span>
+                        <div class="mt-2 text-muted small">
+                        <strong>Pengelola Undangan : </strong>
                         @if($order->wedding->user_id)
-                            <div class="mt-2 text-muted small">
-                                <strong>Pengelola Undangan:</strong> {{ $order->wedding->user->name ?? 'Belum ditugaskan' }}
-                            </div>
+                            {{ $order->wedding->user->name}}
+                        @else
+                        Menunggu ditugaskan
                         @endif
+                        </div>
                     </div>
                 </div>
 
@@ -62,7 +65,7 @@
                                 <p class="fw-medium">{{ $order->wedding->groom_name }}</p>
                                 <h6 class="text-muted">Orangtua Mempelai Pria</h6>
                                 <p>{{ $order->wedding->groom_parents_info }}</p>
-                                <h6 class="text-muted">Akad</h6>
+                                <h6 class="text-muted">Tanggal & Waktu Akad</h6>
                                 <p>{{ \Carbon\Carbon::parse($order->wedding->akad_date)->translatedFormat('l, d F Y - H:i') }}</p>
                             </div>
 
@@ -71,18 +74,28 @@
                                 <p class="fw-medium">{{ $order->wedding->bride_name }}</p>
                                 <h6 class="text-muted">Orangtua Mempelai Wanita</h6>
                                 <p>{{ $order->wedding->bride_parents_info }}</p>
-                                <h6 class="text-muted">Resepsi</h6>
+                                <h6 class="text-muted">Tanggal & Waktu Resepsi</h6>
                                 <p>{{ \Carbon\Carbon::parse($order->wedding->reception_date)->translatedFormat('l, d F Y - H:i') }}</p>
                             </div>
 
                             <div class="col-md-6">
-                                <h6 class="text-muted">Tempat Acara</h6>
-                                <p>{{ $order->wedding->place_name }}</p>
+                                <h6 class="text-muted">Tempat Akad</h6>
+                                <p>{{ $order->wedding->akad_place_name }}</p>
                             </div>
                             
                             <div class="col-md-6">
-                                <h6 class="text-muted">Lokasi</h6>
-                                <p>{{ $order->wedding->location }}</p>
+                                <h6 class="text-muted">Lokasi Akad</h6>
+                                <p>{{ $order->wedding->akad_location }}</p>
+                            </div>
+
+                            <div class="col-md-6">
+                                <h6 class="text-muted">Tempat Resepsi</h6>
+                                <p>{{ $order->wedding->reception_place_name }}</p>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h6 class="text-muted">Lokasi Resepsi</h6>
+                                <p>{{ $order->wedding->reception_location }}</p>
                             </div>
                             
                             <div class="col-12">
@@ -100,12 +113,13 @@
                                 @php
                                     $status = $order->status;
                                     $badgeColor = match($status) {
-                                        'completed' => 'success',
-                                        'paid' => 'success',
-                                        'waiting_verify' => 'warning',
                                         'pending' => 'danger',
-                                        'published' => 'secondary',
+                                        'waiting_verify' => 'warning',
+                                        'rejected' => 'danger',
+                                        'paid' => 'success',
                                         'processed' => 'info',
+                                        'published' => 'secondary',
+                                        'completed' => 'success',
                                         default => 'dark',
                                     };
                                     $textColor = in_array($status, ['waiting_verify', 'processed']) ? 'dark' : 'white';
@@ -114,6 +128,7 @@
                                     @switch($status)
                                         @case('pending') <i class="bi bi-hourglass-split"></i> Menunggu Pembayaran @break
                                         @case('waiting_verify') <i class="bi bi-hourglass-bottom"></i> Menunggu Verifikasi @break
+                                        @case('rejected') <i class="bi bi-x"></i> Pembayaran Ditolak @break
                                         @case('paid') <i class="bi bi-check-circle-fill"></i> Pembayaran Diterima @break
                                         @case('processed') <i class="bi bi-file-earmark-text"></i> Undangan Diproses @break
                                         @case('published') <i class="bi bi-globe"></i> Undangan Dipublikasi @break
@@ -123,13 +138,18 @@
                                 </span>
                             </div>
 
-                            @if ($order->status === 'pending')
+                            <div class="col-md-6">
+                                <h6 class="text-muted">Deskripsi Pembayaran</h6>
+                                <p class="fw-semibold">{{ $order->payment_desc ?? '-'}}</p>
+                            </div>
+
+                            @if (in_array($order->status, ['pending','rejected']))
                                 <div class="col-12 mb-3">
                                     <form action="{{ route('order.update.template', $order->kode_transaksi) }}" method="POST">
                                         @csrf
                                         <div class="form-group">
                                             <label for="template" class="form-label">Pilih Template</label>
-                                            <select name="template_id" id="template" class="form-select" required>
+                                            <select name="template_id" id="template" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
                                                 @foreach($templates as $template)
                                                     <option value="{{ $template->id }}" {{ $order->wedding->template_id == $template->id ? 'selected' : '' }}>
                                                         {{ $template->name }}
@@ -137,20 +157,22 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <button type="submit" class="btn btn-warning mt-3">
-                                            <i class="bi bi-arrow-repeat"></i> Ganti Template
-                                        </button>
                                     </form>
                                 </div>
                             @endif
-                            @if ($order->status === 'pending')
+                            @if (in_array($order->status, ['pending','rejected']))
                             <div class="col-12 mt-3">
                                 <form action="{{ route('order.upload_bukti', $order->kode_transaksi) }}" method="POST" enctype="multipart/form-data" class="border rounded p-3 shadow-sm bg-light">
                                     @csrf
                                     <div class="row g-3">
                                         <div class="col-md-6">
-                                            <label for="phone_number" class="form-label fw-semibold">Nomor HP Pemesan</label>
-                                            <input type="text" name="phone_number" id="phone_number" class="form-control" placeholder="08xxxxxxx" required>
+                                            <label for="payment_destination" class="form-label fw-semibold">Tujuan Pembayaran</label>
+                                            <select name="payment_destination" id="payment_destination" class="form-select form-select-sm w-auto" required>
+                                                <option value="" selected>--Pilih--</option>
+                                                <option value="BNI - 1234567890 - a.n. Muhammad Rizki">BNI - 1234567890 - a.n. Muhammad Rizki</option>
+                                                <option value="BCA - 1234567890 - a.n. Muhammad Ridho">BCA - 1234567890 - a.n. Muhammad Ridho</option>
+                                                <option value="Mandiri - 1234567890 - a.n. Muhammad Rizal">Mandiri - 1234567890 - a.n. Muhammad Rizal</option>
+                                              </select>
                                         </div>
                                         <div class="col-md-6">
                                             <label for="bukti_transfer" class="form-label fw-semibold">Upload Bukti Transfer</label>

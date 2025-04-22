@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Waktu pembuatan: 20 Apr 2025 pada 12.42
+-- Waktu pembuatan: 22 Apr 2025 pada 11.47
 -- Versi server: 8.0.30
 -- Versi PHP: 8.3.11
 
@@ -93,17 +93,22 @@ INSERT INTO `faqs` (`id`, `pertanyaan`, `jawaban`, `created_at`, `updated_at`) V
 CREATE TABLE `galleries` (
   `id` bigint UNSIGNED NOT NULL,
   `wedding_id` bigint UNSIGNED NOT NULL,
-  `image` varchar(255) NOT NULL,
+  `image` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `image_desc` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data untuk tabel `galleries`
 --
 
-INSERT INTO `galleries` (`id`, `wedding_id`, `image`, `created_at`, `updated_at`) VALUES
-(6, 9, 'uploads/galeri/6804e3acdc87c.jpg', '2025-04-20 12:08:12', '2025-04-20 12:08:12');
+INSERT INTO `galleries` (`id`, `wedding_id`, `image`, `image_desc`, `created_at`, `updated_at`) VALUES
+(1, 1, 'uploads/galeri/680761a14a3c8.jpg', '1', '2025-04-22 05:56:02', '2025-04-22 09:30:09'),
+(2, 1, 'uploads/galeri/680761ab79ddb.jpg', '0', '2025-04-22 09:30:19', '2025-04-22 09:30:19'),
+(3, 1, 'uploads/galeri/6807622c9956d.jpg', '0', '2025-04-22 09:32:28', '2025-04-22 09:32:28'),
+(4, 1, 'uploads/galeri/680762630bdc2.jpg', '2', '2025-04-22 09:33:23', '2025-04-22 09:33:23'),
+(5, 1, 'uploads/galeri/680762a707af4.jpeg', '3', '2025-04-22 09:34:31', '2025-04-22 09:34:31');
 
 -- --------------------------------------------------------
 
@@ -119,15 +124,6 @@ CREATE TABLE `guest_books` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data untuk tabel `guest_books`
---
-
-INSERT INTO `guest_books` (`id`, `wedding_id`, `name`, `message`, `created_at`, `updated_at`) VALUES
-(31, 9, 'yuni widya', 'ciieeee selamat yach gaesss...sing samawa yach', '2025-04-20 12:08:57', '2025-04-20 12:08:57'),
-(32, 9, 'boedi x', 'sukses selalu menempuh keluarga baru, gassssss', '2025-04-20 12:10:20', '2025-04-20 12:10:20'),
-(33, 9, 'iepinnxxx', 'samawa bosssquuu, sing langgeng yach gaeessss', '2025-04-20 12:12:28', '2025-04-20 12:12:28');
 
 -- --------------------------------------------------------
 
@@ -176,23 +172,6 @@ CREATE TABLE `migrations` (
   `batch` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Dumping data untuk tabel `migrations`
---
-
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
-(1, '0001_01_01_000000_create_users_table', 1),
-(2, '0001_01_01_000001_create_cache_table', 1),
-(3, '0001_01_01_000002_create_jobs_table', 1),
-(7, '2025_04_07_150209_create_rsvps_table', 1),
-(8, '2025_04_07_150311_create_guest_books_table', 1),
-(9, '2025_04_07_150356_create_galleries_table', 1),
-(10, '2025_04_12_115028_create_faqs_table', 2),
-(12, '2025_04_07_140453_create_templates_table', 4),
-(15, '2025_04_07_140534_create_musics_table', 7),
-(23, '2025_04_07_140535_create_orders_table', 9),
-(24, '2025_04_07_150000_create_weddings_table', 10);
-
 -- --------------------------------------------------------
 
 --
@@ -225,22 +204,24 @@ INSERT INTO `musics` (`id`, `title`, `artist`, `file_path`, `created_at`, `updat
 
 CREATE TABLE `orders` (
   `id` bigint UNSIGNED NOT NULL,
-  `kode_transaksi` varchar(255) NOT NULL,
-  `nama_pemesan` varchar(255) NOT NULL,
-  `phone_number` varchar(255) NOT NULL,
+  `kode_transaksi` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nama_pemesan` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone_number` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payment_destination` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `payment_total` bigint UNSIGNED NOT NULL DEFAULT '0',
-  `payment_proof` varchar(255) DEFAULT NULL,
-  `status` enum('pending','waiting_verify','paid','processed','published','completed') NOT NULL DEFAULT 'pending',
+  `payment_proof` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `payment_desc` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` enum('pending','rejected','waiting_verify','paid','processed','published','completed') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pending',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data untuk tabel `orders`
 --
 
-INSERT INTO `orders` (`id`, `kode_transaksi`, `nama_pemesan`, `phone_number`, `payment_total`, `payment_proof`, `status`, `created_at`, `updated_at`) VALUES
-(10, 'WD_ORDER_6804E2622F972', 'Ananda Rizky MM', '082215148544', 110000, 'uploads/payment_proof/6804e31f0b1d7.jpeg', 'completed', '2025-04-20 12:02:42', '2025-04-20 12:13:24');
+INSERT INTO `orders` (`id`, `kode_transaksi`, `nama_pemesan`, `phone_number`, `payment_destination`, `payment_total`, `payment_proof`, `payment_desc`, `status`, `created_at`, `updated_at`) VALUES
+(2, 'WD_ORDER_68072632D34F3', 'Wawan Hermawan', '082215148544', 'Mandiri - 1234567890 - a.n. Muhammad Rizal', 110000, 'uploads/payment_proof/68072e8870160.jpeg', NULL, 'completed', '2025-04-22 05:16:34', '2025-04-22 10:50:26');
 
 -- --------------------------------------------------------
 
@@ -257,6 +238,27 @@ CREATE TABLE `password_reset_tokens` (
 -- --------------------------------------------------------
 
 --
+-- Struktur dari tabel `roles`
+--
+
+CREATE TABLE `roles` (
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data untuk tabel `roles`
+--
+
+INSERT INTO `roles` (`id`, `name`, `created_at`, `updated_at`) VALUES
+(1, 'pengelola', '2025-04-22 11:19:04', '2025-04-22 11:19:04'),
+(2, 'bendahara', '2025-04-22 11:19:27', '2025-04-22 11:19:27');
+
+-- --------------------------------------------------------
+
+--
 -- Struktur dari tabel `rsvps`
 --
 
@@ -269,15 +271,6 @@ CREATE TABLE `rsvps` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data untuk tabel `rsvps`
---
-
-INSERT INTO `rsvps` (`id`, `wedding_id`, `name`, `attendance`, `reason`, `created_at`, `updated_at`) VALUES
-(31, 9, 'yuni widya', 'yes', NULL, '2025-04-20 12:08:57', '2025-04-20 12:08:57'),
-(32, 9, 'boedi x', 'no', 'maaf saya belum bisa hadir karena ada proyek cinta gaess. yang penting do\'a nya perfect ya, nuhun', '2025-04-20 12:10:20', '2025-04-20 12:10:20'),
-(33, 9, 'iepinnxxx', 'yes', NULL, '2025-04-20 12:12:28', '2025-04-20 12:12:28');
 
 -- --------------------------------------------------------
 
@@ -299,9 +292,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('LZIdbjHmU0CoAwCztJ40jIyWdJ5opQ0PuB5ps7mO', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiZkc2NFlDMDFoQlhmb3JLNkVLTUlxalpTMGhQM3pMV09HZFVoajliWCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjM6Imh0dHA6Ly9uZ29uZGFuZ2lubi50ZXN0Ijt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1745144530),
-('NJhTDhwYy1tUjB1bASkuRuvdIkvcAWjSY2ifAj3z', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiZFRKaVY3cFZrMFZOc01kUW1PdDJSNXZnQm43UmNGU2V5Q3p2MW9mbiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mjk6Imh0dHA6Ly9uZ29uZGFuZ2lubi50ZXN0L2xvZ2luIjt9fQ==', 1745152570),
-('nyKWKNGmTWYDwHDoQJwTtKA2GbdXciGAvmAa2Pfx', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiYkMyWlV6a3VCTnhuR1hPMENrS01sSnNOTG1GNVJ0T2Y0T2lPaTJVNyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NjU6Imh0dHA6Ly9uZ29uZGFuZ2lubi50ZXN0L2Nlay1wZXNhbmFuL1dEX09SREVSXzY4MDRFMjYyMkY5NzIvcmVzdWx0Ijt9fQ==', 1745151214);
+('hHhkd5c7BcuQrNULxiXANTloWu2Rj4we4pgLX4fQ', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiRkxWeTFGc1BTa0lrc0VtSHN3S1lJZUI1YjdDSmFBRkZvNVZrU2pqSSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzI6Imh0dHA6Ly9uZ29uZGFuZ2luLnRlc3QvZGFzaGJvYXJkIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTt9', 1745322247),
+('jwjljsk2TefDJ0AB6wm0FHVApIBzKwVh5K3cHFN7', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiSFExRzBIUVVYd05hOEJMOUEyTGJTdGdGWmRHZWxsTU9uTFFsdFFUUCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mjg6Imh0dHA6Ly9uZ29uZGFuZ2luLnRlc3QvbG9naW4iO319', 1745315419);
 
 -- --------------------------------------------------------
 
@@ -339,6 +331,7 @@ CREATE TABLE `users` (
   `email` varchar(255) NOT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
   `password` varchar(255) NOT NULL,
+  `role_id` bigint UNSIGNED DEFAULT NULL,
   `remember_token` varchar(100) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -348,9 +341,9 @@ CREATE TABLE `users` (
 -- Dumping data untuk tabel `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Agung Soetedjo', 'agungsoetedjo@gmail.com', NULL, '$2y$12$2Hr3GawDJJr7XSOKcUssv.qCFA95fgm5yqm/FH6Yb0OKcnOmcEugi', NULL, '2025-04-07 09:03:13', '2025-04-07 09:03:13'),
-(4, 'Rafi Fauzi', 'rafifauzi@gmail.com', NULL, '$2y$12$z2ONIowo9fN2Ju817mokC.nRLKJbeqgeqN43WEvGEJ6MsQpHKKxZK', NULL, '2025-04-16 10:54:34', '2025-04-16 10:54:34');
+INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `role_id`, `remember_token`, `created_at`, `updated_at`) VALUES
+(1, 'Agung Soetedjo', 'agungsoetedjo@gmail.com', NULL, '$2y$12$2Hr3GawDJJr7XSOKcUssv.qCFA95fgm5yqm/FH6Yb0OKcnOmcEugi', NULL, NULL, '2025-04-07 09:03:13', '2025-04-07 09:03:13'),
+(4, 'Rafi Fauzi', 'rafifauzi@gmail.com', NULL, '$2y$12$z2ONIowo9fN2Ju817mokC.nRLKJbeqgeqN43WEvGEJ6MsQpHKKxZK', NULL, NULL, '2025-04-16 10:54:34', '2025-04-16 10:54:34');
 
 -- --------------------------------------------------------
 
@@ -361,29 +354,31 @@ INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `re
 CREATE TABLE `weddings` (
   `id` bigint UNSIGNED NOT NULL,
   `user_id` bigint UNSIGNED DEFAULT NULL,
-  `slug` varchar(255) NOT NULL,
-  `bride_name` varchar(255) NOT NULL,
-  `groom_name` varchar(255) NOT NULL,
-  `bride_parents_info` varchar(255) DEFAULT NULL,
-  `groom_parents_info` varchar(255) DEFAULT NULL,
+  `slug` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `bride_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `groom_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `bride_parents_info` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `groom_parents_info` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `akad_date` datetime DEFAULT NULL,
   `reception_date` datetime DEFAULT NULL,
-  `location` varchar(255) NOT NULL,
-  `place_name` varchar(255) DEFAULT NULL,
-  `description` text,
+  `akad_location` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `akad_place_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `reception_location` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `reception_place_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
   `template_id` bigint UNSIGNED DEFAULT NULL,
   `music_id` bigint UNSIGNED DEFAULT NULL,
   `order_id` bigint UNSIGNED DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data untuk tabel `weddings`
 --
 
-INSERT INTO `weddings` (`id`, `user_id`, `slug`, `bride_name`, `groom_name`, `bride_parents_info`, `groom_parents_info`, `akad_date`, `reception_date`, `location`, `place_name`, `description`, `template_id`, `music_id`, `order_id`, `created_at`, `updated_at`) VALUES
-(9, 4, 'adinda-syafitri-ananda-rizky-mm-jhxak', 'Adinda Syafitri', 'Ananda Rizky MM', 'Putri pertama dari Bpk. Wawan dan Ibu. Irma', 'Putra pertama dari Bpk. Rizal dan Ibu Mimin', '2025-04-27 09:00:00', '2025-04-27 11:00:00', 'Jln. Sukamiskin No. 555 Bandung', 'Gedung Serba Guna Mandiri Sejahtera', 'Kisah cinta kami berawal sejak masih di bangku kuliah dan pertamakali saya bertemu sudah seperti jodoh sejak kecil hihi. Dan akhirnya kami berdua memutuskan untuk lanjut menikah tanpa proses lamaran dulu karena kita berdua sudah saling mencintai ihiiwww.', 6, 2, 10, '2025-04-20 12:02:42', '2025-04-20 12:05:39');
+INSERT INTO `weddings` (`id`, `user_id`, `slug`, `bride_name`, `groom_name`, `bride_parents_info`, `groom_parents_info`, `akad_date`, `reception_date`, `akad_location`, `akad_place_name`, `reception_location`, `reception_place_name`, `description`, `template_id`, `music_id`, `order_id`, `created_at`, `updated_at`) VALUES
+(1, 1, 'winda-syafitri-wawan-hermawan-wbvam', 'Winda Syafitri', 'Wawan Hermawan', 'Putri ketiga dari Bpk. Wahyu dan Ibu. Wiwin', 'Putra pertama dari Bpk. Wanda dan Ibu. Wiwi', '2025-04-27 09:00:00', '2025-04-27 11:00:00', 'Jln. Gegerkalong Girang No. 1, Bandung', 'Masjid Darul Tauhid', 'Jln. Gegerkalong Girang No. 10 Bandung', 'Villa Pondok Hijau', 'asdasdasdasd', 6, 2, 2, '2025-04-22 05:16:34', '2025-04-22 05:55:06');
 
 --
 -- Indexes for dumped tables
@@ -467,6 +462,12 @@ ALTER TABLE `password_reset_tokens`
   ADD PRIMARY KEY (`email`);
 
 --
+-- Indeks untuk tabel `roles`
+--
+ALTER TABLE `roles`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indeks untuk tabel `rsvps`
 --
 ALTER TABLE `rsvps`
@@ -492,7 +493,8 @@ ALTER TABLE `templates`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `users_email_unique` (`email`);
+  ADD UNIQUE KEY `users_email_unique` (`email`),
+  ADD KEY `users_role_id_foreign` (`role_id`);
 
 --
 -- Indeks untuk tabel `weddings`
@@ -525,13 +527,13 @@ ALTER TABLE `faqs`
 -- AUTO_INCREMENT untuk tabel `galleries`
 --
 ALTER TABLE `galleries`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT untuk tabel `guest_books`
 --
 ALTER TABLE `guest_books`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT untuk tabel `jobs`
@@ -543,7 +545,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT untuk tabel `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT untuk tabel `musics`
@@ -555,19 +557,25 @@ ALTER TABLE `musics`
 -- AUTO_INCREMENT untuk tabel `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT untuk tabel `roles`
+--
+ALTER TABLE `roles`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT untuk tabel `rsvps`
 --
 ALTER TABLE `rsvps`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT untuk tabel `templates`
 --
 ALTER TABLE `templates`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT untuk tabel `users`
@@ -579,7 +587,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT untuk tabel `weddings`
 --
 ALTER TABLE `weddings`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
@@ -602,6 +610,12 @@ ALTER TABLE `guest_books`
 --
 ALTER TABLE `rsvps`
   ADD CONSTRAINT `rsvps_wedding_id_foreign` FOREIGN KEY (`wedding_id`) REFERENCES `weddings` (`id`) ON DELETE CASCADE;
+
+--
+-- Ketidakleluasaan untuk tabel `users`
+--
+ALTER TABLE `users`
+  ADD CONSTRAINT `users_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE;
 
 --
 -- Ketidakleluasaan untuk tabel `weddings`

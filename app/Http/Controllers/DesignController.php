@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class DesignController extends Controller
 {
@@ -33,97 +34,126 @@ class DesignController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:100',
-            'preview_image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-            'view_path' => 'required|string|unique:templates,view_path',
-            'price' => 'required|numeric|min:0',
-        ]);
-
-        // Upload preview image
-        $file = $request->file('preview_image');
-        $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
-        $file->move(public_path('images/templates'), $filename);
-
-        // Buat file blade baru dari _newtemplate.blade.php
-        $newViewPath = str_replace('.', '/', $request->view_path); // convert ke path folder
-        $targetPath = resource_path("views/backend/{$newViewPath}.blade.php");
-        $templateSource = resource_path("views/backend/template_packs/pre_design/_newtemplate.blade.php");
-
-        if (!File::exists($templateSource)) {
-            return back()->withErrors(['template' => 'Template dasar tidak ditemukan.']);
+        try {
+            $request->validate([
+                'name' => 'required|string|max:100',
+                'preview_image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+                'view_path' => 'required|string|unique:templates,view_path',
+                'price' => 'required|numeric|min:0',
+            ]);
+    
+            // Upload preview image
+            $file = $request->file('preview_image');
+            $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images/templates'), $filename);
+    
+            // Buat file blade baru dari _newtemplate.blade.php
+            $newViewPath = str_replace('.', '/', $request->view_path); // convert ke path folder
+            $targetPath = resource_path("views/backend/{$newViewPath}.blade.php");
+            $templateSource = resource_path("views/backend/template_packs/pre_design/_newtemplate.blade.php");
+    
+            if (!File::exists($templateSource)) {
+                return back()->with('sweetalert', [
+                    'type' => 'error',
+                    'message' => 'Template dasar tidak ditemukan.'
+                ]);
+            }
+    
+            File::ensureDirectoryExists(dirname($targetPath));
+            File::copy($templateSource, $targetPath);
+    
+            // Simpan ke database
+            Template::create([
+                'name' => $request->name,
+                'preview_image' => $filename,
+                'view_path' => $request->view_path,
+                'price' => $request->price,
+            ]);
+    
+            session()->flash('sweetalert', [
+                'type' => 'success',
+                'message' => 'Template berhasil ditambahkan!'
+            ]);
+    
+            return redirect()->route('designs.index');
+    
+        } catch (ValidationException $e) {
+            return back()->with('sweetalert', [
+                'type' => 'warning',
+                'message' => $e->validator->errors()->first()
+            ])->withInput();
+        } catch (\Exception $e) {
+            return back()->with('sweetalert', [
+                'type' => 'error',
+                'message' => 'Terjadi kesalahan saat menyimpan template: ' . $e->getMessage()
+            ])->withInput();
         }
-
-        // Copy isi file template dasar ke file baru
-        File::ensureDirectoryExists(dirname($targetPath));
-        File::copy($templateSource, $targetPath);
-
-        // Simpan ke database
-        Template::create([
-            'name' => $request->name,
-            'preview_image' => $filename,
-            'view_path' => $request->view_path,
-            'price' => $request->price,
-        ]);
-
-        session()->flash('sweetalert', [
-            'type' => 'success',
-            'message' => 'Template berhasil ditambahkan!'
-        ]);
-
-        return redirect()->route('designs.index');
     }
 
     public function update(Request $request, $id)
     {
-        $template = Template::findOrFail($id);
-
-        $request->validate([
-            'name' => 'required|string|max:100',
-            'preview_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'view_path' => 'required|string',
-            'price' => 'required|numeric|min:0',
-        ]);
-
-        // Rename file blade jika view_path berubah
-        if ($template->view_path !== $request->view_path) {
-            $oldPath = resource_path('views/backend/' . str_replace('.', '/', $template->view_path) . '.blade.php');
-            $newPath = resource_path('views/backend/' . str_replace('.', '/', $request->view_path) . '.blade.php');
-
-            if (File::exists($oldPath)) {
-                File::ensureDirectoryExists(dirname($newPath));
-                File::move($oldPath, $newPath);
-            }
-        }
-
-        // Update data
-        $template->name = $request->name;
-        $template->view_path = $request->view_path;
-        $template->price = $request->price;
-
-        // Update gambar jika ada
-        if ($request->hasFile('preview_image')) {
-            if ($template->preview_image) {
-                $oldImagePath = public_path('images/templates/' . $template->preview_image);
-                if (File::exists($oldImagePath)) {
-                    File::delete($oldImagePath);
+        try {
+            $template = Template::findOrFail($id);
+    
+            $request->validate([
+                'name' => 'required|string|max:100',
+                'preview_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+                'view_path' => 'required|string',
+                'price' => 'required|numeric|min:0',
+            ]);
+    
+            // Rename file blade jika view_path berubah
+            if ($template->view_path !== $request->view_path) {
+                $oldPath = resource_path('views/backend/' . str_replace('.', '/', $template->view_path) . '.blade.php');
+                $newPath = resource_path('views/backend/' . str_replace('.', '/', $request->view_path) . '.blade.php');
+    
+                if (File::exists($oldPath)) {
+                    File::ensureDirectoryExists(dirname($newPath));
+                    File::move($oldPath, $newPath);
                 }
             }
-
-            $file = $request->file('preview_image');
-            $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('images/templates'), $filename);
-            $template->preview_image = $filename;
+    
+            // Update data template
+            $template->name = $request->name;
+            $template->view_path = $request->view_path;
+            $template->price = $request->price;
+    
+            // Update preview image jika ada
+            if ($request->hasFile('preview_image')) {
+                // Hapus gambar lama
+                if ($template->preview_image) {
+                    $oldImagePath = public_path('images/templates/' . $template->preview_image);
+                    if (File::exists($oldImagePath)) {
+                        File::delete($oldImagePath);
+                    }
+                }
+    
+                // Upload gambar baru
+                $file = $request->file('preview_image');
+                $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('images/templates'), $filename);
+                $template->preview_image = $filename;
+            }
+    
+            // Simpan perubahan ke database
+            $template->save();
+    
+            return redirect()->route('designs.index')->with('sweetalert', [
+                'type' => 'success',
+                'message' => 'Template berhasil diupdate!'
+            ]);
+    
+        } catch (ValidationException $e) {
+            return back()->with('sweetalert', [
+                'type' => 'warning',
+                'message' => $e->validator->errors()->first()
+            ])->withInput();
+        } catch (\Exception $e) {
+            return back()->with('sweetalert', [
+                'type' => 'error',
+                'message' => 'Terjadi kesalahan saat mengupdate template. Silakan coba lagi.'
+            ])->withInput();
         }
-
-        $template->save();
-
-        session()->flash('sweetalert', [
-            'type' => 'success',
-            'message' => 'Template berhasil diupdate!'
-        ]);
-
-        return redirect()->route('designs.index');
     }
 
     public function edit($id)
@@ -200,8 +230,4 @@ class DesignController extends Controller
             'notAttendingCount' => '0',
         ]);
     }
-
-
-
-
 }

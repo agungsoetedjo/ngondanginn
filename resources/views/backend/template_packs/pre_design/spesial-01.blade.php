@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Undangan Pernikahan</title>
     <link href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }} " rel="stylesheet">
@@ -28,9 +28,6 @@
         }
         .cover-section::before {
             content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.6), transparent 70%); animation: rotateBg 20s linear infinite; z-index: 0;
-        }
-        @keyframes rotateBg {
-            from { transform: rotate(0deg); } to { transform: rotate(360deg); }
         }
         .cover-content {
             position: relative; z-index: 1;
@@ -68,23 +65,6 @@
         .section h3, .section h4 {
             color: #04345f; margin-bottom: 10px; font-weight: 600;
         }
-        @media (max-width: 560px) {
-            .couple-names { font-size: 2.3rem; } .open-btn { font-size: 1rem; padding: 8px 16px; } .section { padding: 15px; }
-            #countdown {
-                gap: 10px;
-                justify-content: center;
-            }
-            .count-box {
-                padding: 8px 12px;
-                min-width: 60px;
-            }
-            .count-box span {
-                font-size: 1.5rem;
-            }
-            .count-box .label {
-                font-size: 0.8rem;
-            }
-        }
         .gallery-section .row {
             display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
         }
@@ -101,10 +81,10 @@
             margin-bottom: 40px; display: flex; justify-content: space-around; gap: 20px;
         }
         .stats-box-attend {
-            background-color: #178245; color: white; padding: 15px; border-radius: 10px; width: 120px; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #178245; color: white; padding: 10px; border-radius: 10px; width: 100px; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .stats-box-notattend {
-            background-color: #af2626; color: white; padding: 15px; border-radius: 10px; width: 120px; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #af2626; color: white; padding: 10px; border-radius: 10px; width: 100px; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .stats-box h5 {
             font-size: 1.2rem; margin-bottom: 5px;
@@ -199,6 +179,60 @@
         #playPauseIcon {
             font-size: 1.5rem;
         }
+        .intro-heading {
+            font-size: 1rem;
+            letter-spacing: 2px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        @media (max-width: 560px) {
+            #intro {
+                padding: 20px 15px;
+                text-align: center;
+            }
+
+            .sub-couple-names {
+                font-size: 1.8rem;
+                line-height: 1.4;
+                word-break: break-word;
+            }
+
+            #countdown {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+                margin-top: 15px;
+            }
+
+            .count-box {
+                padding: 8px 10px;
+                min-width: 65px;
+            }
+
+            .count-box span {
+                font-size: 1.5rem;
+            }
+
+            .count-box .label {
+                font-size: 0.8rem;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                font-size: 1rem;
+                padding: 10px 16px;
+                margin-top: 10px;
+            }
+
+            p {
+                font-size: 0.95rem;
+            }
+        }
+        body {
+            overflow-x: hidden;
+        }
     </style>
 </head>
 <body>
@@ -213,8 +247,13 @@
     </div>
     <div class="cover-section">
         <div class="cover-content" data-aos="zoom-in-up" data-aos-delay="300">
+            @if ($cover)
+                <div class="text-center mb-4">
+                    <img src="{{ asset($cover->image) }}" alt="Cover Wedding" class="img-fluid rounded shadow" style="max-height: 300px;">
+                </div>
+            @endif
             <div class="cover-title">The Wedding of</div>
-            <div class="couple-names">{{ $wedding->bride_name }} <br>&<br> {{ $wedding->groom_name }}</div>
+            <div class="couple-names">{{ $wedding->groom_name }} <br>&<br> {{ $wedding->bride_name }}</div>
             <div class="guest-name">
                 Kepada Bapak/Ibu/Saudara/i<br><strong>{{ request()->get('to') ?? 'Nama Tamu' }}</strong>
             </div>
@@ -224,8 +263,21 @@
     <div class="invitation-sections" id="invitationContent">
         <div class="content-wrapper">
             <section id="intro" class="section" data-aos="fade-up" data-aos-delay="100">
-                <h7>THE WEDDING OF</h7>
-                <div class="sub-couple-names">{{ $wedding->bride_name }} <br>&<br> {{ $wedding->groom_name }}</div>
+                <h6 class="intro-heading">THE WEDDING OF</h6>
+                <div class="text-center">
+                    @if($groomPhoto)
+                        <img src="{{ asset($groomPhoto->image) }}" alt="Foto Mempelai Pria" class="img-fluid rounded mb-2" style="max-height: 120px;">
+                    @endif
+                    <div class="sub-couple-names">{{ $wedding->groom_name }}</div>
+                
+                    <div class="sub-couple-names my-2">&</div>
+                
+                    @if($bridePhoto)
+                        <img src="{{ asset($bridePhoto->image) }}" alt="Foto Mempelai Wanita" class="img-fluid rounded mb-2" style="max-height: 120px;">
+                    @endif
+                    <div class="sub-couple-names">{{ $wedding->bride_name }}</div>
+                </div>
+                
                 <p style="font-size: 1rem;">Kami berharap Anda menjadi bagian dari hari istimewa kami!</p>
                 <div id="countdown" class="d-flex justify-content-center flex-wrap gap-3">
                     <div class="count-box"><span id="days">00</span><div class="label">Hari</div></div>
@@ -250,13 +302,14 @@
                     serta Kerabat sekalian untuk menghadiri<br>
                     acara pernikahan kami :
                 </p>
-                <div class="sub-couple-names">{{ $wedding->bride_name }}</div>
-                {{ $wedding->bride_parents_info }}
+                <div class="sub-couple-names">{{ $wedding->groom_name }}</div>
+                {{ $wedding->groom_parents_info }}
                 <div>
                     &
                 </div>
-                <div class="sub-couple-names">{{ $wedding->groom_name }}</div>
-                {{ $wedding->groom_parents_info }}
+                <div class="sub-couple-names">{{ $wedding->bride_name }}</div>
+                {{ $wedding->bride_parents_info }}
+                
             </section>
         
             <section id="save-the-date" class="section" data-aos="fade-up" data-aos-delay="300">
@@ -271,12 +324,14 @@
                 <p style="font-weight: bold;">
                     {{ \Carbon\Carbon::parse($wedding->akad_date)->translatedFormat('l, d F Y') }} pukul {{ \Carbon\Carbon::parse($wedding->akad_date)->translatedFormat('H:i') }}
                 </p>
+                <p><i>Tempat : {{ $wedding->akad_place_name }}</i></p>
+                <p><i>Alamat : {{ $wedding->akad_location }}</i></p>
                 <h2>Resepsi</h2>
                 <p style="font-weight: bold;">
                     {{ \Carbon\Carbon::parse($wedding->reception_date)->translatedFormat('l, d F Y') }} pukul {{ \Carbon\Carbon::parse($wedding->reception_date)->translatedFormat('H:i') }}
                 </p>
-                <p><i>Tempat: {{ $wedding->place_name }}</i></p>
-                <p><i>Alamat: {{ $wedding->location }}</i></p>
+                <p><i>Tempat : {{ $wedding->reception_place_name }}</i></p>
+                <p><i>Alamat : {{ $wedding->reception_location }}</i></p>
             </section>
         
             <section id="amplop-digital" class="section" data-aos="fade-up" data-aos-delay="400">
@@ -318,15 +373,17 @@
             <section id="galeri-foto" class="section gallery-section" data-aos="fade-up" data-aos-delay="500">
                 <h2 class="mb-4">Galeri Foto</h2>
                 <p class="text-center">Tidak ada yang spesial dalam cerita kami. Tapi kami sangat spesial untuk satu sama lain. Dan Kami bersyukur, dipertemukan Allah diwaktu terbaik, Kini kami menanti hari istimewa kami.</p>
-                <div class="row">
-                    @foreach($wedding->galleries as $gallery)
-                        <div class="col-md-4 mb-3">
-                            <img src="{{ asset($gallery->image) }}" alt="Gallery Image" class="img-fluid rounded shadow-sm">
-                        </div>
-                    @endforeach
-                </div>
+                @if($galleryPhotos->count())
+                    <div class="row">
+                        @foreach($galleryPhotos as $photo)
+                            <div class="col-6 col-sm-4 col-md-3 mb-3">
+                                <img src="{{ asset($photo->image) }}" class="img-fluid rounded" alt="Galeri Foto">
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
             </section>
-        
+            
             <section id="love-story" class="section" data-aos="fade-up" data-aos-delay="600">
                 <h2 class="mb-4">Love Story</h2>
                 <p>{{ $wedding->description }}</p>
@@ -338,11 +395,11 @@
                 <div class="attendance-stats d-flex justify-content-around mb-4">
                     <div class="stats-box-attend">
                         <p class="attendance-number" id="attending-count">{{ $attendingCount }}</p>
-                        <h5>Hadir</h5>
+                        <h5><i class="bi bi-person-check"></i></h5>
                     </div>
                     <div class="stats-box-notattend">
                         <p class="attendance-number" id="not-attending-count">{{ $notAttendingCount }}</p>
-                        <h5>Tidak Hadir</h5>
+                        <h5><i class="bi bi-person-x"></i></h5>
                     </div>
                 </div>
                 
