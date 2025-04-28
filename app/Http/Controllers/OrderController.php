@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\Music;
 use App\Models\Order;
+use App\Models\PaymentDest;
 use App\Models\Template;
 use App\Models\Wedding;
 
@@ -41,18 +42,12 @@ class OrderController extends Controller
             'music_id' => 'nullable|exists:musics,id',
         ]);
     
-        $template = Template::findOrFail($request->template_id);
-    
         // 1. Simpan ke tabel orders
         $order = Order::create([
             'kode_transaksi' => 'WD_ORDER_' . Str::upper(uniqid()),
             'nama_pemesan' => $request->nama_pemesan,
             'phone_number' => $request->phone_number,
-            'payment_destination' => null,
-            'payment_total' => $template->price ?? 0,
-            'payment_proof' => null,
-            'payment_desc' => null,
-            'status' => 'pending',
+            'status' => 'created',
         ]);
     
         // 2. Simpan ke tabel weddings
@@ -61,7 +56,7 @@ class OrderController extends Controller
             'order_id' => $order->id,
             'template_id' => $request->template_id,
             'music_id' => $request->music_id,
-            'slug' => Str::slug($request->bride_name . '-' . $request->groom_name . '-' . Str::random(5)),
+            'slug' => Str::slug($request->groom_name . '-' . $request->bride_name . '-' . Str::random(5)),
             'bride_name' => $request->bride_name,
             'groom_name' => $request->groom_name,
             'bride_parents_info' => $request->bride_parents_info,
@@ -99,56 +94,26 @@ class OrderController extends Controller
 
     public function hasilPesanan($kode_transaksi)
     {
-        $order = Order::with('wedding.template')->where('kode_transaksi', $kode_transaksi)->firstOrFail();
+        $order = Order::with(['wedding.template','payment'])->where('kode_transaksi', $kode_transaksi)->firstOrFail();
         $templates = Template::all(); // Kirim semua template ke view
-        return view('order.hasil-cek', compact('order','templates'));
+        $paymentDests = PaymentDest::all();
+        return view('order.hasil-cek', compact('order','templates','paymentDests'));
     }
 
-    public function uploadBukti(Request $request, $kode_transaksi)
-    {
-        $request->validate([
-            'bukti_transfer' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
-    
-        $order = Order::where('kode_transaksi', $kode_transaksi)->first();
-    
-        if (!$order) {
-            return redirect()->back()->with('error', 'Order tidak ditemukan.');
-        }
-    
-        $file = $request->file('bukti_transfer');
-    
-        // Hapus file lama jika ada
-        if ($order->payment_proof) {
-            $oldPath = public_path($order->payment_proof);
-            if (file_exists($oldPath)) {
-                unlink($oldPath);
-            }
-        }
-    
-        // Simpan file baru
-        $fileName = uniqid() . '.' . $file->getClientOriginalExtension();
-        $path = 'uploads/payment_proof/' . $fileName;
-        $file->move(public_path('uploads/payment_proof'), $fileName);
-    
-        // Update order
-        $order->update([
-            'payment_destination' => $request->payment_destination,
-            'payment_proof' => $path,
-            'status' => 'waiting_verify',
-            'payment_desc' => null, // Reset alasan penolakan sebelumnya
-        ]);
-
-        session()->flash('success', 'Bukti pembayaran berhasil diunggah!');
-    
-        return redirect()->route('order.cek.result', $order->kode_transaksi);
-    }    
-    
     // dikelola oleh Pengelola Undangan cooooyyyy
     public function adminIndex()
     {
+        // Pastikan user yang sedang login memiliki role_id 1 (pengelola)
+        if (Auth::user()->role_id != 1) {
+            // Jika bukan pengelola, redirect atau beri pesan error
+            session()->flash('sweetalert', [
+                'type' => 'error',
+                'message' => 'Anda tidak memiliki akses untuk melihat data pesanan.'
+            ]);
+        }
+
         $orders = Order::with('wedding')
-            ->whereIn('status', ['pending', 'rejected', 'waiting_verify', 'paid', 'processed', 'published'])
+            ->whereIn('status', ['created','processed', 'published'])
             ->whereHas('wedding', function ($query) {
                 $query->whereNull('user_id')
                       ->orWhere('user_id', Auth::id());
@@ -168,42 +133,6 @@ class OrderController extends Controller
         return view('backend.orders.show', compact('order','musics'));
     }
 
-    public function adminApprove($kode_transaksi)
-    {
-        // Cari order berdasarkan kode transaksi
-        $order = Order::where('kode_transaksi', $kode_transaksi)->firstOrFail();
-
-        // Update status menjadi "approved" atau sesuai dengan logika yang diinginkan
-        $order->update([
-            'status' => 'paid',  // Ubah status jika perlu
-        ]);
-
-        session()->flash('sweetalert', [
-            'type' => 'success',
-            'message' => 'Pesanan berhasil disetujui.'
-        ]);
-
-        return redirect()->route('admin.orders.show', $order->kode_transaksi);
-    }
-
-    public function adminReject(Request $request, $kode_transaksi)
-    {
-        $order = Order::where('kode_transaksi', $kode_transaksi)->firstOrFail();
-
-        $order->update([
-            'status' => 'rejected',
-            'payment_desc' => $request->reason, // alasan dari SweetAlert
-            // payment_proof tetap dipertahankan
-        ]);
-
-        session()->flash('sweetalert', [
-            'type' => 'error',
-            'message' => 'Pesanan ditolak. Alasan: ' . $request->reason
-        ]);
-
-        return redirect()->route('admin.orders.show', $order->kode_transaksi);
-    }
-
     public function assignOrder($kode_transaksi)
     {
         $order = Order::where('kode_transaksi', $kode_transaksi)->firstOrFail();
@@ -217,15 +146,15 @@ class OrderController extends Controller
             'message' => 'Pesanan berhasil dikelola oleh Anda.'
         ]);
     
-        return redirect()->route('admin.orders.show', $order->kode_transaksi);
+        return redirect()->route('orders.index', $order->kode_transaksi);
     }
 
     public function updateTemplate(Request $request, $kode_transaksi)
     {
         $order = Order::where('kode_transaksi', $kode_transaksi)->firstOrFail();
 
-        if ($order->status !== 'pending') {
-            return back()->with('error', 'Template hanya bisa diganti saat status pending.');
+        if (!in_array($order->payment->payment_status, ['pending', 'rejected'])) {
+            return back()->with('error', 'Template hanya bisa diganti saat status pending atau rejected.');
         }
 
         $request->validate([
@@ -239,7 +168,7 @@ class OrderController extends Controller
             'template_id' => $template->id,
         ]);
 
-        $order->update([
+        $order->payment->update([
             'payment_total' => $template->price,
         ]);
 
@@ -250,6 +179,15 @@ class OrderController extends Controller
 
     public function indexArchive()
     {
+        // Pastikan user yang sedang login memiliki role_id 1 (pengelola)
+        if (Auth::user()->role_id != 1) {
+            // Jika bukan pengelola, redirect atau beri pesan error
+            session()->flash('sweetalert', [
+                'type' => 'error',
+                'message' => 'Anda tidak memiliki akses untuk melihat data pesanan.'
+            ]);
+        }
+        
         $orders = Order::with('wedding')
             ->whereIn('status', ['completed'])
             ->whereHas('wedding', function ($query) {

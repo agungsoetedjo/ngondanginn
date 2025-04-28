@@ -1,16 +1,16 @@
-@extends('backend.layouts.app')
+@extends('backend.layouts_be.app')
 
 @section('content')
-<div class="container">
-  <h4>Daftar Undangan</h4>
-  <br>
+<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Tables /</span> Undangan</h4>
+<div class="p-3">
+
   {{-- <a href="{{ route('weddings.create') }}" class="btn btn-primary mb-3">+ Buat Undangan Baru</a> --}}
 
   <table class="table table-bordered table-striped datatable">
     <thead>
       <tr>
         <th>Pasangan</th>
-        <th style="width: 25%;">Tanggal</th>
+        <th>Tanggal</th>
         <th>Lokasi</th>
         <th>Link</th>
         <th>Aksi</th>
@@ -19,7 +19,7 @@
     <tbody>
       @foreach($weddings as $wedding)
         <tr>
-          <td>{{ $wedding->bride_name }} & {{ $wedding->groom_name }}</td>
+          <td>{{ $wedding->groom_name }} & {{ $wedding->bride_name }}</td>
           <td>
             Akad: {{ $wedding->formatted_akad_date ?? '-' }} <br>
             Resepsi: {{ $wedding->formatted_reception_date ?? '-' }}
@@ -38,66 +38,38 @@
             @endif
           </td>
           <td>
-            <!-- Edit Button -->
-            <a href="{{ route('weddings.edit', $wedding->slug) }}" class="btn btn-sm btn-warning">
-              <i class="bi bi-pencil"></i>
-            </a>
-
-            <!-- Delete Button -->
-            <form action="{{ route('weddings.destroy', $wedding->id) }}" method="POST" class="d-inline delete-form">
-              @csrf
-              @method('DELETE')
-              <button type="button" class="btn btn-sm btn-danger btn-delete">
-                <i class="bi bi-trash"></i>
+            <div class="dropdown">
+              <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                <i class="bx bx-dots-vertical-rounded"></i>
               </button>
-            </form>            
-
-            <!-- RSVP Button -->
-            <a href="{{ route('rsvps.index', $wedding->id) }}" class="btn btn-sm btn-primary">
-              <i class="bi bi-person-check"></i>
-            </a>
-
-            <!-- Guestbook Button -->
-            <a href="{{ route('guestbooks.index', $wedding->id) }}" class="btn btn-sm btn-primary">
-              <i class="bi bi-book"></i>
-            </a>
-
-            <!-- Gallery Button -->
-            <a href="{{ route('galleries.index', $wedding->id) }}" class="btn btn-sm btn-primary">
-              <i class="bi bi-images"></i>
-            </a>
+              <div class="dropdown-menu">
+                <a href="{{ route('weddings.edit', $wedding->slug) }}" class="dropdown-item">
+                  <i class="bx bx-pencil"></i> Edit
+                </a>
+                <form action="{{ route('weddings.destroy', $wedding->id) }}" method="POST" class="d-inline delete-form">
+                  @csrf
+                  @method('DELETE')
+                  <button data-title="Yakin ingin menghapus?" data-text="Data undangan yang dihapus tidak bisa dikembalikan!" class="dropdown-item btn-delete">
+                    <i class="bx bx-trash"></i> Hapus
+                  </button>
+                </form>
+                <a href="{{ route('rsvps.index', $wedding->id) }}" class="dropdown-item">
+                  <i class="bx bx-user-check"></i> RSVP
+                </a>
+                <a href="{{ route('guestbooks.index', $wedding->id) }}" class="dropdown-item">
+                  <i class="bx bx-book"></i> Buku Tamu
+                </a>
+                <a href="{{ route('galleries.index', $wedding->id) }}" class="dropdown-item">
+                  <i class="bx bx-images"></i> Galeri
+                </a>
+              </div>
+            </div>
           </td>
         </tr>
       @endforeach
     </tbody>
   </table>
 </div>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="{{ asset('assets/js/ourscript.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-  $(document).ready(function () {
-    $('.btn-delete').click(function (e) {
-      e.preventDefault();
-
-      const form = $(this).closest('form');
-
-      Swal.fire({
-        title: 'Yakin ingin menghapus?',
-        text: "Data undangan yang dihapus tidak bisa dikembalikan!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Ya, hapus!',
-        cancelButtonText: 'Batal'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          form.submit();
-        }
-      });
-    });
-  });
-</script>
+<x-data-tables />
+<x-sweet-alert-confirm />
 @endsection

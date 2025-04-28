@@ -29,7 +29,7 @@ class WeddingController extends Controller
 
     public function create()
     {
-        $musics = Music::all();  // Bisa ditambahin filter jika perlu
+        $musics = Music::all();
         $templates = Template::all();
         return view('backend.weddings.create', compact('templates', 'musics'));
     }
@@ -54,18 +54,13 @@ class WeddingController extends Controller
         ]);
 
         $kodeTransaksi = 'WD_ORDER_' . Str::upper(uniqid());
-        $template = Template::find($request->template_id);
 
         // Buat order terlebih dahulu
         $order = Order::create([
             'kode_transaksi' => $kodeTransaksi,
             'nama_pemesan' => $request->nama_pemesan,
             'phone_number' => $request->phone_number,
-            'payment_destination' => $request->payment_destination,
-            'payment_total' => $template->price ?? 0,
-            'payment_proof' => null,
-            'payment_desc' => null,
-            'status' => 'pending',
+            'status' => 'created',
         ]);
 
         // Buat wedding sekaligus
@@ -132,7 +127,7 @@ class WeddingController extends Controller
         ]);
     
         // Membuat slug baru jika ada perubahan pada nama mempelai
-        $slug = Str::slug($request->bride_name . '-' . $request->groom_name . '-' . now()->timestamp);
+        $slug = Str::slug($request->bride_name . '-' . $request->groom_name . '-' . Str::random(5));
     
         // Siapkan data untuk update wedding
         $weddingData = [
@@ -142,10 +137,10 @@ class WeddingController extends Controller
             'groom_parents_info' => $request->groom_parents_info,
             'akad_date' => $request->akad_date ? Carbon::parse($request->akad_date) : null,
             'reception_date' => $request->reception_date ? Carbon::parse($request->reception_date) : null,
-            'akad_location' => $request->location,
-            'akad_place_name' => $request->place_name,
-            'reception_location' => $request->location,
-            'reception_place_name' => $request->place_name,
+            'akad_location' => $request->akad_location,
+            'akad_place_name' => $request->akad_place_name,
+            'reception_location' => $request->reception_location,
+            'reception_place_name' => $request->reception_place_name,
             'description' => $request->description,
             'music_id' => $request->music_id,
             'slug' => $slug,
@@ -156,15 +151,15 @@ class WeddingController extends Controller
             $order = Order::find($wedding->order_id);
     
             if ($order) {
-                // Jika status order adalah pending, izinkan update template_id
-                if ($order->status === 'pending') {
+                // Jika status pembayaran adalah pending, izinkan update template_id
+                if ($order->payment->payment_status === 'pending') {
                     if ($request->filled('template_id')) {
                         $weddingData['template_id'] = $request->template_id;
                 
                         // Ambil harga template baru
                         $template = Template::find($request->template_id);
                         if ($template) {
-                            $order->payment_total = $template->price;
+                            $order->payment->payment_total = $template->price;
                             $order->save();
                         }
                     }
@@ -195,8 +190,8 @@ class WeddingController extends Controller
             $order = Order::find($wedding->order_id);
             if ($order) {
                 // Hapus file payment_proof dari folder public jika ada
-                if ($order->payment_proof) {
-                    $filePath = public_path($order->payment_proof);
+                if ($order->payment->payment_proof) {
+                    $filePath = public_path($order->payment->payment_proof);
                     if (file_exists($filePath)) {
                         unlink($filePath); // Hapus file bukti transfer
                     }
@@ -228,29 +223,14 @@ class WeddingController extends Controller
         return redirect()->route('weddings.index');
     }    
 
-    public function show($id)
-    {
-        $wedding = Wedding::findOrFail($id);
-        
-        // Dapatkan template berdasarkan view_path
-        $template = $wedding->template;
-
-        // Pastikan template ada dan memiliki view_path
-        if ($template && $template->view_path) {
-            return view($template->view_path, compact('wedding'));
-        }
-
-        return redirect()->route('weddings.index')->with('error', 'Template tidak ditemukan!');
-    }
-
     public function processWedding($kode_transaksi)
     {
         // Temukan order berdasarkan kode transaksi
         $order = Order::where('kode_transaksi', $kode_transaksi)->firstOrFail();
         
         // Cek apakah status sudah 'paid'
-        if ($order->status !== 'paid') {
-            return back()->with('error', 'Order belum berstatus paid.');
+        if ($order->payment->payment_status !== 'paid') {
+            return back()->with('error', 'Pesanan belum berstatus Pembayaran Diterima.');
         }
     
         // Update status order menjadi processed
@@ -263,7 +243,7 @@ class WeddingController extends Controller
             'message' => 'Pesanan berhasil diproses.'
         ]);
     
-        return redirect()->route('admin.orders.show', $order->kode_transaksi);
+        return redirect()->route('orders.index', $order->kode_transaksi);
     }
 
     public function publishWedding($kode_transaksi){
@@ -271,7 +251,7 @@ class WeddingController extends Controller
         
         // Cek apakah status sudah 'paid'
         if ($order->status !== 'processed') {
-            return back()->with('error', 'Order belum berstatus processed.');
+            return back()->with('error', 'Pesanan belum berstatus Diproses.');
         }
 
         $order->update([
@@ -283,7 +263,7 @@ class WeddingController extends Controller
             'message' => 'Undangan berhasil dipublikasikan.'
         ]);
 
-        return redirect()->route('admin.orders.show', $order->kode_transaksi);
+        return redirect()->route('orders.index', $order->kode_transaksi);
     }
 
     public function completeWedding($kode_transaksi){
@@ -291,7 +271,7 @@ class WeddingController extends Controller
         
         // Cek apakah status sudah 'paid'
         if ($order->status !== 'published') {
-            return back()->with('error', 'Order belum berstatus published.');
+            return back()->with('error', 'Pesanan belum berstatus Dipublikasi.');
         }
 
         $order->update([
@@ -303,7 +283,7 @@ class WeddingController extends Controller
             'message' => 'Undangan berhasil diselesaikan.'
         ]);
 
-        return redirect()->route('show-archive', $order->kode_transaksi);
+        return redirect()->route('index-archive', $order->kode_transaksi);
     }
 
     public function updateMusic(Request $request, $id)
@@ -322,7 +302,12 @@ class WeddingController extends Controller
         $wedding->music_id = $request->music_id;
         $wedding->save();
 
-        return back()->with('success', 'Musik latar berhasil diperbarui!');
+        session()->flash('sweetalert', [
+            'type' => 'success',
+            'message' => 'Musik latar berhasil diperbarui!'
+        ]);
+
+        return back();
     }
 
     public function weddingChecks($slug)

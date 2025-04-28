@@ -12,4 +12,8 @@ class DashboardController extends Controller
         $user = Auth::user(); // Ambil data user yang login
         return view('backend.dashboard', compact('user'));
     }
+
+    public function sneat(){
+        return view('backend.layouts_be.container');
+    }
 }

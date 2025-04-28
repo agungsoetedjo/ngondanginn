@@ -1,29 +1,27 @@
-@extends('backend.layouts.app')
+@extends('backend.layouts_be.app')
 
 @section('content')
-<div class="container">
-    <h4>Daftar Template Undangan</h4>
-    <br>
+<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Tables /</span> Template</h4>
+<div class="p-2">
     <a href="{{ route('designs.create') }}" class="btn btn-primary mb-3">+ Tambah Template</a>
 
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <div class="table-responsive">
-        <table class="table table-bordered align-middle">
+        <table class="table table-bordered table-striped datatable">
             <thead class="table-light">
                 <tr>
                     <th>#</th>
                     <th>Nama</th>
                     <th>Gambar</th>
                     <th>View Path</th>
-                    <th>Harga</th> <!-- Tambahan -->
+                    <th>Harga</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                @forelse ($templates as $design)
+                @foreach ($templates as $design)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $design->name }}</td>
@@ -37,52 +35,31 @@
                         <td><code>{{ $design->view_path }}</code></td>
                         <td>Rp{{ number_format($design->price, 0, ',', '.') }}</td> <!-- Tambahan -->
                         <td>
-                            <a href="{{ route('designs.preview', $design->id) }}" class="btn btn-sm btn-info" target="_blank">
-                                Preview
-                            </a>
-                            <a href="{{ route('designs.edit', $design->id) }}" class="btn btn-sm btn-warning">
-                                Edit
-                            </a>
-                            <form action="{{ route('designs.destroy', $design->id) }}" method="POST" class="d-inline delete-form">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-sm btn-danger btn-delete">Hapus</button>
-                            </form>
+                            <div class="dropdown">
+                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a href="{{ route('designs.preview', $design->id) }}" class="dropdown-item" target="_blank">
+                                        <i class="bx bx-show"></i> Preview
+                                    </a>
+                                    <a href="{{ route('designs.edit', $design->id) }}" class="dropdown-item">
+                                        <i class="bx bx-pencil"></i> Edit
+                                    </a>
+                                    <form action="{{ route('designs.destroy', $design->id) }}" method="POST" class="delete-form">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button data-title="Yakin ingin menghapus?" data-text="Template yang dihapus tidak bisa dikembalikan!" class="dropdown-item btn-delete"><i class="bx bx-trash"></i> Hapus</button>
+                                    </form>
+                                </div>
+                            </div>
                         </td>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="6" class="text-center">Belum ada template</td>
-                    </tr>
-                @endforelse
+                @endforeach
             </tbody>            
         </table>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-  $(document).ready(function () {
-    $('.btn-delete').click(function (e) {
-      e.preventDefault();
-
-      const form = $(this).closest('form');
-
-      Swal.fire({
-        title: 'Yakin ingin menghapus?',
-        text: "Template yang dihapus tidak bisa dikembalikan!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Ya, hapus!',
-        cancelButtonText: 'Batal'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          form.submit();
-        }
-      });
-    });
-  });
-</script>
+<x-data-tables />
+<x-sweet-alert-confirm />
 @endsection

@@ -1,3 +1,5 @@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
 function initDataTable(selector) {
     $(selector).DataTable({
         "lengthMenu": [5, 10, 25, 50],
@@ -24,3 +26,4 @@ $(document).ready(function() {
         initDataTable(this);
     });
 });
+</script>

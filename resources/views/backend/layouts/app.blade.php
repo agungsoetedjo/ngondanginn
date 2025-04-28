@@ -53,25 +53,7 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>       
-  <!-- SweetAlert2 CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  @if(session('sweetalert'))
-    <script>
-        $(function() {
-            // Ambil tipe dan pesan dari session sweetalert
-            var sweetalert = @json(session('sweetalert'));
-
-            Swal.fire({
-                icon: sweetalert.type, // 'success' atau 'error'
-                title: sweetalert.type === 'warning' ? 'Peringatan' : (sweetalert.type === 'error' ? 'Error' : 'Sukses'),
-                text: sweetalert.message,
-                showConfirmButton: false,
-                timerProgressBar: true,
-                timer: 2000
-            });
-        });
-    </script>
-  @endif
+  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+  <x-sweet-alert-notify />
 </body>
 </html>

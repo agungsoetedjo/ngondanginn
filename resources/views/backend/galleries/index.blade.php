@@ -1,11 +1,8 @@
-@extends('backend.layouts.app')
-
-@section('title', 'Galeri Foto')
+@extends('backend.layouts_be.app')
 
 @section('content')
-<div class="container">
-    <h4 class="mb-4">Galeri Foto: <strong>{{ $wedding->bride_name }} & {{ $wedding->groom_name }}</strong></h4>
-
+<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Tables / Galeri Foto / </span> <strong>{{ $wedding->groom_name }} & {{ $wedding->bride_name }}</strong></h4>
+<div class="p-3">
     <form action="{{ route('galleries.store', $wedding->id) }}" method="POST" enctype="multipart/form-data" class="mb-4">
         @csrf
         <div class="mb-3">
@@ -56,7 +53,7 @@
                             <form action="{{ route('galleries.destroy', $gallery->id) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
-                                <button class="btn btn-sm btn-outline-danger btn-delete">Hapus</button>
+                                <button data-title="Yakin ingin menghapus?" data-text="Foto yang dihapus tidak bisa dikembalikan!" class="btn btn-sm btn-outline-danger btn-delete">Hapus</button>
                             </form>
                         </div>
                     </div>
@@ -66,30 +63,5 @@
     @endif
     <a href="{{ route('weddings.index') }}" class="btn btn-secondary">← Kembali ke Daftar Undangan</a>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-  $(document).ready(function () {
-    $('.btn-delete').click(function (e) {
-      e.preventDefault();
-
-      const form = $(this).closest('form');
-
-      Swal.fire({
-        title: 'Yakin ingin menghapus?',
-        text: "Foto yang dihapus tidak bisa dikembalikan!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Ya, hapus!',
-        cancelButtonText: 'Batal'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          form.submit();
-        }
-      });
-    });
-  });
-</script>
+<x-sweet-alert-confirm />
 @endsection

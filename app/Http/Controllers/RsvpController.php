@@ -28,7 +28,12 @@ class RsvpController extends Controller
         }
 
         $rsvp->delete();
-        session()->flash('success','Data RSVP berhasil dihapus');
+        
+        session()->flash('sweetalert', [
+            'type' => 'success',
+            'message' => 'Data RSVP berhasil dihapus'
+        ]);
+
         return redirect()->route('rsvps.index', $wedding->id);
     }
 

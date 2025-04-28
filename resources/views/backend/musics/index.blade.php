@@ -1,11 +1,8 @@
-@extends('backend.layouts.app')
-
-@section('title', 'Manajemen Musik')
+@extends('backend.layouts_be.app')
 
 @section('content')
-<div class="container">
-    <h4 class="mb-4">Daftar Musik Latar</h4>
-
+<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Tables / </span> <strong> Musik </strong></h4>
+<div class="p-3">
     <form action="{{ route('musics.store') }}" method="POST" enctype="multipart/form-data" class="mb-4">
         @csrf
         <div class="mb-3">
@@ -38,40 +35,15 @@
                         Browser tidak mendukung audio.
                     </audio>
                 </div>
-                <form action="{{ route('musics.destroy', $music->id) }}" method="POST" class="d-inline delete-music-form">
+                <form action="{{ route('musics.destroy', $music->id) }}" method="POST" class="d-inline">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn btn-sm btn-outline-danger">Hapus</button>
+                    <button data-title="Yakin ingin menghapus?" data-text="Musik yang dihapus tidak bisa dikembalikan!" class="btn btn-sm btn-outline-danger btn-delete"><i class="bx bx-trash"></i> Hapus</button>
                 </form>                    
             </li>
         @endforeach
     </ul>    
     @endif
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    $(document).ready(function () {
-      $('.delete-music-form').on('submit', function (e) {
-        e.preventDefault(); // Stop form dari submit langsung
-  
-        const form = this;
-  
-        Swal.fire({
-          title: 'Yakin ingin menghapus musik ini?',
-          text: "Tindakan ini tidak dapat dibatalkan.",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#d33',
-          cancelButtonColor: '#6c757d',
-          confirmButtonText: 'Ya, Hapus!',
-          cancelButtonText: 'Batal'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            form.submit();
-          }
-        });
-      });
-    });
-  </script>
+<x-sweet-alert-confirm />
 @endsection

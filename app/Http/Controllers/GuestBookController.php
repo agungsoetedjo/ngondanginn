@@ -27,6 +27,12 @@ class GuestBookController extends Controller
         }
 
         $guest->delete();
-        return back()->with('success', 'Pesan buku tamu dihapus.');
+
+        session()->flash('sweetalert', [
+            'type' => 'success',
+            'message' => 'Pesan buku tamu dihapus.'
+        ]);
+
+        return back();
     }
 }

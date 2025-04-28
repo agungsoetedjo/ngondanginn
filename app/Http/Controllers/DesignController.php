@@ -206,28 +206,40 @@ class DesignController extends Controller
         return view($viewPath, [
             'template' => $template,
             'wedding' => (object)[
-                'bride_name' => 'Habib',
-                'groom_name' => 'Adiba',
-                'bride_parents_info' => 'Putra pertama dari Bpk Habibie & Ibu Ainun',
-                'groom_parents_info' => 'Putri pertama dari Bpk Wawan & Ibu Indah',
+                'groom_name' => 'Habib',
+                'bride_name' => 'Adiba',
+                'groom_parents_info' => 'Putra pertama dari Bpk Wawan & Ibu Indah',
+                'bride_parents_info' => 'Putri pertama dari Bpk Habibie & Ibu Ainun',
                 'akad_date' => '2025-05-20 09:00:00',
                 'reception_date' => '2025-05-20 11:00:00',
-                'place_name' => 'Gedung Serbaguna Graha Citra',
-                'location' => 'Jl. Raya Sudirman No. 123, Jakarta Selatan',
+                'akad_place_name' => 'Gedung Serbaguna Graha Citra',
+                'akad_location' => 'Jl. Raya Sudirman No. 123, Jakarta Selatan',
+                'reception_place_name' => 'Gedung Serbaguna Graha Citra',
+                'reception_location' => 'Jl. Raya Sudirman No. 123, Jakarta Selatan',
                 'description' => 'asdasdasdasdasd',
                 'slug' => 'anna-budi',
                 'template_id' => $template->id,
-                'rsvps' => collect([]),
-                'guestBooks' => collect([]),
-                'galleries' => collect([
+                'rsvps' => [],
+                'guestBooks' => [],
+                'galleries' => [
                     (object)['image' => 'assets/img/portfolio/app-1.jpg'],
-                    (object)['image' => 'assets/img/portfolio/app-2.jpg'],
-                    (object)['image' => 'assets/img/portfolio/app-3.jpg'],
-                ]),
+                ],
                 'music' => (object)['file_path' => ''],
             ],
             'attendingCount' => '0',
             'notAttendingCount' => '0',
-        ]);
+            'cover' => (object)[
+                'image' => 'assets_be/img/cover.jpg',
+            ],
+            'groomPhoto' => (object)[
+                'image' => 'assets_be/img/groom.jpg',
+            ],
+            'bridePhoto' => (object)[
+                'image' => 'assets_be/img/bride.jpg',
+            ],
+            'galleryPhotos' => collect([
+                (object)['image' => 'assets_be/img/gallery.jpg'],
+            ]),
+        ]);        
     }
 }

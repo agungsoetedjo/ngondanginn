@@ -53,31 +53,31 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label for="bride_name" class="form-label">Nama Mempelai Wanita</label>
-                        <input type="text" name="bride_name" id="bride_name" class="form-control" required>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-3">
                         <label for="groom_name" class="form-label">Nama Mempelai Pria</label>
                         <input type="text" name="groom_name" id="groom_name" class="form-control" required>
                     </div>
                 </div>
-            </div>
-
-            <div class="row">
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label for="bride_parents_info" class="form-label">Orang Tua Mempelai Wanita</label>
-                        <input type="text" name="bride_parents_info" id="bride_parents_info" class="form-control"
-                            placeholder="Contoh: Putri ke-X dari Ayah X dan Ibu Y">
+                        <label for="bride_name" class="form-label">Nama Mempelai Wanita</label>
+                        <input type="text" name="bride_name" id="bride_name" class="form-control" required>
                     </div>
                 </div>
+            </div>
+
+            <div class="row">              
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="groom_parents_info" class="form-label">Orang Tua Mempelai Pria</label>
                         <input type="text" name="groom_parents_info" id="groom_parents_info" class="form-control"
                             placeholder="Contoh: Putra ke-X dari Ayah A dan Ibu B">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="bride_parents_info" class="form-label">Orang Tua Mempelai Wanita</label>
+                        <input type="text" name="bride_parents_info" id="bride_parents_info" class="form-control"
+                            placeholder="Contoh: Putri ke-X dari Ayah X dan Ibu Y">
                     </div>
                 </div>
             </div>

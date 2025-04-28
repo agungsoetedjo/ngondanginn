@@ -1,91 +1,79 @@
-@extends('backend.layouts.app')
+@extends('backend.layouts_be.app')
 
 @section('content')
-<div class="container">
-    <h4 class="mb-4">
-    @if (request()->routeIs('admin.orders.index'))
-    Manajemen Pesanan
+<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Tables /</span> 
+  @if (request()->routeIs('admin.orders.index'))
+    Pesanan
     @elseif (request()->routeIs('index-archive'))
-    Arsip Pesanan
+    Arsip
     @endif
-    </h4>
+</h4>
+<div class="p-2">
+    <table class="table table-bordered table-striped datatable">
+        <thead class="table-light">
+          <tr>
+            <th>Kode Transaksi</th>
+            <th>Nama Pemesan</th>
+            <th>Nomor HP Pemesan</th>
+            <th>Status Pesanan</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody class="table-border-bottom-0">
+            @foreach($orders as $order)
+          <tr>
+            <td>{{ $order->kode_transaksi }}</td>
+            <td>{{ $order->nama_pemesan }}</td>
+            <td>{{ $order->phone_number }}</td>
+            <td><x-order-badge-status :status="$order->status" /></td>
+            <td>
+              <div class="dropdown">
+                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                  <i class="bx bx-dots-vertical-rounded"></i>
+                </button>
+                <div class="dropdown-menu">
+                @if (request()->routeIs('orders.index'))
+                    <a href="{{ route('orders.show', $order->kode_transaksi) }}" class="dropdown-item"><i class="bx bx-show"></i> Detail</a>
+                @elseif (request()->routeIs('index-archive'))
+                    <a href="{{ route('show-archive', $order->kode_transaksi) }}" class="dropdown-item"><i class="bx bx-show"></i> Detail</a>
+                @endif
 
-        <table class="table table-bordered table-striped datatable">
-            <thead>
-                <tr>
-                    <th>Kode Transaksi</th>
-                    <th>Nama Pemesan</th>
-                    <th>Nomor HP Pemesan</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($orders as $order)
-                    <tr>
-                        <td>{{ $order->kode_transaksi }}</td>
-                        <td>{{ $order->nama_pemesan }}</td>
-                        <td>{{ $order->phone_number }}</td>
-                        @php
-                            $status = $order->status;
+                @if(is_null($order->wedding->user_id) && Auth::check() && Auth::user()->role_id == 1)
+                <form action="{{ route('orders.assignOrder', $order->kode_transaksi) }}" method="POST" class="ms-auto">
+                    @csrf
+                    <button data-title="Ambil pesanan ini ?" data-text="Setelah diambil, pesanan tersebut sudah dikelola oleh Anda" class="dropdown-item btn-confirm"><i class="bx bx-envelope"></i> Ambil Pesanan</button>
+                </form>
+                @endif
 
-                            $badgeColor = match($status) {
-                                'pending' => 'danger',
-                                'waiting_verify' => 'warning',
-                                'rejected' => 'danger',
-                                'completed' => 'success',
-                                'paid' => 'success',
-                                'published' => 'secondary',
-                                'processed' => 'info',
-                                default => 'dark',
-                            };
+                @if ($order->status === 'created' && $order->payment->payment_status === 'paid' && $order->wedding->user_id)
+                <form action="{{ route('weddings.processWedding', $order->kode_transaksi) }}" method="POST">
+                    @csrf
+                    <button type="submit" data-title="Proses ke Undangan ?" data-text="Pesanan ini akan diproseskan menjadi undangan aktif. Lanjutkan ?" class="dropdown-item btn-confirm"><i class="bx bx-send"></i> Proses</button>
+                </form>
+                @endif
 
-                            $textColor = in_array($status, ['waiting_verify', 'processed']) ? 'dark' : 'white';
-                        @endphp
+                @if ($order->status === 'processed')
+                <form action="{{ route('weddings.publishWedding', $order->kode_transaksi) }}" method="POST">
+                    @csrf
+                    <button type="submit" data-title="Publikasikan Undangan ?" data-text="Setelah dipublikasi, undangan bisa diakses publik." class="dropdown-item btn-confirm"><i class="bx bx-share-alt"></i> Publikasi</button>
+                </form>
+                @endif
 
-                        <td>
-                            <span class="text-{{ $textColor }} text-uppercase badge bg-{{ $badgeColor }}">
-                                @switch($status)
-                                    @case('pending')
-                                        <i class="bi bi-hourglass-split"></i> Menunggu Pembayaran
-                                        @break
-                                    @case('waiting_verify')
-                                        <i class="bi bi-hourglass-bottom"></i> Menunggu Verifikasi
-                                        @break
-                                    @case('rejected')
-                                        <i class="bi bi-x"></i> Pembayaran Ditolak
-                                        @break
-                                    @case('paid')
-                                        <i class="bi bi-credit-card-2-check"></i> Pembayaran Diterima
-                                        @break
-                                    @case('processed')
-                                        <i class="bi bi-file-earmark-text"></i> Undangan Diproses
-                                        @break
-                                    @case('published')
-                                        <i class="bi bi-globe"></i> Undangan Dipublikasi
-                                        @break
-                                    @case('completed')
-                                        <i class="bi bi-check-circle-fill"></i> Undangan Selesai
-                                        @break
-                                    @default
-                                        <i class="bi bi-question-circle"></i> Status Tidak Dikenal
-                                @endswitch
-                            </span>
-                        </td>
+                @if ($order->status === 'published')
+                    <form action="{{ route('weddings.completeWedding', $order->kode_transaksi) }}" method="POST">
+                        @csrf
+                        <button type="submit" data-title="Selesaikan Undangan ?" data-text="Pesanan akan dianggap selesai dan tidak bisa dibatalkan. Lanjutkan ?" class="dropdown-item btn-confirm"><i class="bx bx-check"></i> Selesai</button>
+                    </form>
+                @endif
 
-                        <td>
-                            @if (request()->routeIs('admin.orders.index'))
-                                <a href="{{ route('admin.orders.show', $order->kode_transaksi) }}" class="btn btn-sm btn-primary">Detail</a>
-                            @elseif (request()->routeIs('index-archive'))
-                                <a href="{{ route('show-archive', $order->kode_transaksi) }}" class="btn btn-sm btn-primary">Detail</a>
-                            @endif
-                        </td>
-                        
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+        @endforeach
+    </table>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="{{ asset('assets/js/ourscript.js') }}"></script>
+<x-data-tables />
+<x-sweet-alert-confirm />
 @endsection

@@ -265,16 +265,13 @@
             <section id="intro" class="section" data-aos="fade-up" data-aos-delay="100">
                 <h6 class="intro-heading">THE WEDDING OF</h6>
                 <div class="text-center">
-                    @if($groomPhoto)
-                        <img src="{{ asset($groomPhoto->image) }}" alt="Foto Mempelai Pria" class="img-fluid rounded mb-2" style="max-height: 120px;">
+                    @if ($cover)
+                    <div class="text-center mb-4">
+                        <img src="{{ asset($cover->image) }}" alt="Cover Wedding" class="img-fluid rounded shadow" style="max-height: 300px;">
+                    </div>
                     @endif
                     <div class="sub-couple-names">{{ $wedding->groom_name }}</div>
-                
                     <div class="sub-couple-names my-2">&</div>
-                
-                    @if($bridePhoto)
-                        <img src="{{ asset($bridePhoto->image) }}" alt="Foto Mempelai Wanita" class="img-fluid rounded mb-2" style="max-height: 120px;">
-                    @endif
                     <div class="sub-couple-names">{{ $wedding->bride_name }}</div>
                 </div>
                 
@@ -302,14 +299,19 @@
                     serta Kerabat sekalian untuk menghadiri<br>
                     acara pernikahan kami :
                 </p>
+                @if($groomPhoto)
+                <img src="{{ asset($groomPhoto->image) }}" alt="Foto Mempelai Pria" class="img-fluid rounded mb-2" style="max-height: 120px;">
+                @endif
                 <div class="sub-couple-names">{{ $wedding->groom_name }}</div>
                 {{ $wedding->groom_parents_info }}
                 <div>
                     &
                 </div>
+                @if($bridePhoto)
+                        <img src="{{ asset($bridePhoto->image) }}" alt="Foto Mempelai Wanita" class="img-fluid rounded mb-2" style="max-height: 120px;">
+                @endif
                 <div class="sub-couple-names">{{ $wedding->bride_name }}</div>
                 {{ $wedding->bride_parents_info }}
-                
             </section>
         
             <section id="save-the-date" class="section" data-aos="fade-up" data-aos-delay="300">
@@ -438,7 +440,7 @@
                 <p style="font-family: 'Great Vibes', cursive; font-size: 1.5rem; color: #707015;">
                     Wassalamu'alaikum Wr. Wb.
                 </p>
-                <div class="sub-couple-names">{{ $wedding->bride_name }} <br>&<br> {{ $wedding->groom_name }}</div>
+                <div class="sub-couple-names">{{ $wedding->groom_name }} <br>&<br> {{ $wedding->bride_name }}</div>
             </section>
         </div>
     </div>

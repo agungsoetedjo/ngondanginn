@@ -9,14 +9,19 @@
             icon: 'success',
             title: 'Sukses!',
             text: '{{ session('success') }}',
-            confirmButtonColor: '#3085d6'
+            showConfirmButton: false,
+            timerProgressBar: true,
+            timer: 2000
         });
+        
     @elseif (session('error'))
         Swal.fire({
             icon: 'error',
             title: 'Oops...',
             text: '{{ session('error') }}',
-            confirmButtonColor: '#d33'
+            showConfirmButton: false,
+            timerProgressBar: true,
+            timer: 3000
         });
     @endif
 </script>
@@ -105,45 +110,35 @@
 
                             <div class="col-md-6">
                                 <h6 class="text-muted">Total Pembayaran</h6>
-                                <p class="fw-semibold text-success">Rp{{ number_format($order->payment_total, 0, ',', '.') }}</p>
+                                <p class="fw-semibold text-success">
+                                    @if ($order->payment && $order->payment->payment_status !== 'created')
+                                        Rp{{ number_format($order->payment->payment_total, 0, ',', '.') }}
+                                    @else
+                                        Rp{{ number_format($order->wedding->template->price, 0, ',', '.') }}
+                                    @endif
+                                </p>
                             </div>
 
                             <div class="col-md-6">
-                                <h6 class="text-muted">Status</h6>
-                                @php
-                                    $status = $order->status;
-                                    $badgeColor = match($status) {
-                                        'pending' => 'danger',
-                                        'waiting_verify' => 'warning',
-                                        'rejected' => 'danger',
-                                        'paid' => 'success',
-                                        'processed' => 'info',
-                                        'published' => 'secondary',
-                                        'completed' => 'success',
-                                        default => 'dark',
-                                    };
-                                    $textColor = in_array($status, ['waiting_verify', 'processed']) ? 'dark' : 'white';
-                                @endphp
-                                <span class="badge bg-{{ $badgeColor }} text-{{ $textColor }} px-3 py-2 d-inline-flex align-items-center gap-2">
-                                    @switch($status)
-                                        @case('pending') <i class="bi bi-hourglass-split"></i> Menunggu Pembayaran @break
-                                        @case('waiting_verify') <i class="bi bi-hourglass-bottom"></i> Menunggu Verifikasi @break
-                                        @case('rejected') <i class="bi bi-x"></i> Pembayaran Ditolak @break
-                                        @case('paid') <i class="bi bi-check-circle-fill"></i> Pembayaran Diterima @break
-                                        @case('processed') <i class="bi bi-file-earmark-text"></i> Undangan Diproses @break
-                                        @case('published') <i class="bi bi-globe"></i> Undangan Dipublikasi @break
-                                        @case('completed') <i class="bi bi-check-circle-fill"></i> Undangan Selesai @break
-                                        @default <i class="bi bi-question-circle"></i> Status Tidak Dikenal
-                                    @endswitch
-                                </span>
+                                <h6 class="text-muted">Status Pesanan</h6>
+                                <x-order-badge-status :status="$order->status" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <h6 class="text-muted">Status Pembayaran</h6>
+                                @if ($order->payment && $order->payment->payment_status)
+                                    <x-payment-badge-status :payment_status="$order->payment->payment_status" />
+                                @else
+                                    <span class="badge bg-danger text-white text-uppercase">Menunggu Pembayaran</span>
+                                @endif
                             </div>
 
                             <div class="col-md-6">
                                 <h6 class="text-muted">Deskripsi Pembayaran</h6>
-                                <p class="fw-semibold">{{ $order->payment_desc ?? '-'}}</p>
+                                <p class="fw-semibold">{{ $order->payment->payment_desc ?? '-'}}</p>
                             </div>
 
-                            @if (in_array($order->status, ['pending','rejected']))
+                            @if ($order->payment && in_array($order->payment->payment_status, ['pending','rejected']))
                                 <div class="col-12 mb-3">
                                     <form action="{{ route('order.update.template', $order->kode_transaksi) }}" method="POST">
                                         @csrf
@@ -160,18 +155,20 @@
                                     </form>
                                 </div>
                             @endif
-                            @if (in_array($order->status, ['pending','rejected']))
+                            @if (($order->payment && in_array($order->payment->payment_status, [null, 'pending', 'rejected'])) || (!$order->payment && $order->status === 'created'))
                             <div class="col-12 mt-3">
                                 <form action="{{ route('order.upload_bukti', $order->kode_transaksi) }}" method="POST" enctype="multipart/form-data" class="border rounded p-3 shadow-sm bg-light">
                                     @csrf
                                     <div class="row g-3">
                                         <div class="col-md-6">
-                                            <label for="payment_destination" class="form-label fw-semibold">Tujuan Pembayaran</label>
-                                            <select name="payment_destination" id="payment_destination" class="form-select form-select-sm w-auto" required>
+                                            <label for="payment_dests_id" class="form-label fw-semibold">Tujuan Pembayaran</label>
+                                            <select name="payment_dests_id" id="payment_dests_id" class="form-select form-select-sm w-auto" required>
                                                 <option value="" selected>--Pilih--</option>
-                                                <option value="BNI - 1234567890 - a.n. Muhammad Rizki">BNI - 1234567890 - a.n. Muhammad Rizki</option>
-                                                <option value="BCA - 1234567890 - a.n. Muhammad Ridho">BCA - 1234567890 - a.n. Muhammad Ridho</option>
-                                                <option value="Mandiri - 1234567890 - a.n. Muhammad Rizal">Mandiri - 1234567890 - a.n. Muhammad Rizal</option>
+                                                @foreach ($paymentDests as $dest)
+                                                <option value="{{ $dest->id }}">
+                                                    {{ $dest->bank_name }} - {{ $dest->account_number }} - a.n. {{ $dest->account_name }}
+                                                </option>
+                                                @endforeach
                                               </select>
                                         </div>
                                         <div class="col-md-6">

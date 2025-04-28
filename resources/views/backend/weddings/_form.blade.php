@@ -43,21 +43,35 @@
       value="{{ old('reception_date', isset($wedding->reception_date) ? \Carbon\Carbon::parse($wedding->reception_date)->format('Y-m-d\TH:i') : '') }}">
 </div>
 
-<!-- Lokasi -->
+<!-- Lokasi Akad -->
 <div class="row">
   <div class="mb-3 col-md-6">
-    <label for="place_name" class="form-label">Nama Tempat Acara</label>
-    <input type="text" name="place_name" id="place_name" class="form-control"
-        value="{{ old('place_name', $wedding->place_name ?? '') }}">
+    <label for="akad_place_name" class="form-label">Tempat Akad</label>
+    <input type="text" name="akad_place_name" id="akad_place_name" class="form-control"
+        value="{{ old('akad_place_name', $wedding->akad_place_name ?? '') }}">
   </div>
 
   <div class="mb-3 col-md-6">
-    <label for="location" class="form-label">Alamat Lengkap</label>
-    <input type="text" name="location" id="location" class="form-control"
-        value="{{ old('location', $wedding->location ?? '') }}" required>
+    <label for="akad_location" class="form-label">Alamat Akad</label>
+    <input type="text" name="akad_location" id="akad_location" class="form-control"
+        value="{{ old('akad_location', $wedding->akad_location ?? '') }}" required>
   </div>
 </div>
 
+<!-- Lokasi Resepsi -->
+<div class="row">
+  <div class="mb-3 col-md-6">
+    <label for="reception_place_name" class="form-label">Tempat Resepsi</label>
+    <input type="text" name="reception_place_name" id="reception_place_name" class="form-control"
+        value="{{ old('reception_place_name', $wedding->reception_place_name ?? '') }}">
+  </div>
+
+  <div class="mb-3 col-md-6">
+    <label for="reception_location" class="form-label">Alamat Resepsi</label>
+    <input type="text" name="reception_location" id="reception_location" class="form-control"
+        value="{{ old('reception_location', $wedding->reception_location ?? '') }}" required>
+  </div>
+</div>
 <!-- Nomor HP -->
 <div class="mb-3">
   <label for="phone_number" class="form-label">Nomor HP Pemesan</label>

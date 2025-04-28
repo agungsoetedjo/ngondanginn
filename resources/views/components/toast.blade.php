@@ -4,7 +4,7 @@
     document.addEventListener('DOMContentLoaded', function () {
       Swal.fire({
         toast: true,
-        position: 'top-end',
+        position: 'bottom',
         icon: '{{ session('toast')['type'] }}',
         title: '{{ session('toast')['message'] }}',
         showConfirmButton: false,

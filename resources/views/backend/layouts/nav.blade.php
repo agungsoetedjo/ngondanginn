@@ -45,14 +45,12 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           @auth
-          {{-- Dashboard --}}
           <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('dashboard') ? 'active fw-bold' : '' }}" href="{{ route('dashboard') }}">
               Dashboard
             </a>
           </li>
-  
-          {{-- Dropdown Data --}}
+          @if (Auth::user()->role_id === 1)
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle {{ request()->routeIs('weddings.*', 'musics.*', 'designs.*') ? 'active fw-bold' : '' }}" 
                href="#" id="dataDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -77,7 +75,7 @@
             </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs(['admin.orders.index','admin.orders.show']) ? 'active fw-bold' : '' }}" href="{{ route('admin.orders.index') }}">
+            <a class="nav-link {{ request()->routeIs(['orders.index','orders.show']) ? 'active fw-bold' : '' }}" href="{{ route('orders.index') }}">
               Pesanan
             </a>
           </li>
@@ -86,6 +84,14 @@
               Arsip
             </a>
           </li>
+          @endif
+          @if (Auth::user()->role_id === 2)
+          <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs(['payments.index','payments.show']) ? 'active fw-bold' : '' }}" href="{{ route('payments.index') }}">
+              Pembayaran
+            </a>
+          </li>
+          @endif
           @endauth
         </ul>
         <ul class="navbar-nav ms-auto">

@@ -18,10 +18,12 @@ class UserAuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
+        $request->validate([
+            'email' => ['required'],
             'password' => ['required'],
         ]);
+
+        $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
@@ -34,16 +36,18 @@ class UserAuthController extends Controller
             ]);
         }
 
-        return back()->withErrors([
-            'email' => 'Email atau password salah.',
-        ])->with([
+        return back()->withInput()->with([
             'toast' => [
                 'type' => 'error',
                 'message' => 'Email atau password salah.',
                 'timer' => 2000,
-            ]
+            ],
+            'errors' => [
+                'email' => 'Email atau password salah.',
+            ],
         ]);
     }
+
 
     public function showRegisterForm()
     {
@@ -62,7 +66,7 @@ class UserAuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role_id' => null,
+            'role_id' => 1,
         ]);
 
         Auth::login($user);
@@ -137,7 +141,4 @@ class UserAuthController extends Controller
             'timer' => 2000,
         ]);
     }
-    
-    
-    
 }
