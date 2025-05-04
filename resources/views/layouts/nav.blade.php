@@ -12,7 +12,7 @@
         <li><a href="/#fitur" class="{{ request()->is('/') ? 'active' : '' }}">Fitur</a></li>
         <li><a href="/#pilihantema" class="{{ request()->is('/') ? 'active' : '' }}">Pilihan Tema</a></li>
         <li><a href="/#faq" class="{{ request()->is('/') ? 'active' : '' }}">FAQ</a></li>
-        <li><a href="/#testimoni" class="{{ request()->is('/') ? 'active' : '' }}">Testimoni</a></li>
+        {{-- <li><a href="/#testimoni" class="{{ request()->is('/') ? 'active' : '' }}">Testimoni</a></li> --}}
         <li><a href="/#hubungikami" class="{{ request()->is('/') ? 'active' : '' }}">Hubungi Kami</a></li>
     
         <li class="dropdown">

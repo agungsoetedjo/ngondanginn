@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Template;
 use App\Models\Wedding;
 use Illuminate\Http\Request;
@@ -22,14 +23,15 @@ class DesignController extends Controller
             $template = Template::find($wedding->template_id);
         }
 
-        $templates = Template::all();
+        $templates = Template::with('category')->get();
 
         return view('backend.designs.index', compact('templates', 'wedding', 'template'));
     }
 
     public function create()
     {
-        return view('backend.designs.create');
+        $categories = Category::all();
+        return view('backend.designs.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -40,18 +42,21 @@ class DesignController extends Controller
                 'preview_image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
                 'view_path' => 'required|string|unique:templates,view_path',
                 'price' => 'required|numeric|min:0',
+                'category_id' => 'required|exists:categories,id',
             ]);
     
-            // Upload preview image
-            $file = $request->file('preview_image');
-            $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('images/templates'), $filename);
+            // Ambil kategori dari database
+            $category = Category::findOrFail($request->category_id);
+            $combinedCategoryType = strtolower(str_replace(' ', '_', $category->name)) . '_' . $category->type;
     
-            // Buat file blade baru dari _newtemplate.blade.php
-            $newViewPath = str_replace('.', '/', $request->view_path); // convert ke path folder
-            $targetPath = resource_path("views/backend/{$newViewPath}.blade.php");
-            $templateSource = resource_path("views/backend/template_packs/pre_design/_newtemplate.blade.php");
+            // Tentukan file template sumber
+            $templateType = str_contains($combinedCategoryType, 'tanpa_foto') 
+                ? '_newtemplate_tanpafoto.blade.php' 
+                : '_newtemplate_foto.blade.php';
     
+            $templateSource = resource_path("views/backend/template_packs/{$templateType}");
+    
+            // Validasi template sumber
             if (!File::exists($templateSource)) {
                 return back()->with('sweetalert', [
                     'type' => 'error',
@@ -59,15 +64,24 @@ class DesignController extends Controller
                 ]);
             }
     
+            // Upload gambar preview
+            $file = $request->file('preview_image');
+            $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images/templates'), $filename);
+    
+            // Buat folder & salin file blade
+            $newViewPath = str_replace('.', '/', $request->view_path);
+            $targetPath = resource_path("views/backend/{$newViewPath}.blade.php");
             File::ensureDirectoryExists(dirname($targetPath));
             File::copy($templateSource, $targetPath);
     
-            // Simpan ke database
+            // Simpan template ke database
             Template::create([
                 'name' => $request->name,
                 'preview_image' => $filename,
                 'view_path' => $request->view_path,
                 'price' => $request->price,
+                'category_id' => $request->category_id,
             ]);
     
             session()->flash('sweetalert', [
@@ -88,7 +102,7 @@ class DesignController extends Controller
                 'message' => 'Terjadi kesalahan saat menyimpan template: ' . $e->getMessage()
             ])->withInput();
         }
-    }
+    }    
 
     public function update(Request $request, $id)
     {
@@ -97,30 +111,40 @@ class DesignController extends Controller
     
             $request->validate([
                 'name' => 'required|string|max:100',
+                'category_id' => 'required|exists:categories,id',  // Pastikan category_id valid
                 'preview_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
                 'view_path' => 'required|string',
                 'price' => 'required|numeric|min:0',
             ]);
     
-            // Rename file blade jika view_path berubah
-            if ($template->view_path !== $request->view_path) {
-                $oldPath = resource_path('views/backend/' . str_replace('.', '/', $template->view_path) . '.blade.php');
-                $newPath = resource_path('views/backend/' . str_replace('.', '/', $request->view_path) . '.blade.php');
+            $oldViewPath = $template->view_path;
+            $newViewPath = $request->view_path;
+    
+            // Tangani jika view_path berubah
+            if ($oldViewPath !== $newViewPath) {
+                $oldPath = resource_path('views/backend/' . str_replace('.', '/', $oldViewPath) . '.blade.php');
+                $newPath = resource_path('views/backend/' . str_replace('.', '/', $newViewPath) . '.blade.php');
     
                 if (File::exists($oldPath)) {
                     File::ensureDirectoryExists(dirname($newPath));
                     File::move($oldPath, $newPath);
+    
+                    // Jika folder lama kosong setelah pindah, bisa dihapus (opsional)
+                    $oldDir = dirname($oldPath);
+                    if (File::isDirectory($oldDir) && count(File::files($oldDir)) === 0 && $this->isEmptyCategoryFolder($oldDir)) {
+                        File::deleteDirectory($oldDir);
+                    }
                 }
             }
     
             // Update data template
             $template->name = $request->name;
-            $template->view_path = $request->view_path;
+            $template->category_id = $request->category_id;  // Pastikan category_id terupdate
+            $template->view_path = $newViewPath;
             $template->price = $request->price;
     
-            // Update preview image jika ada
+            // Gambar preview baru
             if ($request->hasFile('preview_image')) {
-                // Hapus gambar lama
                 if ($template->preview_image) {
                     $oldImagePath = public_path('images/templates/' . $template->preview_image);
                     if (File::exists($oldImagePath)) {
@@ -128,14 +152,12 @@ class DesignController extends Controller
                     }
                 }
     
-                // Upload gambar baru
                 $file = $request->file('preview_image');
                 $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
                 $file->move(public_path('images/templates'), $filename);
                 $template->preview_image = $filename;
             }
     
-            // Simpan perubahan ke database
             $template->save();
     
             return redirect()->route('designs.index')->with('sweetalert', [
@@ -155,13 +177,21 @@ class DesignController extends Controller
             ])->withInput();
         }
     }
+    
+    private function isEmptyCategoryFolder($folderPath)
+    {
+        // Periksa apakah folder tersebut adalah folder kategori yang kosong
+        $categoryFolder = dirname($folderPath); // Folder kategori sebelumnya
+        return File::isDirectory($categoryFolder) && count(File::files($categoryFolder)) === 0;
+    }    
 
     public function edit($id)
     {
         // Ambil data template berdasarkan ID
+        $categories = Category::all();
         $template = Template::findOrFail($id);
 
-        return view('backend.designs.edit', compact('template'));
+        return view('backend.designs.edit', compact('categories','template'));
     }
 
     public function destroy($id)
@@ -219,6 +249,7 @@ class DesignController extends Controller
                 'description' => 'asdasdasdasdasd',
                 'slug' => 'anna-budi',
                 'template_id' => $template->id,
+                'template' => $template,
                 'rsvps' => [],
                 'guestBooks' => [],
                 'galleries' => [

@@ -48,6 +48,12 @@
                         <input type="text" name="phone_number" id="phone_number" class="form-control" required>
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="email_pemesan" class="form-label">Email Pemesan</label>
+                        <input type="email" name="email_pemesan" id="email_pemesan" class="form-control" required>
+                    </div>
+                </div>
             </div>
 
             <div class="row">
@@ -143,9 +149,13 @@
                         <select name="template_id" id="template_id" class="form-select" required>
                             <option value="">Pilih Template</option>
                             @foreach($templates as $template)
-                                <option value="{{ $template->id }}">{{ $template->name }}</option>
+                                <option value="{{ $template->id }}"
+                                    {{ (isset($selectedTemplateId) && $selectedTemplateId == $template->id) ? 'selected' : '' }}>
+                                    {{ $template->name }} ({{ $template->category->type == 'dengan_foto' ? 'Dengan Foto' : 'Tanpa Foto' }})
+                                </option>
                             @endforeach
                         </select>
+                        
                     </div>
                 </div>
                 <div class="col-md-6">

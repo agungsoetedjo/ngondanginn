@@ -53,6 +53,7 @@
                     <i class="bx bx-trash"></i> Hapus
                   </button>
                 </form>
+                @if ($wedding->order->status !== 'created')
                 <a href="{{ route('rsvps.index', $wedding->id) }}" class="dropdown-item">
                   <i class="bx bx-user-check"></i> RSVP
                 </a>
@@ -62,6 +63,7 @@
                 <a href="{{ route('galleries.index', $wedding->id) }}" class="dropdown-item">
                   <i class="bx bx-images"></i> Galeri
                 </a>
+              @endif
               </div>
             </div>
           </td>

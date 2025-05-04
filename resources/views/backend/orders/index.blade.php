@@ -14,7 +14,8 @@
           <tr>
             <th>Kode Transaksi</th>
             <th>Nama Pemesan</th>
-            <th>Nomor HP Pemesan</th>
+            <th>Nomor HP</th>
+            <th>Email</th>
             <th>Status Pesanan</th>
             <th>Aksi</th>
           </tr>
@@ -25,6 +26,7 @@
             <td>{{ $order->kode_transaksi }}</td>
             <td>{{ $order->nama_pemesan }}</td>
             <td>{{ $order->phone_number }}</td>
+            <td>{{ $order->email_pemesan }}</td>
             <td><x-order-badge-status :status="$order->status" /></td>
             <td>
               <div class="dropdown">
@@ -38,14 +40,18 @@
                     <a href="{{ route('show-archive', $order->kode_transaksi) }}" class="dropdown-item"><i class="bx bx-show"></i> Detail</a>
                 @endif
 
-                @if(is_null($order->wedding->user_id) && Auth::check() && Auth::user()->role_id == 1)
+                @if(is_null($order->wedding->user_id) && $order->payment && $order->payment->payment_status === 'paid' && Auth::check() && Auth::user()->role_id == 1)
                 <form action="{{ route('orders.assignOrder', $order->kode_transaksi) }}" method="POST" class="ms-auto">
                     @csrf
                     <button data-title="Ambil pesanan ini ?" data-text="Setelah diambil, pesanan tersebut sudah dikelola oleh Anda" class="dropdown-item btn-confirm"><i class="bx bx-envelope"></i> Ambil Pesanan</button>
                 </form>
                 @endif
 
-                @if ($order->status === 'created' && $order->payment->payment_status === 'paid' && $order->wedding->user_id)
+                @if (
+                    $order->status === 'created' &&
+                    $order->payment && $order->payment->payment_status === 'paid' &&
+                    $order->wedding && $order->wedding->user_id
+                )
                 <form action="{{ route('weddings.processWedding', $order->kode_transaksi) }}" method="POST">
                     @csrf
                     <button type="submit" data-title="Proses ke Undangan ?" data-text="Pesanan ini akan diproseskan menjadi undangan aktif. Lanjutkan ?" class="dropdown-item btn-confirm"><i class="bx bx-send"></i> Proses</button>

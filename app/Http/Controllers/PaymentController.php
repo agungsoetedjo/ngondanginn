@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\PaymentEInvoiceMail;
 use App\Models\Order;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class PaymentController extends Controller
 {
@@ -74,11 +76,12 @@ class PaymentController extends Controller
             ]);
         }
 
+        Mail::to($order->email_pemesan)->send(new PaymentEInvoiceMail($order));
+
         session()->flash('success', 'Bukti pembayaran berhasil diunggah!');
 
         return redirect()->route('order.cek.result', $order->kode_transaksi);
     }
-
 
     public function approvePayment($kode_transaksi)
     {
@@ -93,6 +96,8 @@ class PaymentController extends Controller
                 'payment_desc' => '-',
             ]);
         }
+
+        Mail::to($order->email_pemesan)->send(new PaymentEInvoiceMail($order));
 
         session()->flash('sweetalert', [
             'type' => 'success',
@@ -116,12 +121,14 @@ class PaymentController extends Controller
             ]);
         }
 
+        Mail::to($order->email_pemesan)->send(new PaymentEInvoiceMail($order));
+
         session()->flash('sweetalert', [
             'type' => 'warning',
             'message' => 'Pembayaran ditolak. Alasan: ' . $request->reason
         ]);
 
-        return redirect()->route('orders.show', $order->kode_transaksi);
+        return redirect()->route('payments.index', $order->kode_transaksi);
     }
 
 }

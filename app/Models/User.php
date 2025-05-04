@@ -21,8 +21,12 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'photo',
         'password',
         'role_id',
+        'otp_code',
+        'otp_expires_at',
+        'is_verified',
     ];
 
     public function orders()

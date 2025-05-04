@@ -3,17 +3,29 @@
     @isset($template)
         @method('PUT')
     @endisset
+    <div class="mb-3">
+        <label for="category_id" class="form-label">Kategori</label>
+        <select name="category_id" id="category_id" class="form-select" required>
+            <option value="">-- Pilih Kategori --</option>
+            @foreach($categories as $category)
+                <option value="{{ $category->id }}" data-type="{{ $category->type }}" 
+                    {{ old('category_id', $template->category_id ?? '') == $category->id ? 'selected' : '' }}
+                    data-name="{{ $category->name }}" >
+                    {{ $category->name }} ({{ str_replace('_', ' ', ucfirst($category->type)) }})
+                </option>
+            @endforeach
+        </select>
+    </div>
 
-    <!-- Nama Template -->
     <div class="mb-3">
         <label for="name" class="form-label">Nama Template</label>
         <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $template->name ?? '') }}" required oninput="generateViewPath()">
     </div>
-
+    
     <!-- View Path -->
     <div class="mb-3">
         <label for="view_path" class="form-label">View Path</label>
-        <input type="text" class="form-control" id="view_path" name="view_path" value="{{ old('view_path', 'template_packs.pre_design.' . ($template->view_path ?? '')) }}" required readonly>
+        <input type="text" name="view_path" id="view_path" value="{{ old('view_path', $template->view_path ?? '') }}" class="form-control" readonly required>
     </div>
 
     <div class="mb-3">
@@ -52,3 +64,20 @@
     </div>
 
 </form>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const categorySelect = document.getElementById('category_id');
+        const typeInput = document.getElementById('category_type');
+
+        function updateCategoryType() {
+            const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+            const type = selectedOption.getAttribute('data-type');
+            typeInput.value = type || '';
+        }
+
+        categorySelect.addEventListener('change', updateCategoryType);
+
+        // Inisialisasi pertama kali (misalnya saat edit)
+        updateCategoryType();
+    });
+</script>

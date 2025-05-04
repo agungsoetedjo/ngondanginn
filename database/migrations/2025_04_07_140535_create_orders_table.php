@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('kode_transaksi')->unique();
             $table->string('nama_pemesan');
+            $table->string('email_pemesan')->nullable();
             $table->string('phone_number');
             $table->enum('status', [
                 'created',         // Pesanan dibuat

@@ -13,7 +13,4 @@ class DashboardController extends Controller
         return view('backend.dashboard', compact('user'));
     }
 
-    public function sneat(){
-        return view('backend.layouts_be.container');
-    }
 }

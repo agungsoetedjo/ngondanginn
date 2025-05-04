@@ -28,22 +28,28 @@ class GalleryController extends Controller
                 'image_desc' => 'required|in:0,1,2,3'
             ]);
     
+            // Cegah input 1,2,3 jika kategori template-nya 'tanpa_foto'
+            $templateType = $wedding->template->category->type;
+            if ($templateType === 'tanpa_foto' && in_array($request->image_desc, ['1', '2', '3'])) {
+                return back()->withInput()->with('sweetalert', [
+                    'type' => 'warning',
+                    'message' => 'Template ini tidak mendukung upload foto cover atau mempelai.'
+                ]);
+            }
+    
             $file = $request->file('image');
             $filename = uniqid() . '.' . $file->getClientOriginalExtension();
             $path = 'uploads/galeri/' . $filename;
             $file->move(public_path('uploads/galeri'), $filename);
     
-            // Jika kategori cover/mempelai (1, 2, 3), ganti yang lama
             if (in_array($request->image_desc, ['1', '2', '3'])) {
                 $existing = $wedding->galleries()->where('image_desc', $request->image_desc)->first();
                 if ($existing) {
-                    // Hapus file lama jika ada
                     $oldPath = public_path($existing->image);
                     if (file_exists($oldPath)) {
                         unlink($oldPath);
                     }
     
-                    // Update record lama
                     $existing->update([
                         'image' => $path,
                         'image_desc' => $request->image_desc,
@@ -54,7 +60,6 @@ class GalleryController extends Controller
                         'message' => 'Foto berhasil diperbarui!'
                     ]);
                 } else {
-                    // Insert baru jika belum ada
                     $wedding->galleries()->create([
                         'image' => $path,
                         'image_desc' => $request->image_desc,
@@ -66,7 +71,6 @@ class GalleryController extends Controller
                     ]);
                 }
             } else {
-                // Untuk galeri biasa
                 $wedding->galleries()->create([
                     'image' => $path,
                     'image_desc' => $request->image_desc,

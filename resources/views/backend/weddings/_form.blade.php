@@ -1,31 +1,33 @@
 <!-- Row untuk Nama Mempelai -->
 <div class="row">
-  <div class="mb-3 col-md-6">
-    <label for="bride_name" class="form-label">Nama Mempelai Wanita</label>
-    <input type="text" name="bride_name" id="bride_name" class="form-control"
-        value="{{ old('bride_name', $wedding->bride_name ?? '') }}" required>
-  </div>
 
   <div class="mb-3 col-md-6">
     <label for="groom_name" class="form-label">Nama Mempelai Pria</label>
     <input type="text" name="groom_name" id="groom_name" class="form-control"
         value="{{ old('groom_name', $wedding->groom_name ?? '') }}" required>
   </div>
+
+  <div class="mb-3 col-md-6">
+    <label for="bride_name" class="form-label">Nama Mempelai Wanita</label>
+    <input type="text" name="bride_name" id="bride_name" class="form-control"
+        value="{{ old('bride_name', $wedding->bride_name ?? '') }}" required>
+  </div>
+
 </div>
 
 <!-- Nama Orang Tua Mempelai -->
 <div class="row">
   <div class="mb-3 col-md-6">
-    <label for="bride_parents_info" class="form-label">Orang Tua Mempelai Wanita</label>
-    <input type="text" name="bride_parents_info" id="bride_parents_info" class="form-control"
-        placeholder="Contoh: Putri dari Ayah X dan Ibu Y"
-        value="{{ old('bride_parents_info', $wedding->bride_parents_info ?? '') }}">
-  </div>
-  <div class="mb-3 col-md-6">
     <label for="groom_parents_info" class="form-label">Orang Tua Mempelai Pria</label>
     <input type="text" name="groom_parents_info" id="groom_parents_info" class="form-control"
         placeholder="Contoh: Putra dari Ayah A dan Ibu B"
         value="{{ old('groom_parents_info', $wedding->groom_parents_info ?? '') }}">
+  </div>
+  <div class="mb-3 col-md-6">
+    <label for="bride_parents_info" class="form-label">Orang Tua Mempelai Wanita</label>
+    <input type="text" name="bride_parents_info" id="bride_parents_info" class="form-control"
+        placeholder="Contoh: Putri dari Ayah X dan Ibu Y"
+        value="{{ old('bride_parents_info', $wedding->bride_parents_info ?? '') }}">
   </div>
 </div>
 

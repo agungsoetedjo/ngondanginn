@@ -8,18 +8,18 @@
       <div class="authentication-inner">
           <div class="card">
               <div class="card-body">
-                  <h4 class="mb-2">Welcome to NgondangIn! 👋</h4>
+                  <h4 class="mb-2">Selemat Datang di Ngondangin!</h4>
                   <p class="mb-4">Silakan daftar akun Anda sebelum mulai petualangan</p>
 
                   <form id="formAuthentication" class="mb-3" action="{{ route('register') }}" method="POST">
                     @csrf
                       <div class="mb-3">
                         <label for="name" class="form-label">Nama</label>
-                        <input type="text" name="name" id="name" class="form-control" autofocus required>
+                        <input type="text" name="name" id="name" class="form-control" placeholder="Masukkan Nama Anda" autofocus required>
                       </div>
                       <div class="mb-3">
                           <label for="email" class="form-label">Email</label>
-                          <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email" required />
+                          <input type="text" class="form-control" id="email" name="email" placeholder="Masukkan Email Anda" required />
                       </div>
                       <div class="mb-3 form-password-toggle">
                           <div class="d-flex justify-content-between">

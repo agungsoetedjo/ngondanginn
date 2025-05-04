@@ -32,7 +32,7 @@
                         </button>
 
                         <!-- Delete -->
-                        <form action="{{ route('paymentdests.destroy', $payment->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin hapus?')">
+                        <form action="{{ route('paymentdests.destroy', $payment->id) }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
                             <button data-title="Yakin ingin menghapus?" data-text="Data rekening tujuan tersebut tidak dapat dikembalikan" class="btn btn-danger btn-sm btn-confirm">Hapus</button>

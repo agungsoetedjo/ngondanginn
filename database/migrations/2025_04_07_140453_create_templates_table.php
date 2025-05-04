@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('preview_image');
             $table->string('view_path'); // ex: designs.template-a
             $table->unsignedBigInteger('price')->default(0);
+            $table->foreignId('category_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

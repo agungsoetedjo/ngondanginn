@@ -1,17 +1,22 @@
 @extends('backend.layouts_be.app')
 
 @section('content')
-<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Pengaturan Akun /</span> Akun</h4>
+<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Pengaturan Profil /</span> Akun</h4>
 <x-toast :type="session('toast.type')" :message="session('toast.message')" :timer="session('toast.timer')" />
 <div class="row">
+  <form id="formAccountSettings" action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
+    @csrf
   <div class="col-md-12">
     <div class="card mb-4">
       <h5 class="card-header">Detil Profil</h5>
       <!-- Account -->
-      {{-- <div class="card-body">
+      <div class="card-body">
         <div class="d-flex align-items-start align-items-sm-center gap-4">
+          @php
+              $photo = $user->photo ?? 'default.jpg';
+          @endphp 
           <img
-            src="{{ asset('assets_be/img/avatars/1.png') }}"
+            src="{{ asset($user->photo ?? 'assets_be/img/avatars/default.jpg') }}"
             alt="user-avatar"
             class="d-block rounded"
             height="100"
@@ -25,24 +30,25 @@
               <input
                 type="file"
                 id="upload"
+                name="photo"
                 class="account-file-input"
                 hidden
-                accept="image/png, image/jpeg"
+                accept="image/png, image/jpeg, image/jpg"
               />
             </label>
-            <button type="button" class="btn btn-outline-secondary account-image-reset mb-4">
+            <button type="button" class="btn btn-outline-secondary account-image-reset mb-4" onclick="resetPhoto()">
               <i class="bx bx-reset d-block d-sm-none"></i>
               <span class="d-none d-sm-block">Reset</span>
             </button>
 
-            <p class="text-muted mb-0">Allowed JPG, GIF or PNG. Max size of 800K</p>
+            <p class="text-muted mb-0">Allowed JPG, JPEG or PNG. Max size of 3MB</p>
           </div>
         </div>
-      </div> --}}
+      </div>
       <hr class="my-0" />
       <div class="card-body">
-        <form id="formAccountSettings" action="{{ route('profile.update') }}" method="POST">
-            @csrf
+        
+            
           <div class="row">
             <div class="mb-3 col-md-6">
               <label for="firstName" class="form-label">Nama Lengkap</label>
@@ -88,7 +94,7 @@
             <button type="submit" class="btn btn-primary me-2">Simpan Perubahan</button>
             <button type="reset" class="btn btn-outline-secondary">Batal</button>
           </div>
-        </form>
+        
       </div>
       <!-- /Account -->
     {{-- </div>
@@ -118,38 +124,35 @@
       </div>
     </div> --}}
   </div>
+</form>
 </div>
-{{-- <div class="container">
-    <h4 class="mb-4">Profil Pengguna</h4>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const uploadInput = document.getElementById('upload');
+    const avatar = document.getElementById('uploadedAvatar');
 
-    <x-toast :type="session('toast.type')" :message="session('toast.message')" :timer="session('toast.timer')" />
+    // Set default photo or user's current photo
+    let currentPhoto = "{{ asset($user->photo ?? 'assets_be/img/avatars/default.jpg') }}";
+    avatar.src = currentPhoto;
 
-    <form action="{{ route('profile.update') }}" method="POST">
-        @csrf
+    // Event listener untuk mengganti gambar
+    uploadInput.addEventListener('change', function () {
+      const file = this.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          avatar.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
 
-        <div class="mb-3">
-            <label for="name" class="form-label">Nama Lengkap</label>
-            <input type="text" name="name" id="name" class="form-control" value="{{ old('name', $user->name) }}" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="email" class="form-label">Alamat Email</label>
-            <input type="email" name="email" id="email" class="form-control" value="{{ old('email', $user->email) }}" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="password" class="form-label">Kata Sandi Baru (Opsional)</label>
-            <input type="password" name="password" id="password" class="form-control">
-        </div>
-
-        <div class="mb-3">
-            <label for="password_confirmation" class="form-label">Konfirmasi Kata Sandi</label>
-            <input type="password" name="password_confirmation" id="password_confirmation" class="form-control">
-        </div>
-
-        <button type="submit" class="btn btn-primary">Perbarui Profil</button>
-    </form>
-
-    <a href="{{ route('dashboard') }}" class="btn btn-secondary mt-3">Kembali ke Dashboard</a>
-</div> --}}
+    // Fungsi reset foto
+    window.resetPhoto = function () {
+      // Cek apakah foto ada di database, jika ada, pakai foto itu, kalau tidak, pakai default
+      avatar.src = currentPhoto;
+      uploadInput.value = '';  // Reset input file
+    };
+  });
+</script>
 @endsection

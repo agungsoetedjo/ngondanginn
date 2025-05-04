@@ -14,6 +14,7 @@
                 <tr>
                     <th>#</th>
                     <th>Nama</th>
+                    <th>Kategori</th>
                     <th>Gambar</th>
                     <th>View Path</th>
                     <th>Harga</th>
@@ -25,6 +26,7 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $design->name }}</td>
+                        <td>{{ $design->category->name ?? '-' }} {{ $design->category->type == 'dengan_foto' ? 'Dengan Foto' : 'Tanpa Foto' }}</td>
                         <td>
                             @if($design->preview_image)
                                 <img src="{{ asset('images/templates/' . $design->preview_image) }}" alt="Preview" width="120">

@@ -11,6 +11,7 @@ class Order extends Model
     protected $fillable = [
         'kode_transaksi',
         'nama_pemesan',
+        'email_pemesan',
         'phone_number',
         'status',
     ];

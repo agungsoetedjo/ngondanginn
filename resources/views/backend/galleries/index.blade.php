@@ -12,10 +12,15 @@
         <div class="mb-3">
           <label for="image" class="form-label">Keterangan</label>
           <select name="image_desc" id="image_desc" class="form-select form-select-sm w-auto" required>
+            @php
+                $isTanpaFoto = $wedding->template->category->type === 'tanpa_foto';
+            @endphp
             <option value="" selected>--Pilih--</option>
+            @unless($isTanpaFoto)
             <option value="1">Cover Depan & Belakang</option>
             <option value="2">Foto Mempelai Pria</option>
             <option value="3">Foto Mempelai Wanita</option>
+            @endunless
             <option value="0">Galeri Foto</option>
           </select>
         </div>

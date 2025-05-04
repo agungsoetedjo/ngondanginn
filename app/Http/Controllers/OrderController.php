@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OrderEInvoiceMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -10,22 +11,28 @@ use App\Models\Order;
 use App\Models\PaymentDest;
 use App\Models\Template;
 use App\Models\Wedding;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
-    public function create()
+    public function create(Request $request)
     {
-        // Ambil semua data template dan music dari database
         $musics = Music::all(); 
-        $templates = Template::all(); 
+        $templates = Template::with('category')->get(); 
     
-        // Kirim data templates ke view
-        return view('order.create', compact('templates','musics'));
+        $selectedTemplateId = $request->query('template_id'); // Ambil ID dari query string
+    
+        return view('order.create', compact('templates', 'musics', 'selectedTemplateId'));
     }
+    
     
     public function store(Request $request)
     {
         $request->validate([
+            'nama_pemesan' => 'required|string|max:100',
+            'email_pemesan' => 'required|email|max:100',
+            'phone_number' => 'required|string|max:20',
+
             'bride_name' => 'required|string|max:100',
             'groom_name' => 'required|string|max:100',
             'bride_parents_info' => 'nullable|string|max:255',
@@ -46,10 +53,11 @@ class OrderController extends Controller
         $order = Order::create([
             'kode_transaksi' => 'WD_ORDER_' . Str::upper(uniqid()),
             'nama_pemesan' => $request->nama_pemesan,
+            'email_pemesan' => $request->email_pemesan,
             'phone_number' => $request->phone_number,
             'status' => 'created',
         ]);
-    
+
         // 2. Simpan ke tabel weddings
         Wedding::create([
             'user_id' => null,
@@ -70,6 +78,8 @@ class OrderController extends Controller
             'description' => $request->description,
         ]);
     
+        Mail::to($request->email_pemesan)->send(new OrderEInvoiceMail($order));
+
         return redirect()->route('order.create')->with('order_success', [
             'kode_transaksi' => $order->kode_transaksi,
         ]);

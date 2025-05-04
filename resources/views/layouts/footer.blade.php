@@ -29,7 +29,26 @@
 
 <!-- Main JS File -->
 <script src="{{ asset('assets/js/main.js') }}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var grid = document.querySelector('.isotope-container');
+    if (!grid) return;
 
+    var iso = new Isotope(grid, {
+      itemSelector: '.isotope-item',
+      layoutMode: 'masonry'
+    });
+
+    var filters = document.querySelectorAll('.portfolio-filters li');
+    filters.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelector('.portfolio-filters .filter-active')?.classList.remove('filter-active');
+        this.classList.add('filter-active');
+        var filterValue = this.getAttribute('data-filter');
+        iso.arrange({ filter: filterValue });
+      });
+    });
+  });
+</script>
 </body>
-
 </html>

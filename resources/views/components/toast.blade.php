@@ -1,4 +1,4 @@
-{{-- resources/views/components/toast.blade.php --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @if (session('toast'))
   <script>
     document.addEventListener('DOMContentLoaded', function () {

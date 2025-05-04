@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OrderEInvoiceMail;
 use App\Models\Music;
 use App\Models\Order;
 use App\Models\RSVP;
@@ -10,6 +11,7 @@ use App\Models\Wedding;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class WeddingController extends Controller
@@ -127,7 +129,7 @@ class WeddingController extends Controller
         ]);
     
         // Membuat slug baru jika ada perubahan pada nama mempelai
-        $slug = Str::slug($request->bride_name . '-' . $request->groom_name . '-' . Str::random(5));
+        $slug = Str::slug($request->groom_name . '-' . $request->bride_name . '-' . Str::random(5));
     
         // Siapkan data untuk update wedding
         $weddingData = [
@@ -237,7 +239,9 @@ class WeddingController extends Controller
         $order->update([
             'status' => 'processed',
         ]);
-    
+
+        Mail::to($order->email_pemesan)->send(new OrderEInvoiceMail($order));
+
         session()->flash('sweetalert', [
             'type' => 'success',
             'message' => 'Pesanan berhasil diproses.'
@@ -258,6 +262,8 @@ class WeddingController extends Controller
             'status' => 'published',
         ]);
 
+        Mail::to($order->email_pemesan)->send(new OrderEInvoiceMail($order));
+
         session()->flash('sweetalert', [
             'type' => 'success',
             'message' => 'Undangan berhasil dipublikasikan.'
@@ -277,6 +283,8 @@ class WeddingController extends Controller
         $order->update([
             'status' => 'completed',
         ]);
+
+        Mail::to($order->email_pemesan)->send(new OrderEInvoiceMail($order));
 
         session()->flash('sweetalert', [
             'type' => 'success',
@@ -313,7 +321,7 @@ class WeddingController extends Controller
     public function weddingChecks($slug)
     {
         // Ambil data wedding beserta relasi order
-        $wedding = Wedding::with(['order','template','music','galleries'])->where('slug', $slug)->firstOrFail();
+        $wedding = Wedding::with(['order', 'template.category', 'music', 'galleries'])->where('slug', $slug)->firstOrFail();
 
         $cover = $wedding->galleries->where('image_desc', 1)->first();
         $groomPhoto = $wedding->galleries->where('image_desc', 2)->first();

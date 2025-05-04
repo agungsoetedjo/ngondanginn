@@ -1,38 +1,39 @@
 <script>
-    // Fungsi untuk menampilkan preview gambar yang dipilih
     function previewImage(event) {
         var reader = new FileReader();
-        reader.onload = function() {
+        reader.onload = function () {
             var output = document.getElementById('preview');
-            output.src = reader.result; // Update src image dengan gambar baru
-            output.style.display = 'block'; // Pastikan gambar preview ditampilkan
+            output.src = reader.result;
+            output.style.display = 'block';
         };
         reader.readAsDataURL(event.target.files[0]);
     }
 
-    // Fungsi untuk otomatis mengupdate view_path berdasarkan nama template
     function generateViewPath() {
-        var name = document.getElementById('name').value;
+        const nameInput = document.getElementById('name');
+        const categorySelect = document.getElementById('category_id');
+        const viewPathInput = document.getElementById('view_path');
 
-        // Pastikan view_path selalu dimulai dengan 'designs.'
-        var viewPath = name.toLowerCase().replace(/\s+/g, '-');
+        if (!nameInput || !categorySelect || !viewPathInput) return;
 
-        // Pastikan viewPath dimulai dengan 'designs.' jika belum ada
-        if (!viewPath.startsWith('template_packs.pre_design.')) {
-            viewPath = 'template_packs.pre_design.' + viewPath;
-        }
+        const name = nameInput.value.trim().toLowerCase().replace(/\s+/g, '-');  // Ganti spasi jadi '-'
 
-        // Pastikan tidak ada kata '.blade.php', '.php', atau 'blade' pada viewPath
-        viewPath = viewPath.replace(/\.blade\.php$|\.php$|blade/g, '');
+        const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+        const categoryName = selectedOption?.getAttribute('data-name')?.toLowerCase().replace(/\s+/g, '_') || '';
+        const categoryType = selectedOption?.getAttribute('data-type')?.toLowerCase().replace(/\s+/g, '_') || '';
 
-        document.getElementById('view_path').value = viewPath;
+        const combined = categoryName && categoryType ? categoryName + '_' + categoryType : '';
+
+        let viewPath = 'template_packs';
+        if (combined) viewPath += '.' + combined;
+        if (name) viewPath += '.' + name;
+
+        viewPathInput.value = viewPath.replace(/\.blade\.php$|\.php$|blade/g, '');
     }
 
-    // Panggil generateViewPath saat halaman dimuat pertama kali
-    window.onload = function() {
-        generateViewPath();  // Memanggil fungsi untuk update view_path saat halaman dimuat
-
-        // Trigger generateViewPath setiap kali ada inputan nama template (di halaman create)
+    window.addEventListener('DOMContentLoaded', () => {
+        generateViewPath();
         document.getElementById('name').addEventListener('input', generateViewPath);
-    };
+        document.getElementById('category_id').addEventListener('change', generateViewPath);
+    });
 </script>
