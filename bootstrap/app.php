@@ -12,8 +12,8 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'check.bendahara' => \App\Http\Middleware\CheckBendahara::class,
-            'check.pengelola' => \App\Http\Middleware\CheckPengelola::class,
+            'role' => \App\Http\Middleware\CheckRole::class,
+            'check.verified' => \App\Http\Middleware\CheckVerified::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
