@@ -11,6 +11,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <link href="{{ asset('assets/vendor/aos/aos.css') }}" rel="stylesheet">
     <style>
+        :root {
+        --primary: #678fd3;
+        --themecolor : #153170;
+        --themecolorhover : #171c51;
+    }
         * {
             font-family: 'Playfair Display', 'Georgia', serif; box-sizing: border-box;
         }
@@ -20,35 +25,47 @@
         .container { 
             max-width: 560px; margin: 0 auto; padding: 0 15px;
         }
-        .content-wrapper {
-            background-color: #d5e9eb; padding: 10px;
-        }
         .cover-section {
-            background: linear-gradient(to top, #9ed0ec, #d5e9eb); height: 100vh; display: flex; align-items: flex-end; justify-content: center; padding: 0 20px 60px; position: relative; overflow: hidden; text-align: center;
+            background-image: url({{ asset('assets_be/img/bg.png') }}); /* Ganti dengan path gambar kamu */
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 0 20px 60px;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
         }
-        .cover-section::before {
-            content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.6), transparent 70%); animation: rotateBg 20s linear infinite; z-index: 0;
+        .pengantin {
+            padding: 3px;
+            width: 260px;
+            height: 260px;
+            margin-bottom: 15px;
+            border: 4px solid var(--primary);
+            border-radius: 50px 0;
         }
         .cover-content {
             position: relative; z-index: 1;
         }
         .cover-title {
-            font-size: 1rem; color: #04345f; letter-spacing: 1px;
+            font-size: 1rem; color: var(--themecolor); letter-spacing: 1px;
         }
         .couple-names {
-            font-family: 'Great Vibes', cursive; font-size: 1.5rem; font-weight: normal; color: #0a2a54; margin: 10px 0; text-shadow: 2px 2px 3px rgba(0,0,0,0.1);
+            font-family: 'Great Vibes', cursive; font-size: 1.5rem; font-weight: normal; color: var(--themecolor); margin: 10px 0; text-shadow: 2px 2px 3px rgba(0,0,0,0.1);
         }
         .sub-couple-names {
-            font-family: 'Great Vibes', cursive; font-size: 2rem; font-weight: bold; color: #0a2a54; margin: 10px 0; text-shadow: 2px 2px 3px rgba(0,0,0,0.1);
+            font-family: 'Great Vibes', cursive; font-size: 2rem; font-weight: bold; color: var(--themecolor); margin: 10px 0; text-shadow: 2px 2px 3px rgba(0,0,0,0.1);
         }
         .guest-name {
-            font-size: 1.1rem; color: #162c4b; margin-bottom: 20px;
+            font-size: 1.1rem; color: var(--themecolor); margin-bottom: 20px;
         }
         .open-btn {
-            padding: 5px 20px; font-size: 1rem; background-color: #2a317c; color: white; border: none; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.3s ease;
+            padding: 5px 20px; font-size: 1rem; background-color: var(--themecolor); color: white; border: none; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.3s ease;
         }
         .open-btn:hover {
-            background-color: #171c51; transform: scale(1.05);
+            background-color: var(--themecolorhover); transform: scale(1.05);
         }
         .invitation-sections {
             visibility: hidden; opacity: 0;height: 0; overflow: hidden; transition: all 0.5s ease;
@@ -57,13 +74,24 @@
             visibility: visible; opacity: 1; height: auto; overflow: visible;
         }
         .section {
-            background: #ffffff; padding: 25px 20px; border-radius: 16px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); text-align: center; transition: transform 0.3s ease; margin-bottom: 20px;
+            background-image: url({{ asset('assets_be/img/bg_bunga_2.jpg') }}); /* Ganti dengan path gambar kamu */
+            background-size: cover;
+            background-position: center; padding: 25px 20px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); text-align: center; transition: transform 0.3s ease; 
         }
-        .section:hover {
-            transform: translateY(-4px);
+        .section a {
+            background-color: var(--themecolor);
+        }
+        .bismillah {
+            font-family: 'Amiri', serif; font-size: 2rem; color: var(--themecolor);
+        }
+        .salam {
+            font-family: 'Great Vibes', cursive; font-size: 1.5rem; color: var(--themecolor);
+        }
+        .teks-pengantar {
+            color: var(--themecolor); font-size: 0.95rem;
         }
         .section h3, .section h4 {
-            color: #04345f; margin-bottom: 10px; font-weight: 600;
+            color: var(--themecolor); margin-bottom: 10px; font-weight: 600;
         }
         .gallery-section .row {
             display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
@@ -96,10 +124,13 @@
             border-radius: 8px; border: 1px solid #ddd; padding: 12px; font-size: 1rem;
         }
         .rsvp-form button {
-            background-color: #153170; color: white; font-size: 1.1rem; border: none; padding: 12px; border-radius: 8px; cursor: pointer;
+            background-color: var(--themecolor); color: white; font-size: 1.1rem; border: none; padding: 12px; border-radius: 8px; cursor: pointer;
         }
         .rsvp-form button:hover {
-            background-color: #004080;
+            background-color: var(--themecolor); color: white;
+        }
+        .rsvp-form button:disabled {
+            background-color: var(--themecolor); color: white;
         }
         .section.fade-out {
             opacity: 0; transform: translateY(20px); transition: all 0.5s ease;
@@ -108,7 +139,7 @@
             padding: 20px 0; text-align: center; flex-wrap: wrap; gap: 16px;
         }
         .count-box {
-            background-color: #153170; border-radius: 12px; padding: 2px; width: 70px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: var(--themecolor); border-radius: 12px; padding: 2px; width: 70px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         .count-box span {
             font-size: 1rem; font-weight: bold; color: #ffffff; display: block;
@@ -117,19 +148,28 @@
             font-size: 0.55rem; color: #ffffff;
         }
         #save-the-date h2 {
-            font-family: 'Great Vibes', cursive; font-size: 2rem; color: #24448f;
+            font-family: 'Great Vibes', cursive; font-size: 2rem; color: var(--themecolor);
         }
         #amplop-digital h2 {
-            font-family: 'Great Vibes', cursive; font-size: 2rem; color: #24448f;
+            font-family: 'Great Vibes', cursive; font-size: 2rem; color: var(--themecolor);
+        }
+        #amplop-digital button {
+            background-color: var(--themecolor); color: white; font-size: 1.1rem; border: none; padding: 12px; border-radius: 8px; cursor: pointer;
+        }
+        #amplop-digital button:hover {
+            background-color: var(--themecolorhover); color: white;
+        }
+        #amplop-digital button:disabled {
+            background-color: var(--themecolor); color: white;
         }
         #galeri-foto h2 {
-            font-family: 'Great Vibes', cursive; font-size: 2rem; color: #24448f;
+            font-family: 'Great Vibes', cursive; font-size: 2rem; color: var(--themecolor);
         }
         #love-story h2 {
-            font-family: 'Great Vibes', cursive; font-size: 2rem; color: #24448f;
+            font-family: 'Great Vibes', cursive; font-size: 2rem; color: var(--themecolor);
         }
         #rsvp h2 {
-            font-family: 'Great Vibes', cursive; font-size: 2rem; color: #24448f;
+            font-family: 'Great Vibes', cursive; font-size: 2rem; color: var(--themecolor);
         }
         .mandiri-card {
             width: 280px; height: 175px; background: linear-gradient(135deg, #dcdcdc, #a9a9a9); border-radius: 16px; color: #000; padding: 16px; box-shadow: 0 6px 14px rgba(0,0,0,0.2); font-family: 'Segoe UI', sans-serif; position: relative; overflow: hidden;
@@ -161,7 +201,7 @@
             right: 20px;
             font-size: 1rem;
             padding: 10px 20px;
-            background-color: #153170;
+            background-color: var(--themecolor);
             color: white;
             border: none;
             border-radius: 50px;
@@ -174,7 +214,7 @@
             transition: background-color 0.3s ease;
         }
         #playPauseButton:hover {
-            background-color: #1a438a;
+            background-color: var(--themecolorhover);
         }
         #playPauseIcon {
             font-size: 1.5rem;
@@ -246,33 +286,38 @@
         </button>
     </div>
     <div class="cover-section">
-        <div class="cover-content" data-aos="zoom-in-up" data-aos-delay="300">
+        <div class="cover-content">
             @if ($cover)
-                <div class="text-center mb-4">
-                    <img src="{{ asset($cover->image) }}" alt="Cover Wedding" class="img-fluid rounded shadow" style="max-height: 300px;">
+                <div class="text-center mb-4" data-aos="zoom-in-up" data-aos-delay="100">
+                    <img src="{{ asset($cover->image) }}" alt="Cover Wedding" class="pengantin">
                 </div>
             @endif
-            <div class="cover-title">The Wedding of</div>
-            <div class="couple-names">{{ $wedding->groom_name }} <br>&<br> {{ $wedding->bride_name }}</div>
-            <div class="guest-name">
+            <div class="cover-title" data-aos="fade-up" data-aos-delay="100">The Wedding of</div>
+            {{-- <div class="couple-names"> --}}
+                <p class="couple-names" data-aos="fade-left" data-aos-delay="150">{{ $wedding->groom_name }}</p>
+                <p class="couple-names" data-aos="fade-up" data-aos-delay="150">&</p>
+                <p class="couple-names" data-aos="fade-right" data-aos-delay="150">{{ $wedding->bride_name }}</p>
+            {{-- </div> --}}
+            <div data-aos="zoom-in-up" data-aos-delay="150" class="guest-name">
                 Kepada Bapak/Ibu/Saudara/i<br><strong>{{ request()->get('to') ?? 'Nama Tamu' }}</strong>
+                <br><br>
+                <button class="open-btn" onclick="openInvitation()">Buka Undangan</button>
             </div>
-            <button class="open-btn" onclick="openInvitation()">Buka Undangan</button>
+            
         </div>
     </div>
     <div class="invitation-sections" id="invitationContent">
-        <div class="content-wrapper">
-            <section id="intro" class="section" data-aos="fade-up" data-aos-delay="100">
+            <section id="intro" class="section">
                 <h6 class="intro-heading">THE WEDDING OF</h6>
                 <div class="text-center">
                     @if ($cover)
                     <div class="text-center mb-4">
-                        <img src="{{ asset($cover->image) }}" alt="Cover Wedding" class="img-fluid rounded shadow" style="max-height: 300px;">
+                        <img data-aos="zoom-in-up" data-aos-delay="100" src="{{ asset($cover->image) }}" alt="Cover Wedding" class="pengantin">
                     </div>
                     @endif
-                    <div class="sub-couple-names">{{ $wedding->groom_name }}</div>
+                    <div data-aos="fade-up" data-aos-delay="100" class="sub-couple-names">{{ $wedding->groom_name }}</div>
                     <div class="sub-couple-names my-2">&</div>
-                    <div class="sub-couple-names">{{ $wedding->bride_name }}</div>
+                    <div data-aos="fade-down" data-aos-delay="100" class="sub-couple-names">{{ $wedding->bride_name }}</div>
                 </div>
                 
                 <p style="font-size: 1rem;">Kami berharap Anda menjadi bagian dari hari istimewa kami!</p>
@@ -283,39 +328,38 @@
                     <div class="count-box"><span id="seconds">00</span><div class="label">Detik</div></div>
                 </div>
                 <p style="margin-top: 4px; font-weight:bold; ">{{ \Carbon\Carbon::parse($wedding->akad_date)->translatedFormat('l, d F Y') }}</p>
-                <a class="btn btn-primary text-white" style="background-color: #153170;" href="#save-the-date">Save The Date</a>
+                <a class="btn open-btn text-white" href="#save-the-date">Save The Date</a>
             </section>
         
-            <section id="perkenalan-keluarga" class="section" data-aos="fade-up" data-aos-delay="200">
-                <p style="font-family: 'Amiri', serif; font-size: 2rem; color: #153170;">
+            <section id="perkenalan-keluarga" class="section">
+                <p class="bismillah">
                     بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ
                 </p>
-                <p style="font-family: 'Great Vibes', cursive; font-size: 1.5rem; color: #153170;">
+                <p class="salam">
                     Assalamu'alaikum Wr. Wb.
                 </p>
-                <p style="color: #153170; font-size: 0.95rem;">
+                <p class="teks-pengantar">
                     Tanpa mengurangi rasa hormat.<br>
                     Kami mengundang Bapak/Ibu/Saudara/i<br>
                     serta Kerabat sekalian untuk menghadiri<br>
                     acara pernikahan kami :
                 </p>
                 @if($groomPhoto)
-                <img src="{{ asset($groomPhoto->image) }}" alt="Foto Mempelai Pria" class="img-fluid rounded mb-2" style="max-height: 120px;">
+                    <img data-aos="zoom-in" data-aos-delay="200" src="{{ asset($groomPhoto->image) }}" alt="Foto Mempelai Pria" class="img-fluid rounded mb-2" style="max-height: 120px;">
                 @endif
-                <div class="sub-couple-names">{{ $wedding->groom_name }}</div>
+                <div data-aos="fade-down" data-aos-delay="200" class="sub-couple-names">{{ $wedding->groom_name }}</div>
                 {{ $wedding->groom_parents_info }}
                 <div>
                     &
                 </div>
                 @if($bridePhoto)
-                        <img src="{{ asset($bridePhoto->image) }}" alt="Foto Mempelai Wanita" class="img-fluid rounded mb-2" style="max-height: 120px;">
+                    <img data-aos="zoom-in" data-aos-delay="200" src="{{ asset($bridePhoto->image) }}" alt="Foto Mempelai Wanita" class="img-fluid rounded mb-2" style="max-height: 120px;">
                 @endif
-                <div class="sub-couple-names">{{ $wedding->bride_name }}</div>
+                <div data-aos="fade-down" data-aos-delay="200" class="sub-couple-names">{{ $wedding->bride_name }}</div>
                 {{ $wedding->bride_parents_info }}
                 
             </section>
-        
-            <section id="save-the-date" class="section" data-aos="fade-up" data-aos-delay="300">
+            <section id="save-the-date" class="section">
                 <h2 class="mb-4">Save The Date</h2>
                 <p class="text-center">
                     "Dan segala sesuatu Kami ciptakan berpasang-pasangan agar kamu mengingat (kebesaran Allah).“
@@ -323,27 +367,31 @@
                 <p class="text-center">
                 (QS. Az Zariyat: 49)
                 </p>
-                <h2>Akad Nikah</h2>
+                <h2 data-aos="zoom-in" data-aos-delay="200">Akad Nikah</h2>
+                <div data-aos="zoom-out" data-aos-delay="200">
                 <p style="font-weight: bold;">
                     {{ \Carbon\Carbon::parse($wedding->akad_date)->translatedFormat('l, d F Y') }} pukul {{ \Carbon\Carbon::parse($wedding->akad_date)->translatedFormat('H:i') }}
                 </p>
                 <p><i>Tempat : {{ $wedding->akad_place_name }}</i></p>
                 <p><i>Alamat : {{ $wedding->akad_location }}</i></p>
-                <h2>Resepsi</h2>
+                </div>
+                <h2 data-aos="zoom-in" data-aos-delay="200">Resepsi</h2>
+                <div data-aos="zoom-out" data-aos-delay="200">
                 <p style="font-weight: bold;">
                     {{ \Carbon\Carbon::parse($wedding->reception_date)->translatedFormat('l, d F Y') }} pukul {{ \Carbon\Carbon::parse($wedding->reception_date)->translatedFormat('H:i') }}
                 </p>
                 <p><i>Tempat : {{ $wedding->reception_place_name }}</i></p>
                 <p><i>Alamat : {{ $wedding->reception_location }}</i></p>
+                </div>
             </section>
         
-            <section id="amplop-digital" class="section" data-aos="fade-up" data-aos-delay="400">
+            <section id="amplop-digital" class="section">
                 <h2 class="mb-4">Amplop Digital</h2>
                 <p>Doa Restu Anda merupakan<br>
                     karunia yang sangat berarti bagi kami.</p>
                 <p>Dan jika memberi adalah ungkapan tanda kasih<br>
                     Anda, Anda dapat memberi kado secara cashless.</p>
-                    <button class="btn btn-primary mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#mandiriCard" aria-expanded="false" aria-controls="mandiriCard">
+                    <button class="btn mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#mandiriCard" aria-expanded="false" aria-controls="mandiriCard">
                         <i class="bi bi-gift"></i> Klik Disini
                     </button>
 
@@ -373,7 +421,7 @@
                     </div>
             </section>
 
-            <section id="galeri-foto" class="section gallery-section" data-aos="fade-up" data-aos-delay="500">
+            <section id="galeri-foto" class="section gallery-section">
                 <h2 class="mb-4">Galeri Foto</h2>
                 <p class="text-center">Tidak ada yang spesial dalam cerita kami. Tapi kami sangat spesial untuk satu sama lain. Dan Kami bersyukur, dipertemukan Allah diwaktu terbaik, Kini kami menanti hari istimewa kami.</p>
                 @if($galleryPhotos->count())
@@ -387,12 +435,12 @@
                 @endif
             </section>
             
-            <section id="love-story" class="section" data-aos="fade-up" data-aos-delay="600">
+            <section id="love-story" class="section">
                 <h2 class="mb-4">Love Story</h2>
                 <p>{{ $wedding->description }}</p>
             </section>
         
-            <section id="rsvp" class="section rsvp-section" data-aos="fade-up" data-aos-delay="700">
+            <section id="rsvp" class="section rsvp-section">
                 <h2 class="mb-4">Ucapkan Sesuatu</h2>
             
                 <div class="attendance-stats d-flex justify-content-around mb-4">
@@ -428,7 +476,7 @@
                         <textarea class="form-control" id="alasan" name="alasan" rows="3" placeholder="Tulis Alasan Anda"></textarea>
                     </div>
                 
-                    <button type="submit" class="btn btn-primary w-100">Kirim Konfirmasi</button>
+                    <button type="submit" class="btn w-100">Kirim Konfirmasi</button>
                 </form>
                 
                 <!-- Tempat untuk notifikasi -->
@@ -436,14 +484,13 @@
 
             </section>
 
-            <section class="section" data-aos="fade-up" data-aos-delay="800">
+            <section class="section">
                 <p>Merupakan suatu kehormatan dan kebahagiaan bagi kami, apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu. Atas kehadiran dan doa restunya, kami mengucapkan terima kasih.</p>
-                <p style="font-family: 'Great Vibes', cursive; font-size: 1.5rem; color: #153170;">
+                <p class="salam">
                     Wassalamu'alaikum Wr. Wb.
                 </p>
                 <div class="sub-couple-names">{{ $wedding->groom_name }} <br>&<br> {{ $wedding->bride_name }}</div>
             </section>
-        </div>
     </div>
 </div>
 
@@ -543,24 +590,24 @@
         }, 300);
     }
 
-    window.addEventListener('scroll', () => {
-        let currentScroll = window.scrollY || document.documentElement.scrollTop;
+    // window.addEventListener('scroll', () => {
+    //     let currentScroll = window.scrollY || document.documentElement.scrollTop;
 
-        document.querySelectorAll('.section').forEach(section => {
-            const rect = section.getBoundingClientRect();
-            const isVisible = rect.top < window.innerHeight && rect.bottom >= 0;
+    //     document.querySelectorAll('.section').forEach(section => {
+    //         const rect = section.getBoundingClientRect();
+    //         const isVisible = rect.top < window.innerHeight && rect.bottom >= 0;
 
-            if (isVisible) {
-                if (currentScroll < lastScrollTop) {
-                    section.classList.add('fade-out');
-                } else {
-                    section.classList.remove('fade-out');
-                }
-            }
-        });
+    //         if (isVisible) {
+    //             if (currentScroll < lastScrollTop) {
+    //                 section.classList.add('fade-out');
+    //             } else {
+    //                 section.classList.remove('fade-out');
+    //             }
+    //         }
+    //     });
 
-        lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
-    });
+    //     lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+    // });
 
     // hitungan mundur hari nikah
     const akadDate = new Date("{{ $wedding->akad_date }}").getTime();

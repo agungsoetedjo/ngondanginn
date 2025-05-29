@@ -4,14 +4,14 @@
 <div class="container py-4">
     <div class="card shadow-sm">
         <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Detail Pesanan - {{ $order->kode_transaksi }}</h5>
+            <h5 class="mb-0 text-white">Detail Pesanan - {{ $order->kode_transaksi }}</h5>
         </div>
 
         <div class="card p-3">
             <dl class="row mb-3">
                 <dt class="col-sm-4">Nama Pasangan</dt>
                 <dd class="col-sm-8">{{ $order->wedding->groom_name }} & {{ $order->wedding->bride_name }}</dd>
-                
+
                 <dt class="col-sm-4">Orangtua Mempelai Pria</dt>
                 <dd class="col-sm-8">{{ $order->wedding->groom_parents_info }}</dd>
 
@@ -65,7 +65,7 @@
             </dl>
 
             <div class="d-flex gap-2">
-                
+
                 @if (request()->routeIs('orders.show'))
                     <a href="{{ route('orders.index') }}" class="btn btn-secondary ms-auto">Kembali</a>
                 @elseif (request()->routeIs('show-archive'))

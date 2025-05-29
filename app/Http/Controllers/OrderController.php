@@ -15,17 +15,30 @@ use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
+    
     public function create(Request $request)
     {
+        $selectedTemplateKey = $request->query('template');
+
+        // Redirect agar query string hilang dari URL
+        if ($selectedTemplateKey) {
+            // Cari template yang sesuai berdasarkan potongan view_path
+            $template = Template::where('view_path', 'like', "template_packs.$selectedTemplateKey")->first();
+    
+            if ($template) {
+                // Redirect agar query string hilang, lalu simpan template_id di session
+                return redirect()->route('order.create')->with('selectedTemplateId', $template->id);
+            }
+        }
+    
+        $selectedTemplateId = session('selectedTemplateId'); // Ambil dari session setelah redirect
         $musics = Music::all(); 
         $templates = Template::with('category')->get(); 
     
-        $selectedTemplateId = $request->query('template_id'); // Ambil ID dari query string
-    
         return view('order.create', compact('templates', 'musics', 'selectedTemplateId'));
     }
-    
-    
+
+
     public function store(Request $request)
     {
         $request->validate([
@@ -80,6 +93,13 @@ class OrderController extends Controller
     
         Mail::to($request->email_pemesan)->send(new OrderEInvoiceMail($order));
 
+        $message = "Hai, *{$request->groom_name} & {$request->bride_name}*,\n\n" .
+        "Pesanan undangan digital dengan kode transaksi *#{$order->kode_transaksi}* telah berhasil dibuat.\n" .
+        "Silakan lakukan pembayaran agar pesananmu segera kami proses.\n\n" .
+        "Terima kasih sudah mempercayakan undangan pernikahanmu kepada kami. 💖";    
+
+        sendWhatsAppNotification($request->phone_number, $message);
+
         return redirect()->route('order.create')->with('order_success', [
             'kode_transaksi' => $order->kode_transaksi,
         ]);
@@ -104,7 +124,7 @@ class OrderController extends Controller
 
     public function hasilPesanan($kode_transaksi)
     {
-        $order = Order::with(['wedding.template','payment'])->where('kode_transaksi', $kode_transaksi)->firstOrFail();
+        $order = Order::with(['wedding.template.category','payment'])->where('kode_transaksi', $kode_transaksi)->firstOrFail();
         $templates = Template::all(); // Kirim semua template ke view
         $paymentDests = PaymentDest::all();
         return view('order.hasil-cek', compact('order','templates','paymentDests'));

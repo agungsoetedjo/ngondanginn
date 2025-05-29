@@ -124,24 +124,50 @@ class UserAuthController extends Controller
         ]);
     }
 
-    public function showOtpForm()
+    public function showOtpForm(Request $request)
     {
-        return view('auth.verify-otp');
-    }
+        if (Auth::check()) {
+            if (Auth::user()->is_verified) {
+                return redirect()->route('dashboard');
+            }
+            $email = Auth::user()->email;
+        } elseif ($request->session()->has('email')) {
+            $email = $request->session()->get('email');
+        } else {
+            return redirect()->route('login')->with([
+                'toast' => [
+                    'type' => 'error',
+                    'message' => 'Email tidak ditemukan. Silakan login atau daftar terlebih dahulu.',
+                    'timer' => 2000,
+                ]
+            ]);
+        }
+    
+        return view('auth.verify-otp', compact('email'));
+    }    
 
     public function verifyOtp(Request $request)
     {
         $request->validate([
             'otp' => 'required|digits:6',
         ]);
-
-        $user = Auth::user();
-
-        if (!$user instanceof \App\Models\User) {
-            $user = \App\Models\User::find($user->id);
+    
+        if (Auth::check()) {
+            $user = Auth::user();
+        } elseif ($request->session()->has('email')) {
+            $user = \App\Models\User::where('email', $request->session()->get('email'))->first();
+        } else {
+            return redirect()->route('login')->with([
+                'toast' => [
+                    'type' => 'error',
+                    'message' => 'Sesi verifikasi tidak ditemukan.',
+                    'timer' => 2000,
+                ]
+            ]);
         }
-        
+    
         if (
+            $user &&
             $user->otp_code === $request->otp &&
             now()->lessThan($user->otp_expires_at)
         ) {
@@ -149,7 +175,13 @@ class UserAuthController extends Controller
             $user->otp_code = null;
             $user->otp_expires_at = null;
             $user->save();
-
+    
+            if (!Auth::check()) {
+                Auth::login($user);
+            }
+    
+            $request->session()->forget('email');
+    
             return redirect()->intended('/dashboard')->with([
                 'toast' => [
                     'type' => 'success',
@@ -158,7 +190,7 @@ class UserAuthController extends Controller
                 ]
             ]);
         }
-
+    
         return back()->with([
             'toast' => [
                 'type' => 'error',
@@ -166,24 +198,25 @@ class UserAuthController extends Controller
                 'timer' => 2000,
             ]
         ]);
+    }    
 
-    }
-
-    public function resendOtp()
+    public function resendOtp(Request $request)
     {
-        $user = Auth::user();
-
-        if (!$user || !$user instanceof \App\Models\User) {
+        if (Auth::check()) {
+            $user = Auth::user();
+        } elseif ($request->session()->has('email')) {
+            $user = \App\Models\User::where('email', $request->session()->get('email'))->first();
+        } else {
             return redirect()->route('login')->with([
                 'toast' => [
                     'type' => 'error',
-                    'message' => 'Anda harus login terlebih dahulu.',
+                    'message' => 'Tidak ada data verifikasi aktif. Silakan login atau daftar terlebih dahulu.',
                     'timer' => 2000,
                 ]
             ]);
         }
-
-        if ($user->is_verified) {
+    
+        if (!$user || $user->is_verified) {
             return redirect()->route('dashboard')->with([
                 'toast' => [
                     'type' => 'info',
@@ -192,26 +225,24 @@ class UserAuthController extends Controller
                 ]
             ]);
         }
-
-        // Generate ulang kode OTP
-        $userName = $user->name;
+    
         $otp = random_int(100000, 999999);
+        $duration = 25;
+    
         $user->otp_code = $otp;
-        $otpDuration = 25;
-        $user->otp_expires_at = now()->addMinutes($otpDuration);
+        $user->otp_expires_at = now()->addMinutes($duration);
         $user->save();
-
-        // Kirim ulang kode OTP
-        Mail::to($user->email)->send(new SendOtpMail($userName, $otp, $otpDuration));
-
-        return redirect()->back()->with([
+    
+        Mail::to($user->email)->send(new SendOtpMail($user->name, $otp, $duration));
+    
+        return back()->with([
             'toast' => [
                 'type' => 'success',
                 'message' => 'Kode OTP baru telah dikirim ulang ke email Anda.',
                 'timer' => 2000,
             ]
         ]);
-    }
+    }    
 
     public function logout(Request $request)
     {

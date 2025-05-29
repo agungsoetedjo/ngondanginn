@@ -1,0 +1,9 @@
+MAIL_MAILER=smtp
+MAIL_SCHEME=null
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_ENCRYPTION=tls
+MAIL_USERNAME=morefast01@gmail.com
+MAIL_PASSWORD=maznilpjwcgmganq
+MAIL_FROM_ADDRESS="no_reply@gmail.com"
+MAIL_FROM_NAME="${APP_NAME}"

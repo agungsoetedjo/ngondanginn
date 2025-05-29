@@ -2,7 +2,7 @@
 
 @section('content')
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Tables /</span> 
-  @if (request()->routeIs('admin.orders.index'))
+  @if (request()->routeIs('orders.index'))
     Pesanan
     @elseif (request()->routeIs('index-archive'))
     Arsip

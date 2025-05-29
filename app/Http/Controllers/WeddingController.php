@@ -16,6 +16,7 @@ use Illuminate\Support\Str;
 
 class WeddingController extends Controller
 {
+
     public function index()
     {
         $weddings = Wedding::with('order')
@@ -183,10 +184,17 @@ class WeddingController extends Controller
     public function destroy($id)
     {
         // Temukan wedding yang dimiliki oleh user yang sedang login
-        $wedding = Wedding::where('user_id', Auth::id())
-                          ->where('id', $id)
-                          ->firstOrFail();
+        $wedding = Wedding::with('galleries')->where('user_id', Auth::id())->where('id', $id)->firstOrFail();
     
+        if ($wedding->galleries) {
+            foreach ($wedding->galleries as $gallery) {
+                $filePathGaleri = public_path('/'.$gallery->image); // Pastikan path benar
+                if (file_exists($filePathGaleri)) {
+                    unlink($filePathGaleri); // Hapus file bukti transfer
+                }
+            }
+        }
+
         // Jika wedding memiliki order terkait, hapus order juga (optional)
         if ($wedding->order_id) {
             $order = Order::find($wedding->order_id);
@@ -204,16 +212,6 @@ class WeddingController extends Controller
             }
         }
 
-        if ($wedding->galleries && $wedding->galleries->count()) {
-            foreach ($wedding->galleries as $gallery) {
-                $filePath = public_path($gallery->image);
-                if (file_exists($filePath)) {
-                    unlink($filePath); // Hapus file foto
-                }
-                $gallery->delete(); // Hapus data dari database
-            }
-        }
-    
         // Hapus wedding
         $wedding->delete();
     
@@ -228,7 +226,7 @@ class WeddingController extends Controller
     public function processWedding($kode_transaksi)
     {
         // Temukan order berdasarkan kode transaksi
-        $order = Order::where('kode_transaksi', $kode_transaksi)->firstOrFail();
+        $order = Order::with('wedding')->where('kode_transaksi', $kode_transaksi)->firstOrFail();
         
         // Cek apakah status sudah 'paid'
         if ($order->payment->payment_status !== 'paid') {
@@ -242,6 +240,12 @@ class WeddingController extends Controller
 
         Mail::to($order->email_pemesan)->send(new OrderEInvoiceMail($order));
 
+        $message = "Hai, *{$order->wedding->groom_name} & {$order->wedding->bride_name}*!\n\n" .
+            "Pesanan undangan digitalmu dengan kode *#{$order->kode_transaksi}* sudah berhasil diproses oleh tim kami.\n\n" .
+            "Tunggu notifikasi selanjutnya ketika undanganmu siap untuk dipublikasikan ya!.\n\n Terimakasih.";
+
+        sendWhatsAppNotification($order->phone_number, $message);
+        
         session()->flash('sweetalert', [
             'type' => 'success',
             'message' => 'Pesanan berhasil diproses.'
@@ -250,30 +254,39 @@ class WeddingController extends Controller
         return redirect()->route('orders.index', $order->kode_transaksi);
     }
 
-    public function publishWedding($kode_transaksi){
-        $order = Order::where('kode_transaksi', $kode_transaksi)->firstOrFail();
-        
-        // Cek apakah status sudah 'paid'
+    public function publishWedding($kode_transaksi)
+    {
+        $order = Order::with('wedding')->where('kode_transaksi', $kode_transaksi)->firstOrFail();
+    
         if ($order->status !== 'processed') {
             return back()->with('error', 'Pesanan belum berstatus Diproses.');
         }
-
+    
         $order->update([
             'status' => 'published',
         ]);
-
+    
         Mail::to($order->email_pemesan)->send(new OrderEInvoiceMail($order));
-
+    
+        $message = "Hai, *{$order->wedding->groom_name} & {$order->wedding->bride_name}*!\n\n" .
+            "Undangan digitalmu dengan kode *#{$order->kode_transaksi}* telah berhasil dipublikasikan.\n\n" .
+            "Silakan akses undanganmu di:\n\n" .
+            route('wedding.checks', $order->wedding->slug) . "\n\n" .
+            "Selamat menanti hari bahagia! 💍";
+    
+        sendWhatsAppNotification($order->phone_number, $message);
+    
         session()->flash('sweetalert', [
             'type' => 'success',
             'message' => 'Undangan berhasil dipublikasikan.'
         ]);
-
+    
         return redirect()->route('orders.index', $order->kode_transaksi);
     }
+    
 
     public function completeWedding($kode_transaksi){
-        $order = Order::where('kode_transaksi', $kode_transaksi)->firstOrFail();
+        $order = Order::with('wedding')->where('kode_transaksi', $kode_transaksi)->firstOrFail();
         
         // Cek apakah status sudah 'paid'
         if ($order->status !== 'published') {
@@ -286,6 +299,14 @@ class WeddingController extends Controller
 
         Mail::to($order->email_pemesan)->send(new OrderEInvoiceMail($order));
 
+        $message = "Hai, *{$order->wedding->groom_name} & {$order->wedding->bride_name}*!\n\n" .
+        "Selamat! Undangan digital pernikahanmu dengan kode transaksi *#{$order->kode_transaksi}* sudah selesai sepenuhnya.\n\n" .
+        "Terima kasih telah menggunakan layanan Ngondang.in.\n\n" .
+        "Semoga hari bahagiamu berjalan lancar dan penuh kebahagiaan.\n\n" .
+        "Salam hangat dari kami di Ngondang.in 💖";
+    
+        sendWhatsAppNotification($order->phone_number, $message);
+        
         session()->flash('sweetalert', [
             'type' => 'success',
             'message' => 'Undangan berhasil diselesaikan.'
@@ -339,8 +360,8 @@ class WeddingController extends Controller
         // Ambil view_path dari template
         $viewPath = 'backend.' . $wedding->template->view_path;
         // Cek status order untuk memastikan akses
-        if (!in_array($wedding->order->status, ['processed', 'published', 'completed'])) {
-            abort(403, 'Undangan belum dapat diakses.');
+        if (!in_array($wedding->order->status, ['processed', 'published'])) {
+            abort(403, 'Undangan Tidak Dapat Diakses.');
         }
     
         // Render view dengan nama yang ada di viewPath

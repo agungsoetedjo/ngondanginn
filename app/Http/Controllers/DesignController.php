@@ -25,13 +25,13 @@ class DesignController extends Controller
 
         $templates = Template::with('category')->get();
 
-        return view('backend.designs.index', compact('templates', 'wedding', 'template'));
+        return view('backend.templates.index', compact('templates', 'wedding', 'template'));
     }
 
     public function create()
     {
         $categories = Category::all();
-        return view('backend.designs.create', compact('categories'));
+        return view('backend.templates.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -89,7 +89,7 @@ class DesignController extends Controller
                 'message' => 'Template berhasil ditambahkan!'
             ]);
     
-            return redirect()->route('designs.index');
+            return redirect()->route('templates.index');
     
         } catch (ValidationException $e) {
             return back()->with('sweetalert', [
@@ -160,7 +160,7 @@ class DesignController extends Controller
     
             $template->save();
     
-            return redirect()->route('designs.index')->with('sweetalert', [
+            return redirect()->route('templates.index')->with('sweetalert', [
                 'type' => 'success',
                 'message' => 'Template berhasil diupdate!'
             ]);
@@ -191,7 +191,7 @@ class DesignController extends Controller
         $categories = Category::all();
         $template = Template::findOrFail($id);
 
-        return view('backend.designs.edit', compact('categories','template'));
+        return view('backend.templates.edit', compact('categories','template'));
     }
 
     public function destroy($id)
@@ -218,7 +218,7 @@ class DesignController extends Controller
             'message' => 'Template berhasil dihapus!'
         ]);
     
-        return redirect()->route('designs.index');
+        return redirect()->route('templates.index');
     }
 
     public function preview($templateId)
@@ -236,8 +236,8 @@ class DesignController extends Controller
         return view($viewPath, [
             'template' => $template,
             'wedding' => (object)[
-                'groom_name' => 'Habib',
-                'bride_name' => 'Adiba',
+                'groom_name' => 'Muchamad Rafi Subhi Fauzi, S.Kom.',
+                'bride_name' => 'Yuni Widyaningsih',
                 'groom_parents_info' => 'Putra pertama dari Bpk Wawan & Ibu Indah',
                 'bride_parents_info' => 'Putri pertama dari Bpk Habibie & Ibu Ainun',
                 'akad_date' => '2025-05-20 09:00:00',

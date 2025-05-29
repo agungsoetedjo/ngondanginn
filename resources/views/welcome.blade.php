@@ -272,7 +272,7 @@
                       <div class="col-lg-3 col-md-4 col-sm-6 portfolio-item isotope-item filter-{{ $template->category->id }}-{{ Str::slug($template->category->type) }}">
                           <img src="{{ asset('images/templates/' . $template->preview_image) }}" class="img-fluid" alt="{{ $template->name }}">
                           <div class="portfolio-info">
-                              <h4>{{ $template->name }}</h4>
+                              <h4>{{ $template->name }} {{ $template->category->type == 'dengan_foto' ? 'Dengan Foto' : 'Tanpa Foto' }} </h4>
                               <p class="mb-2">Rp. {{ number_format($template->price, 0, ',', '.') }}</p>
                               {{-- <p><strike><b>Rp. {{ number_format($template->price_discount, 0, ',', '.') }}</b></strike></p> --}}
                               <div class="d-flex flex-wrap gap-1 justify-content-center mt-2">
@@ -282,10 +282,10 @@
                                    class="glightbox btn btn-sm btn-primary">
                                     <i class="bi bi-zoom-in"></i>
                                 </a>
-                                <a href="{{ route('order.create', ['template_id' => $template->id]) }}" class="btn btn-sm btn-success">
+                                <a href="{{ route('order.create', ['template' => Str::after($template->view_path, 'template_packs.')]) }}" title="Pesan Undangan" class="btn btn-sm btn-success">
                                   <i class="bi bi-cart"></i>
                                 </a>
-                                <a href="{{ route('designs.preview', $template->id) }}"
+                                <a href="{{ route('templates.preview', $template->id) }}"
                                    target="_blank"
                                    class="btn btn-sm btn-info" title="Preview Template">
                                     <i class="bi bi-eye"></i>

@@ -17,8 +17,8 @@
             </a>
         </li>
         @if (Auth::user()->role_id === 1)
-        <li class="menu-item {{ request()->is('weddings') || request()->is('weddings/*') || request()->is('musics') || request()->is('musics/*') || request()->is('designs') || request()->is('designs/*') || request()->is('categories') || request()->is('categories/*') ? 'active open' : '' }}">
-                <a href="javascript:void(0);" class="menu-link menu-toggle {{ request()->is('weddings') || request()->is('weddings/*') || request()->is('musics') || request()->is('musics/*') || request()->is('designs') || request()->is('designs/*') || request()->is('categories') || request()->is('categories/*')? 'active' : '' }}">
+        <li class="menu-item {{ request()->is('weddings') || request()->is('weddings/*') || request()->is('musics') || request()->is('musics/*') || request()->is('templates') || request()->is('templates/*') || request()->is('categories') || request()->is('categories/*') ? 'active open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle {{ request()->is('weddings') || request()->is('weddings/*') || request()->is('musics') || request()->is('musics/*') || request()->is('templates') || request()->is('templates/*') || request()->is('categories') || request()->is('categories/*')? 'active' : '' }}">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
                 <div>Data</div>
             </a>
@@ -33,8 +33,8 @@
                         <div><i class="bx bx-music"></i> Musik</div>
                     </a>
                 </li>
-                <li class="menu-item {{ request()->is('designs') || request()->is('designs/*') ? 'active open' : '' }}">
-                    <a href="{{ route('designs.index') }}" class="menu-link {{ request()->is('designs') || request()->is('designs/*') ? 'active' : '' }}">
+                <li class="menu-item {{ request()->is('templates') || request()->is('templates/*') ? 'active open' : '' }}">
+                    <a href="{{ route('templates.index') }}" class="menu-link {{ request()->is('templates') || request()->is('templates/*') ? 'active' : '' }}">
                         <div><i class="bx bx-image"></i> Daftar Template</div>
                     </a>
                 </li>

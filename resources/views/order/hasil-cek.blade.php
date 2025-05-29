@@ -194,7 +194,7 @@
                             {{-- Gambar versi mobile --}}
                             @if ($order->wedding->template && $order->wedding->template->preview_image)
                             <div class="col-12 d-block d-md-none mt-4 text-center">
-                                <h6 class="text-muted">{{ $order->wedding->template->name }}</h6>
+                                <h6 class="text-muted">{{ $order->wedding->template->name }} {{ $order->wedding->template->category->type == 'dengan_foto' ? 'Dengan Foto' : 'Tanpa Foto' }}</h6>
                                 <img src="{{ asset('images/templates/' . $order->wedding->template->preview_image) }}" class="img-fluid rounded shadow-sm" style="max-height: 150px;">
                             </div>
                             @endif
@@ -204,7 +204,7 @@
                     <!-- Kanan: Gambar desktop -->
                     <div class="col-md-4 d-none d-md-block text-end">
                         @if ($order->wedding->template && $order->wedding->template->preview_image)
-                            <h6 class="text-muted mb-3">{{ $order->wedding->template->name }}</h6>
+                            <h6 class="text-muted mb-3">{{ $order->wedding->template->name }} {{ $order->wedding->template->category->type == 'dengan_foto' ? 'Dengan Foto' : 'Tanpa Foto' }}</h6>
                             <img src="{{ asset('images/templates/' . $order->wedding->template->preview_image) }}" class="img-fluid rounded shadow-sm" style="max-height: 150px;">
                         @else
                             <p class="text-muted">Preview tidak tersedia.</p>

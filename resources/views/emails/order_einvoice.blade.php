@@ -71,13 +71,13 @@
             $headerSubtitle = 'Terima kasih telah memesan undangan di NgondangIn!';
 
             if ($status === 'processed') {
-                $headerTitle = 'Pemesanan Anda Sedang Diproses';
+                $headerTitle = 'Undangan Anda Sedang Diproses';
                 $headerSubtitle = 'Tim kami sedang menyiapkan undangan digital Anda.';
             } elseif ($status === 'published') {
                 $headerTitle = 'Undangan Digital Telah Dipublikasikan';
                 $headerSubtitle = 'Undangan Anda sudah aktif dan siap dibagikan.';
             } elseif ($status === 'completed') {
-                $headerTitle = 'Pemesanan Telah Selesai';
+                $headerTitle = 'Undangan Telah Selesai';
                 $headerSubtitle = 'Terima kasih telah menggunakan layanan NgondangIn!';
             }
         @endphp
@@ -166,7 +166,7 @@
                 </tr>
                 <tr>
                     <td class="label">Template Undangan:</td>
-                    <td class="value">{{ $order->wedding->template->name ?? '-' }}</td>
+                    <td class="value">{{ $order->wedding->template->name ?? '-' }} {{ $order->wedding->template->category->type == 'dengan_foto' ? 'Dengan Foto' : 'Tanpa Foto' }}</td>
                 </tr>
                 <tr>
                     <td class="label">Musik Latar:</td>

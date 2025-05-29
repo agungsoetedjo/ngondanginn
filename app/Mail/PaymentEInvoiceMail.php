@@ -15,12 +15,15 @@ class PaymentEInvoiceMail extends Mailable
     use Queueable, SerializesModels;
 
     public $order;
+    public $kodeTransaksi;
+
     /**
      * Create a new message instance.
      */
     public function __construct(Order $order)
     {
         $this->order = $order->load(['payment.paymentDest', 'payment.order']);
+        $this->kodeTransaksi = $order->kode_transaksi;
     }
 
     public function build()
@@ -35,7 +38,7 @@ class PaymentEInvoiceMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Payment E-Invoice Mail',
+            subject: 'Bukti Pembayaran Undangan Digital - Kode Transaksi : '.$this->kodeTransaksi,
         );
     }
 

@@ -60,9 +60,11 @@
                 <a href="{{ route('guestbooks.index', $wedding->id) }}" class="dropdown-item">
                   <i class="bx bx-book"></i> Buku Tamu
                 </a>
+                {{-- @if (!$wedding->template->category->type === 'tanpa_foto') --}}
                 <a href="{{ route('galleries.index', $wedding->id) }}" class="dropdown-item">
                   <i class="bx bx-images"></i> Galeri
                 </a>
+                {{-- @endif --}}
               @endif
               </div>
             </div>

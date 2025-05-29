@@ -175,6 +175,21 @@
         </form>
         
     </div>
-
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const akadInput = document.getElementById('akad_date');
+            const now = new Date();
+            now.setSeconds(0, 0); // Hilangkan detik & milidetik untuk kecocokan format
+            akadInput.min = now.toISOString().slice(0,16);
+        });
+    </script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const receptionInput = document.getElementById('reception_date');
+            const now = new Date();
+            now.setSeconds(0, 0); // Hilangkan detik & milidetik untuk kecocokan format
+            receptionInput.min = now.toISOString().slice(0,16);
+        });
+    </script>
 </section><!-- /Starter Section Section -->
 @endsection

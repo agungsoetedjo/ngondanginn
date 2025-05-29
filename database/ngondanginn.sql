@@ -2,8 +2,8 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Waktu pembuatan: 04 Bulan Mei 2025 pada 04.09
+-- Host: localhost:33066
+-- Waktu pembuatan: 18 Bulan Mei 2025 pada 04.39
 -- Versi server: 8.0.30
 -- Versi PHP: 8.3.11
 
@@ -128,11 +128,11 @@ CREATE TABLE `galleries` (
 --
 
 INSERT INTO `galleries` (`id`, `wedding_id`, `image`, `image_desc`, `created_at`, `updated_at`) VALUES
-(2, 9, 'uploads/galeri/6816e08c04d57.jpg', '0', '2025-05-04 03:35:40', '2025-05-04 03:35:40'),
-(3, 10, 'uploads/galeri/6816e30f32d58.jpg', '1', '2025-05-04 03:46:23', '2025-05-04 03:46:23'),
-(4, 10, 'uploads/galeri/6816e39f71c72.jpg', '2', '2025-05-04 03:48:47', '2025-05-04 03:48:47'),
-(5, 10, 'uploads/galeri/6816e3ad716d9.jpeg', '3', '2025-05-04 03:49:01', '2025-05-04 03:49:01'),
-(6, 10, 'uploads/galeri/6816e3b85718e.jpg', '0', '2025-05-04 03:49:12', '2025-05-04 03:49:12');
+(21, 19, 'uploads/galeri/6821e0e9a532e.jpeg', '3', '2025-05-12 11:52:09', '2025-05-12 11:52:09'),
+(22, 19, 'uploads/galeri/6821e0fcdcc7e.jpg', '2', '2025-05-12 11:52:28', '2025-05-12 11:52:28'),
+(23, 19, 'uploads/galeri/6821e11b6fee4.jpg', '1', '2025-05-12 11:52:59', '2025-05-12 11:52:59'),
+(24, 19, 'uploads/galeri/6821e1273e146.jpg', '0', '2025-05-12 11:53:11', '2025-05-12 11:53:11'),
+(25, 20, 'uploads/galeri/682561501f7a2.jpeg', '1', '2025-05-15 03:36:48', '2025-05-15 03:36:48');
 
 -- --------------------------------------------------------
 
@@ -154,7 +154,9 @@ CREATE TABLE `guest_books` (
 --
 
 INSERT INTO `guest_books` (`id`, `wedding_id`, `name`, `message`, `created_at`, `updated_at`) VALUES
-(4, 9, 'namates', 'tes ucap', '2025-05-04 04:04:04', '2025-05-04 04:04:04');
+(16, 19, 'kevin', 'ciie jadian', '2025-05-15 03:28:55', '2025-05-15 03:28:55'),
+(17, 20, 'denny', 'ciiiee jadian', '2025-05-15 03:38:59', '2025-05-15 03:38:59'),
+(18, 20, 'agung', 'ciieee', '2025-05-15 03:39:31', '2025-05-15 03:39:31');
 
 -- --------------------------------------------------------
 
@@ -220,9 +222,9 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (12, '2025_04_12_115028_create_faqs_table', 1),
 (13, '2025_04_25_161128_create_payment_dests_table', 1),
 (15, '2025_04_07_140535_create_orders_table', 2),
-(16, '2025_04_25_161243_create_payments_table', 2),
 (22, '2025_04_07_140452_create_categories_table', 3),
-(23, '2025_04_07_140453_create_templates_table', 3);
+(23, '2025_04_07_140453_create_templates_table', 3),
+(24, '2025_04_25_161243_create_payments_table', 4);
 
 -- --------------------------------------------------------
 
@@ -270,8 +272,8 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`id`, `kode_transaksi`, `nama_pemesan`, `email_pemesan`, `phone_number`, `status`, `created_at`, `updated_at`) VALUES
-(11, 'WD_ORDER_6811E25B7D14D', 'M Rafi S Fauzi', 'agungsoetedjo@gmail.com', '085795851996', 'processed', '2025-04-30 08:42:03', '2025-05-03 05:28:48'),
-(12, 'WD_ORDER_6816E0E8BB71B', 'nama pemesan', 'agungsoetedjo@gmail.com', '082215148544', 'published', '2025-05-04 03:37:12', '2025-05-04 04:04:29');
+(21, 'WD_ORDER_6821DE8FA48C5', 'nama pemesan', 'agungsoetedjo@gmail.com', '082215148544', 'processed', '2025-05-12 11:42:07', '2025-05-12 15:14:47'),
+(22, 'WD_ORDER_68255FD9D2E82', 'Kevin F', 'agungsoetedjo@gmail.com', '082215148544', 'completed', '2025-05-15 03:30:33', '2025-05-15 03:39:47');
 
 -- --------------------------------------------------------
 
@@ -297,7 +299,7 @@ CREATE TABLE `payments` (
   `payment_total` bigint UNSIGNED DEFAULT '0',
   `payment_proof` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `payment_desc` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `payment_status` enum('pending','rejected','waiting_verify','paid') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'pending',
+  `payment_status` enum('pending','rejected','waiting_verify','paid') COLLATE utf8mb4_unicode_ci DEFAULT 'pending',
   `payment_dests_id` bigint UNSIGNED DEFAULT NULL,
   `user_id` bigint UNSIGNED DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -309,8 +311,8 @@ CREATE TABLE `payments` (
 --
 
 INSERT INTO `payments` (`id`, `order_id`, `payment_total`, `payment_proof`, `payment_desc`, `payment_status`, `payment_dests_id`, `user_id`, `created_at`, `updated_at`) VALUES
-(1, 11, 110000, 'uploads/payment_proof/6812204243766.jpeg', '-', 'paid', 3, 2, '2025-04-30 10:50:31', '2025-05-03 05:25:49'),
-(2, 12, 200000, 'uploads/payment_proof/6816e1a24ad0f.jpeg', '-', 'paid', 4, 2, '2025-05-04 03:40:18', '2025-05-04 03:41:03');
+(7, 21, 150000, 'uploads/payment_proof/6821debd4e64d.jpeg', '-', 'paid', 2, 2, '2025-05-12 11:42:53', '2025-05-12 15:12:31'),
+(8, 22, 150000, 'uploads/payment_proof/68256090135ba.jpeg', '-', 'paid', 2, 2, '2025-05-15 03:33:36', '2025-05-15 03:34:15');
 
 -- --------------------------------------------------------
 
@@ -379,7 +381,9 @@ CREATE TABLE `rsvps` (
 --
 
 INSERT INTO `rsvps` (`id`, `wedding_id`, `name`, `attendance`, `reason`, `created_at`, `updated_at`) VALUES
-(4, 9, 'namates', 'yes', NULL, '2025-05-04 04:04:04', '2025-05-04 04:04:04');
+(16, 19, 'kevin', 'no', 'punteun teu bisa datang, aya project', '2025-05-15 03:28:55', '2025-05-15 03:28:55'),
+(17, 20, 'denny', 'yes', NULL, '2025-05-15 03:38:59', '2025-05-15 03:38:59'),
+(18, 20, 'agung', 'no', 'asasdadsasd', '2025-05-15 03:39:31', '2025-05-15 03:39:31');
 
 -- --------------------------------------------------------
 
@@ -401,7 +405,12 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('PWPLD3TGT0pqTuAz56FF7tlGvkCoG7qzMMxiQkqT', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiSWt6bnF5WW9aMGJwcXg4YU5zcVUxNmpVQnp6YVJOREhXbkZMUEFxNCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjI6Imh0dHA6Ly9uZ29uZGFuZ2luLnRlc3QiO31zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO30=', 1746331711);
+('7gPsB08yBSHCUyApBmGkyDYBFqXksy4502JYhRLY', 4, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiV0M1ZnFUTUgyaHRteDVXbzFuQUVseVJJakN2MllnUjRMeEhkTDBoNSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzc6Imh0dHA6Ly9uZ29uZGFuZ2luLnRlc3Qvb3RwLXZlcmlmaWthc2kiO31zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aTo0O3M6MTI6Im90cF9kdXJhdGlvbiI7aToyNTt9', 1747280539),
+('bT5RHhVvoLySRra8Ltw8eHKTOtk8wnzcRNbVuekI', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiNUpXakJxbWZjWmVENmFQN2ZMamtBSWFRaTNtTFhIT3RWakpQTlQwcSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjI6Imh0dHA6Ly9uZ29uZGFuZ2luLnRlc3QiO319', 1747281334),
+('D86TznC91AsKyeHHvkipyY4MHJiM3ekNTrkth2DR', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiT2hBTTg1WHE4MndjeGIydzFCbzI3RzNoMTZwVnR6SUpmUlhRenZzUSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjI6Imh0dHA6Ly9uZ29uZGFuZ2luLnRlc3QiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1747543112),
+('TFvbE4TkyTI6fbpyfCJGZQ18j438xd0gBxzeBvDL', 5, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoibDA4T0VqY2xVNDUwSVk0OEgzVE5YRnNQdFlrUGdWc0hxRzFoN3pweSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzI6Imh0dHA6Ly9uZ29uZGFuZ2luLnRlc3QvZGFzaGJvYXJkIjt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6NTt9', 1747280780),
+('V1c9K17fpHGvWCtcPrQwO8PnwYGugKJa8CUd9dKR', 4, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiSGQ3cEdZU1FXSjNPZTlXQ1QzcDJTQ3Q1Ym9XZkQ3VUttSXk4cFNROSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzc6Imh0dHA6Ly9uZ29uZGFuZ2luLnRlc3Qvb3RwLXZlcmlmaWthc2kiO31zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aTo0O30=', 1747280522),
+('yzgcxI2nSLuwZY8xfvLqEerpJoRAR2bqcHQ8i7iu', 4, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiN0t6YUplb2ptUGZ3QTBJY1A2YXVESldoOU5kNmFKQ3hpTU9GS3paUCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzI6Imh0dHA6Ly9uZ29uZGFuZ2luLnRlc3QvZGFzaGJvYXJkIjt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6NDt9', 1747280680);
 
 -- --------------------------------------------------------
 
@@ -426,9 +435,10 @@ CREATE TABLE `templates` (
 
 INSERT INTO `templates` (`id`, `name`, `preview_image`, `view_path`, `price`, `category_id`, `created_at`, `updated_at`) VALUES
 (1, 'Spesial 01', 'bc93a010-8be7-4d27-bb18-449fad70b1f7.jpg', 'template_packs.spesial_dengan_foto.spesial-01', 150000, 1, '2025-04-15 00:51:40', '2025-05-03 14:02:47'),
-(2, 'Spesial 02', '00d2c7aa-b720-429b-818d-117082bbcb4d.jpg', 'template_packs.spesial_tanpa_foto.spesial-02', 110000, 2, '2025-04-15 00:52:28', '2025-05-04 03:24:40'),
+(2, 'Spesial 02', '35f4304c-6435-462a-ada2-0c41aa5903b2.jpg', 'template_packs.spesial_dengan_foto.spesial-02', 150000, 1, '2025-05-08 16:09:52', '2025-05-08 16:09:52'),
 (3, 'Minimalist Luxury 01', 'f937b432-4cd6-40cb-86ee-544374489ecd.jpg', 'template_packs.minimalist_luxury_dengan_foto.minimalist-luxury-01', 200000, 4, '2025-05-03 13:58:11', '2025-05-03 14:32:25'),
-(4, 'Minimalist Luxury 02', 'a97ea049-6a62-428c-973e-6e985c869e84.jpg', 'template_packs.minimalist_luxury_dengan_foto.minimalist-luxury-02', 150000, 4, '2025-05-03 14:07:45', '2025-05-03 16:35:58');
+(4, 'Minimalist Luxury 02', 'a97ea049-6a62-428c-973e-6e985c869e84.jpg', 'template_packs.minimalist_luxury_dengan_foto.minimalist-luxury-02', 150000, 4, '2025-05-03 14:07:45', '2025-05-03 16:35:58'),
+(5, 'Spesial 02', '848dde88-7493-47d2-b38e-3ec389798818.png', 'template_packs.spesial_tanpa_foto.spesial-02', 110000, 2, '2025-04-15 00:52:28', '2025-05-08 16:24:41');
 
 -- --------------------------------------------------------
 
@@ -457,8 +467,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `photo`, `email_verified_at`, `password`, `role_id`, `otp_code`, `otp_expires_at`, `is_verified`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Agung Soetedjo', 'agungsoetedjo@gmail.com', 'assets_be/img/avatars/user_1_1745920564.jpg', NULL, '$2y$12$Dje0O.jvMzV/LS2aRjA/duaG/zz.XMIsbDdC59xBu566Li5UkouPC', 1, NULL, NULL, 1, 'AagEE3lKn1Letoq6wjUqyr4dv4eRujziq9dkno67sewpJluG5XNNNl3tVSBv', '2025-04-07 02:03:13', '2025-05-01 03:16:34'),
-(2, 'M Rafi S Fauzi', 'mrafi.sfauzi@gmail.com', 'assets_be/img/avatars/user_2_1745921457.jpg', NULL, '$2y$12$z2ONIowo9fN2Ju817mokC.nRLKJbeqgeqN43WEvGEJ6MsQpHKKxZK', 2, NULL, NULL, 1, NULL, '2025-04-16 03:54:34', '2025-04-30 02:00:36');
+(1, 'Agung Soetedjo', 'morefast01@gmail.com', 'assets_be/img/avatars/user_1_1745920564.jpg', NULL, '$2y$12$Dje0O.jvMzV/LS2aRjA/duaG/zz.XMIsbDdC59xBu566Li5UkouPC', 1, NULL, NULL, 1, 'hUrcvdXZg7u39BhHshlWypjHUgoUEquRlCjpktfL40amwv6sY96Xqtpv2g31', '2025-04-07 02:03:13', '2025-05-04 14:02:28'),
+(2, 'Muchamad Rafi Subhi Fauzi', 'mrafi.sfauzi@gmail.com', 'assets_be/img/avatars/user_2_1745921457.jpg', NULL, '$2y$12$z2ONIowo9fN2Ju817mokC.nRLKJbeqgeqN43WEvGEJ6MsQpHKKxZK', 2, NULL, NULL, 1, NULL, '2025-04-16 03:54:34', '2025-04-30 02:00:36'),
+(5, 'kevin f', 'agungsoetedjo@gmail.com', NULL, NULL, '$2y$12$Ov4aTpmbNtGbjb5ak6k29erXLLfxBN86/GMehVxb1HkVv2ULFqmUO', 1, NULL, NULL, 1, NULL, '2025-05-15 03:46:07', '2025-05-15 03:47:21');
 
 -- --------------------------------------------------------
 
@@ -493,8 +504,8 @@ CREATE TABLE `weddings` (
 --
 
 INSERT INTO `weddings` (`id`, `user_id`, `slug`, `bride_name`, `groom_name`, `bride_parents_info`, `groom_parents_info`, `akad_date`, `reception_date`, `akad_location`, `akad_place_name`, `reception_location`, `reception_place_name`, `description`, `template_id`, `music_id`, `order_id`, `created_at`, `updated_at`) VALUES
-(9, 1, 'm-rafi-s-fauzi-yuni-widyaningsih-dnl9k', 'Yuni Widyaningsih', 'M Rafi S Fauzi', 'Putri Pertama dari Bpk. X dan Ibu. Y', 'Putra Pertama dari Bpk. X dan Ibu. Y', '2025-05-04 09:00:00', '2025-05-04 11:00:00', 'Jln. Sukahaji Atas No. 11 Jaksel', 'Gedung Rajawali X', 'Jln. Sukahaji Atas No. 12 Jaksel', 'Gedung Rajawali XI', 'Kau bagai langit bagiku, ku bagai lautan bagimu, cinta kita luas tak terbatas....ihiiiwwww', 2, 2, 11, '2025-04-30 08:42:03', '2025-05-03 05:35:51'),
-(10, 1, 'nama-pria-nama-wanita-wsirb', 'nama wanita', 'nama pria', 'ortu wanita', 'ortu pria', '2025-05-11 09:00:00', '2025-05-11 11:00:00', 'alamat akad', 'tempat akad', 'alamat resepsi', 'tempat resepsi', 'kisah cinta', 3, 2, 12, '2025-05-04 03:37:12', '2025-05-04 03:43:08');
+(19, 1, 'nama-pria-nama-wanita-grhbd', 'nama wanita', 'nama pria', 'ortu wanita', 'ortu pria', '2025-05-18 18:41:00', '2025-05-18 18:41:00', 'alamat akad', 'tempat akad', 'alamat resepsi', 'tempat resepsi', 'kisah cinta', 2, 2, 21, '2025-05-12 11:42:07', '2025-05-12 11:47:17'),
+(20, 1, 'kevin-winda-q3eal', 'Winda', 'Kevin', 'ortu winda', 'ortu kevin', '2025-05-18 10:30:00', '2025-05-18 10:30:00', 'alamat akad', 'tempat akad', 'alamat resepsi', 'tempat resepsi', 'asdasd', 1, 3, 22, '2025-05-15 03:30:34', '2025-05-15 03:37:47');
 
 --
 -- Indexes for dumped tables
@@ -671,13 +682,13 @@ ALTER TABLE `faqs`
 -- AUTO_INCREMENT untuk tabel `galleries`
 --
 ALTER TABLE `galleries`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT untuk tabel `guest_books`
 --
 ALTER TABLE `guest_books`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT untuk tabel `jobs`
@@ -689,7 +700,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT untuk tabel `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT untuk tabel `musics`
@@ -701,13 +712,13 @@ ALTER TABLE `musics`
 -- AUTO_INCREMENT untuk tabel `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT untuk tabel `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT untuk tabel `payment_dests`
@@ -725,25 +736,25 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT untuk tabel `rsvps`
 --
 ALTER TABLE `rsvps`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT untuk tabel `templates`
 --
 ALTER TABLE `templates`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT untuk tabel `weddings`
 --
 ALTER TABLE `weddings`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
@@ -765,7 +776,7 @@ ALTER TABLE `guest_books`
 -- Ketidakleluasaan untuk tabel `payments`
 --
 ALTER TABLE `payments`
-  ADD CONSTRAINT `payments_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `payments_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `payments_payment_dests_id_foreign` FOREIGN KEY (`payment_dests_id`) REFERENCES `payment_dests` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `payments_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
 

@@ -7,10 +7,13 @@ use App\Models\Order;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class PaymentController extends Controller
 {
+
     public function index()
     {
         $orders = Order::with('payment')  // Mengambil data payment yang terhubung
@@ -22,7 +25,6 @@ class PaymentController extends Controller
 
         return view('backend.payments.index', compact('orders'));
     }
-
 
     public function showPayment($kode_transaksi)
     {
@@ -40,7 +42,7 @@ class PaymentController extends Controller
             'payment_dests_id' => 'required|exists:payment_dests,id',
         ]);
 
-        $order = Order::where('kode_transaksi', $kode_transaksi)->first();
+        $order = Order::with('wedding')->where('kode_transaksi', $kode_transaksi)->firstOrFail();
 
         if (!$order) {
             return redirect()->back()->with('error', 'Order tidak ditemukan.');
@@ -78,6 +80,14 @@ class PaymentController extends Controller
 
         Mail::to($order->email_pemesan)->send(new PaymentEInvoiceMail($order));
 
+        $message = "Hai, *{$order->wedding->groom_name} & {$order->wedding->bride_name}*,\n\n" .
+        "Bukti pembayaran untuk undangan digital dengan kode *#{$order->kode_transaksi}* telah kami terima. 🙏\n\n" .
+        "Saat ini tim kami sedang memverifikasi data pembayaran kamu.\n" .
+        "Kami akan segera mengabari begitu prosesnya selesai, ya!\n\n" .
+        "Terima kasih telah menggunakan layanan *Ngondang.in*. 💌";
+
+        sendWhatsAppNotification($order->phone_number, $message);
+
         session()->flash('success', 'Bukti pembayaran berhasil diunggah!');
 
         return redirect()->route('order.cek.result', $order->kode_transaksi);
@@ -85,7 +95,7 @@ class PaymentController extends Controller
 
     public function approvePayment($kode_transaksi)
     {
-        $order = Order::where('kode_transaksi', $kode_transaksi)->firstOrFail();
+        $order = Order::with('wedding')->where('kode_transaksi', $kode_transaksi)->firstOrFail();
 
         $payment = Payment::where('order_id', $order->id)->first();
 
@@ -99,6 +109,13 @@ class PaymentController extends Controller
 
         Mail::to($order->email_pemesan)->send(new PaymentEInvoiceMail($order));
 
+        $message = "🎉 Hai *{$order->wedding->groom_name} & {$order->wedding->bride_name}*,\n\n" .
+        "Selamat! Pembayaran untuk pesanan undangan digitalmu dengan kode *#{$order->kode_transaksi}* telah *berhasil kami konfirmasi*. ✅\n\n" .
+        "Tim kami akan segera memproses pesanan kamu, dan kamu akan menerima notifikasi saat undanganmu siap untuk dipublikasikan.\n\n" .
+        "Terima kasih telah memilih *Ngondang.in* untuk momen spesialmu. 💖";
+
+        sendWhatsAppNotification($order->phone_number, $message);
+
         session()->flash('sweetalert', [
             'type' => 'success',
             'message' => 'Pembayaran berhasil disetujui.'
@@ -109,7 +126,7 @@ class PaymentController extends Controller
 
     public function rejectPayment(Request $request, $kode_transaksi)
     {
-        $order = Order::where('kode_transaksi', $kode_transaksi)->firstOrFail();
+        $order = Order::with('wedding')->where('kode_transaksi', $kode_transaksi)->firstOrFail();
 
         $payment = Payment::where('order_id', $order->id)->first();
 
@@ -122,6 +139,15 @@ class PaymentController extends Controller
         }
 
         Mail::to($order->email_pemesan)->send(new PaymentEInvoiceMail($order));
+
+        $message = "Hai, *{$order->wedding->groom_name} & {$order->wedding->bride_name}*,\n\n" .
+        "Mohon maaf, pembayaran untuk pesanan undangan digital dengan kode *#{$order->kode_transaksi}* telah *ditolak*.\n\n" .
+        "Silakan upload ulang bukti pembayaran dengan benar agar pesananmu dapat segera kami proses.\n\n" .
+        "Terima kasih atas pengertiannya.\n\n" .
+        "Salam hangat dari *Ngondang.in*";
+
+        // dd($message);
+        sendWhatsAppNotification($order->phone_number, $message);
 
         session()->flash('sweetalert', [
             'type' => 'warning',

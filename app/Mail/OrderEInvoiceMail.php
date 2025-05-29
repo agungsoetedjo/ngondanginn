@@ -4,7 +4,6 @@ namespace App\Mail;
 
 use App\Models\Order;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -15,13 +14,15 @@ class OrderEInvoiceMail extends Mailable
     use Queueable, SerializesModels;
 
     public $order;
+    public $kodeTransaksi;
 
     /**
      * Create a new message instance.
      */
     public function __construct(Order $order)
     {
-        $this->order = $order->load(['wedding.template', 'wedding.music']);
+        $this->order = $order->load(['wedding.template.category', 'wedding.music']);
+        $this->kodeTransaksi = $order->kode_transaksi;
     }
 
     public function build()
@@ -36,7 +37,7 @@ class OrderEInvoiceMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Order E-Invoice Mail',
+            subject: 'Bukti Pemesanan Undangan Digital - Kode Transaksi : '.$this->kodeTransaksi,
         );
     }
 

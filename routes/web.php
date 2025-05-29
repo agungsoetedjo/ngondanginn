@@ -12,11 +12,13 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentDestController;
 use App\Http\Controllers\RsvpController;
+use App\Http\Controllers\WASpamController;
 use App\Http\Controllers\WeddingController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingController::class, 'index']);
+Route::get('/tes', [WASpamController::class, 'eksekusi']);
 
 // Rute untuk pengguna yang belum terverifikasi
 Route::middleware(['auth', 'check.verified'])->group(function () {
@@ -52,7 +54,7 @@ Route::middleware(['auth', 'check.verified'])->group(function () {
         Route::post('/weddings/process-wedding/{kode_transaksi}', [WeddingController::class, 'processWedding'])->name('weddings.processWedding');
         Route::post('/weddings/publish-wedding/{kode_transaksi}', [WeddingController::class, 'publishWedding'])->name('weddings.publishWedding');
         Route::post('/weddings/complete-wedding/{kode_transaksi}', [WeddingController::class, 'completeWedding'])->name('weddings.completeWedding');
-        Route::resource('designs', DesignController::class);
+        Route::resource('templates', DesignController::class);
         Route::resource('categories', CategoryController::class);
         Route::get('/musics', [MusicController::class, 'index'])->name('musics.index');
         Route::post('/musics', [MusicController::class, 'store'])->name('musics.store');
@@ -67,7 +69,8 @@ Route::middleware(['auth', 'check.verified'])->group(function () {
         Route::get('/archive/{kode_transaksi}', [OrderController::class, 'showArchive'])->name('show-archive');
     });
 });
-Route::get('/designs/preview/{templateId}', [DesignController::class, 'preview'])->name('designs.preview');
+
+Route::get('/templates/preview/{templateId}', [DesignController::class, 'preview'])->name('templates.preview');
 Route::get('/fe/{slug}', [WeddingController::class, 'weddingChecks'])->name('wedding.checks');
 Route::post('/fe/{slug}/rsvp', [RsvpController::class, 'store'])->name('rsvp.store');
 Route::post('/logout', [UserAuthController::class, 'logout'])->name('logout')->middleware('auth');
